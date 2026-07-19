@@ -114,6 +114,17 @@ The static browse page never writes to the pack (it can't, when Pages-hosted).
 edits the entry file — consistent with §7.3 and keeping the verb slate final
 (no `reactivate` verb). Resolves the second half of P-7.
 
+## D-013 — Planning-moment hook ships with dual delivery (2026-07-19, accepted)
+
+The hook spike confirmed PreToolUse(ExitPlanMode) carries the full plan text,
+but whether hook-returned `additionalContext` demonstrably reaches the model
+(Q2) remains unverified — headless auth on this machine can't be driven from
+the build session, and the owner's live test is pending. Decision: the Phase 3
+hook implements both delivery mechanisms behind a constant — `additionalContext`
+(primary, pending Q2) and exit-2/stderr (verified fallback, coarser UX) — plus
+a documented two-minute self-check so any machine can confirm which works.
+Flip the default when Q2 closes; no rework either way.
+
 ---
 
 ## Pending decisions

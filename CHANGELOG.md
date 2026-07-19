@@ -7,6 +7,17 @@ the plugin's release tags once Phase 2 (plugin packaging) lands.
 ## [Unreleased]
 
 ### Added
+- 2026-07-19 — **Phase 2 complete**: compile (manifest cap 25, refuses over
+  cap; init-with-produces steps emit maintenance lines), managed-block writer
+  (sync-hash edit detection, corruption refusal, atomic writes, CRLF-safe —
+  verified by direct attack), `start` ritual skill, `list`/`archive`/`explain`
+  verb skills, stdio MCP server (8 tools), bare-`/scout` router template
+  (D-012), plugin + marketplace packaging (`claude plugin validate --strict`
+  green). 153/153 tests. Install: `/plugin marketplace add nickheise/scout`
+  → `/plugin install scout@scout` (confirmed against manifests).
+  Note for the record: the phase's five parallel builders stalled at the
+  harness level; the adversarial-review loop caught the gap and a second
+  review round (verdict: accept-after-fixes) restored full scrutiny.
 - 2026-07-19 — Naming fully settled: name stays Scout (Recon declined,
   recorded); repo home github.com/nickheise/scout; domain deferred.
   Invocation surface decided (D-012): plugin verbs at `/scout:*` plus an
