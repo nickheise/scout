@@ -7,6 +7,12 @@ the plugin's release tags once Phase 2 (plugin packaging) lands.
 ## [Unreleased]
 
 ### Added
+- 2026-07-19 — Naming fully settled: name stays Scout (Recon declined,
+  recorded); repo home github.com/nickheise/scout; domain deferred.
+  Invocation surface decided (D-012): plugin verbs at `/scout:*` plus an
+  optional logic-free personal router giving bare `/scout <verb>`. Phase 2
+  scope updated (tasks 2.6 coexistence test, 2.7 router); marketing thread
+  synced with provisional install strings.
 - 2026-07-19 — **Phase 1 complete** (agent-team build, 9 agents, adversarial
   review loop): entry schema v1 + reserved-names registry + frozen corpus
   fixtures; `bin/scout-store.mjs` (zero-dep tolerant-reader store CLI, 105

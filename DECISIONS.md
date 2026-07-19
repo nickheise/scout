@@ -64,9 +64,27 @@ Resolves PRD §12.8 / P-6.
 *Addendum 2026-07-19:* a "Recon" rename was floated and declined after
 marketing evaluation (register clash, semantic mismatch, worse collision
 profile) — full reasoning in `docs/research/naming.md`. The name stays Scout.
-Still open under this decision: the domain (scoutpack.dev — marketing's
-recommendation, which would also move the repo to a `scoutpack` GitHub org —
-vs. getscout.dev, Nick's earlier lean).
+
+*Addendum 2026-07-19 (b):* repo home confirmed as github.com/nickheise/scout
+(personal account; no org move). Domain deferred — Nick's lowest concern;
+marketing's scoutpack.dev recommendation stays on the table for when the
+site needs it. The shidoyu/scout community-marketplace entry costs us
+nothing on this path (plugin names are per-marketplace, not global); the one
+time-sensitive item is the *official* directory submission — slugs there are
+first-come and immutable, so we submit promptly once Phase 2's package
+passes the quality bar.
+
+## D-012 — Invocation surface: plugin verbs + optional bare `/scout` router (2026-07-19, accepted)
+
+Verified platform facts: plugins can never expose a bare `/scout` (always
+`plugin:skill` namespaced); a personal skill at `~/.claude/skills/scout/` IS
+invoked as literally `/scout` with args via $ARGUMENTS; the two namespaces
+cannot conflict. Decision: ship the hybrid — the plugin remains the
+auto-updating brain (`/scout:add` … via subscribe distribution), and a thin,
+logic-free personal router skill (`templates/scout-router/`) provides
+`/scout add <url>` for those who want the colon-free form. Built in Phase 2;
+offered interactively by `setup` in Phase 4. The router contains no logic so
+it almost never needs updating (the subscribe-not-fork boundary stays clean).
 
 ## D-008 — Dismissal = inferred at wrap, explicit wave-off immediate (2026-07-18, accepted)
 

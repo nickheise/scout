@@ -105,7 +105,8 @@ scout/
 | 2.3 `skills/start` — interview (Pocock pattern: explore first, recommended defaults, skip settled sections), init-step execution, CLAUDE.md-else-AGENTS.md-else-ask injection, project overlay file, idempotent re-run | live run on a scratch project yields CHANGELOG.md/DECISIONS.md + injected block; re-run is a no-op |
 | 2.4 `skills/list`, `skills/archive` (supersession pointer), `skills/explain` (provenance) | live runs against the seed pack |
 | 2.5 `scout-mcp.mjs` stdio server (pack CRUD + query; natural-language surface for verbs incl. reactivation per D-011) | MCP inspector smoke test; reactivate round-trip |
-| 2.6 Plugin + marketplace packaging, versioning, CI (`claude plugin validate --strict`, node:test, corpus) | clean install via `/plugin marketplace add` on a second machine/profile |
+| 2.6 Plugin + marketplace packaging, versioning, CI (`claude plugin validate --strict`, node:test, corpus); empirically test coexistence with the community-marketplace `scout` plugin (two same-named plugins, one machine) | clean install via `/plugin marketplace add` on a second machine/profile; coexistence behavior documented (or marked unverified with evidence) |
+| 2.7 Bare `/scout` router (D-012): `templates/scout-router/SKILL.md` — logic-free personal skill routing `/scout <verb> <args>` to the plugin's machinery, + install doc; interactive offer wired into `setup` in Phase 4 | router installed to a scratch `~/.claude/skills/scout` routes all seven verbs correctly; contains no duplicated logic |
 
 ### Phase 3 — Reports (zero-recall long tail)
 | Task | Acceptance |
