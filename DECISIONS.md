@@ -61,6 +61,13 @@ scoutcc.dev / getscout.dev are verified available. Avoid outright:
 `claude-scout` (active npm package in our niche), `scout-cli` (Docker Scout).
 Resolves PRD §12.8 / P-6.
 
+*Addendum 2026-07-19:* a "Recon" rename was floated and declined after
+marketing evaluation (register clash, semantic mismatch, worse collision
+profile) — full reasoning in `docs/research/naming.md`. The name stays Scout.
+Still open under this decision: the domain (scoutpack.dev — marketing's
+recommendation, which would also move the repo to a `scoutpack` GitHub org —
+vs. getscout.dev, Nick's earlier lean).
+
 ## D-008 — Dismissal = inferred at wrap, explicit wave-off immediate (2026-07-18, accepted)
 
 An "ignore" is recorded when a report surfaced for a need AND that need was
