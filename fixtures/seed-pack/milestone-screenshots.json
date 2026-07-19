@@ -1,0 +1,23 @@
+{
+  "schema": 1,
+  "id": "milestone-screenshots",
+  "type": "step",
+  "title": "Milestone screenshots",
+  "status": "active",
+  "superseded_by": null,
+  "notes": "Trigger wording ships exactly as decided in D-004; /scout:start lets each project redefine what \"milestone\" means, so the default only needs to be sane, not perfect.",
+  "added": "2026-07-18",
+  "verified": "2026-07-18",
+  "dismissals": 0,
+  "url": null,
+  "repo": null,
+  "stack": null,
+  "install": null,
+  "summary": null,
+  "surfaces_when": null,
+  "ambient_line": null,
+  "instruction": "After any stakeholder demo, or when a major feature first works end-to-end, prompt to capture screenshots of the working state. Save them inside the project with the date and a short label, so the build keeps a visual history of what worked when. Prompt, then capture — never screenshot silently.",
+  "phase": "milestone",
+  "automation": null,
+  "produces": null
+}

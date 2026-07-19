@@ -1,0 +1,27 @@
+{
+  "schema": 1,
+  "id": "mattpocock-skills",
+  "type": "pack",
+  "title": "mattpocock/skills",
+  "status": "active",
+  "superseded_by": null,
+  "notes": "Reference that shaped Scout — the single-plugin-marketplace \"subscribe, not fork\" pattern and the user-invoked/model-invoked axis come from here. Plugin route recorded as primary because it stays current; skills.sh copy-and-own also documented (npx skills@latest add mattpocock/skills), then `claude plugin install mattpocock-skills@mattpocock` and a one-time /setup-matt-pocock-skills per repo. Only the promoted surface (README + plugin-manifest skills list) is recorded; misc/personal/in-progress buckets are the author's private workbench.",
+  "added": "2026-07-18",
+  "verified": "2026-07-18",
+  "dismissals": 0,
+  "url": "https://github.com/mattpocock/skills",
+  "repo": null,
+  "stack": null,
+  "install": "/plugin marketplace add mattpocock/skills",
+  "summary": "Matt Pocock's curated agent-skills collection for engineering workflow: alignment interviews (grill-with-docs, grill-me), red-green-refactor TDD, spec implementation, architecture review, and handoff documents — promoted skills bucketed under engineering/ and productivity/ and split user-invoked vs model-invoked. Distributed both ways on purpose: skills.sh copies files to hack on; the Claude Code plugin (the repo is its own marketplace) is a read-only, auto-updating subscription.",
+  "surfaces_when": [
+    "starting a sizeable feature where requirements should be pinned down by an alignment interview before any code",
+    "running a test-driven (red-green-refactor) implementation loop with an agent",
+    "producing a handoff document or a codebase-architecture improvement plan"
+  ],
+  "ambient_line": "mattpocock/skills — Matt's engineering-workflow skills; use for alignment interviews, TDD, handoffs.",
+  "instruction": null,
+  "phase": null,
+  "automation": null,
+  "produces": null
+}

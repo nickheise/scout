@@ -1,0 +1,27 @@
+{
+  "schema": 1,
+  "id": "dialkit",
+  "type": "pack",
+  "title": "DialKit",
+  "status": "active",
+  "superseded_by": null,
+  "notes": "By Josh Puckett. A dev tool, not a production component — auto-hidden in production builds. The documented install includes `motion` as a required companion package. Overlaps emilkowalski/skills only loosely: DialKit is tooling for tuning values live; Emil's skills are review/taste guidance for the animations themselves.",
+  "added": "2026-07-18",
+  "verified": "2026-07-18",
+  "dismissals": 0,
+  "url": "https://joshpuckett.me/dialkit",
+  "repo": "https://github.com/joshpuckett/dialkit",
+  "stack": ["react", "solid", "svelte", "vue"],
+  "install": "npm install dialkit motion",
+  "summary": "A floating control panel for real-time parameter tweaking during development — sliders, toggles, color pickers, spring editors, easing curves, and keyboard shortcuts wired directly to live UI values. One identical API across React, Solid, Svelte 5, and Vue 3; auto-detects control types from your config, fully typed, with presets/snapshots and JSON export of the tuned values.",
+  "surfaces_when": [
+    "tuning animation springs, easing curves, colors, or layout numbers by feel while the app is running",
+    "a plan involves iterating on interface parameters (spring physics, thresholds, sizes) that would otherwise mean edit-and-reload cycles",
+    "prototyping motion or visual design where someone needs live knobs over component props without code changes"
+  ],
+  "ambient_line": "DialKit — floating dev panel for live-tweaking UI values; use when tuning motion or design params.",
+  "instruction": null,
+  "phase": null,
+  "automation": null,
+  "produces": null
+}

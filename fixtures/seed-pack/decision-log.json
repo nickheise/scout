@@ -1,0 +1,23 @@
+{
+  "schema": 1,
+  "id": "decision-log",
+  "type": "step",
+  "title": "Decision log",
+  "status": "active",
+  "superseded_by": null,
+  "notes": "The archive-not-delete discipline mirrors Scout's own entry lifecycle. Distinct from the changelog step: the changelog records what changed; the decision log records why choices were made.",
+  "added": "2026-07-18",
+  "verified": "2026-07-18",
+  "dismissals": 0,
+  "url": null,
+  "repo": null,
+  "stack": null,
+  "install": null,
+  "summary": null,
+  "surfaces_when": null,
+  "ambient_line": null,
+  "instruction": "Maintain DECISIONS.md as an append-only log of meaningful project decisions. One entry per decision, newest last: a short numbered title (D-001, D-002, …), the date, a status (proposed → accepted), and the reasoning in a few sentences. An overturned decision is never deleted — it stays in the log marked superseded by its successor. Record each decision at the moment it is made, while the reasoning is fresh; create the file on the first decision if it does not exist yet.",
+  "phase": "ongoing",
+  "automation": null,
+  "produces": "DECISIONS.md"
+}

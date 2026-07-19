@@ -1,0 +1,13 @@
+{
+  "schema": 1,
+  "id": "milestone-screenshots",
+  "type": "step",
+  "title": "Milestone screenshots",
+  "status": "active",
+  "added": "2026-07-17",
+  "verified": "2026-07-17",
+  "dismissals": 0,
+
+  "instruction": "After any stakeholder demo, or when a major feature first works end-to-end, prompt to capture a screenshot.",
+  "phase": "milestone"
+}

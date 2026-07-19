@@ -1,0 +1,23 @@
+{
+  "schema": 1,
+  "id": "changelog",
+  "type": "step",
+  "title": "Changelog",
+  "status": "active",
+  "superseded_by": null,
+  "notes": "Kept from day one on every project (Scout's own repo dogfoods it, D-002). PRD §6 lists this step as init+ongoing; the phase enum is single-valued, so phase=init carries the scaffolding and the ongoing maintenance is folded into the instruction text.",
+  "added": "2026-07-18",
+  "verified": "2026-07-18",
+  "dismissals": 0,
+  "url": null,
+  "repo": null,
+  "stack": null,
+  "install": null,
+  "summary": null,
+  "surfaces_when": null,
+  "ambient_line": null,
+  "instruction": "When a project begins, create CHANGELOG.md at the repo root. Then maintain it for the life of the project: whenever a meaningful, user-visible change lands, append a dated entry describing it in one or two plain-language lines — as part of landing the change itself, never batched for later. Keep the newest entries at the top.",
+  "phase": "init",
+  "automation": null,
+  "produces": "CHANGELOG.md"
+}

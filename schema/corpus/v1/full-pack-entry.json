@@ -1,0 +1,29 @@
+{
+  "schema": 1,
+  "id": "dialkit",
+  "type": "pack",
+  "title": "DialKit",
+  "status": "active",
+  "superseded_by": null,
+  "notes": "Saved for its dependency-free native <dialog> approach — noted as lighter-weight than Radix Dialog for cases that don't need the full feature surface.",
+  "added": "2026-07-17",
+  "verified": "2026-07-17",
+  "dismissals": 1,
+
+  "url": "https://dialkit.dev",
+  "repo": "https://github.com/example/dialkit",
+  "stack": ["react"],
+  "install": "npm i dialkit",
+  "summary": "A small, dependency-free dialog/modal toolkit built on the native <dialog> element. Handles focus trapping, backdrop dismissal, and stacking without pulling in a full component library.",
+  "surfaces_when": [
+    "the feature needs a modal, dialog, or overlay",
+    "the project wants to avoid a full headless-UI dependency for a single dialog",
+    "an existing dialog implementation is hand-rolled and accumulating bugs"
+  ],
+  "ambient_line": "DialKit — native <dialog>-based modals, no dependency weight.",
+
+  "instruction": null,
+  "phase": null,
+  "automation": null,
+  "produces": null
+}

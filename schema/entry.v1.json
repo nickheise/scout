@@ -1,0 +1,178 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "urn:scout:schema:entry:v1",
+  "title": "Scout entry (schema 1)",
+  "description": "One structure, two types (\"pack\" | \"step\"), discriminated by the \"type\" field. See docs/prd.md §6. This schema is a tolerant reader's contract: additionalProperties is true everywhere on purpose so future fields never fail validation (docs/research/file-format-patterns.md §A.6) — the code-level tolerant reader is what actually preserves and round-trips them. Field-by-field accretion-only evolution rules and the reserved-name registry live in schema/RESERVED.md.",
+  "type": "object",
+  "additionalProperties": true,
+  "required": [
+    "schema",
+    "id",
+    "type",
+    "title",
+    "status",
+    "added",
+    "verified",
+    "dismissals"
+  ],
+  "properties": {
+    "schema": {
+      "const": 1,
+      "description": "Schema version, integer (not semver). Always 1 for this version. No default — every entry must state it explicitly so future readers know which contract produced the file."
+    },
+    "id": {
+      "type": "string",
+      "pattern": "^[a-z0-9][a-z0-9-]*$",
+      "minLength": 1,
+      "description": "Stable slug, kebab-case. No default — assigned at creation and never changed. Never reused after retirement; see schema/RESERVED.md."
+    },
+    "type": {
+      "enum": ["pack", "step"],
+      "description": "Discriminator. \"pack\" = an analyzed link (library/effect/tool/skill) that surfaces conditionally. \"step\" = a project practice executed at project start or followed as a standing instruction. No default — must be chosen at creation; it determines which of the pack-only/step-only fields below are required."
+    },
+    "title": {
+      "type": "string",
+      "minLength": 1,
+      "description": "Display name shown on cards, in listings, and in the manifest. No default."
+    },
+    "status": {
+      "enum": ["active", "archived"],
+      "default": "active",
+      "description": "Default: \"active\". Archived entries leave the manifest and match pool immediately but retain full history and can always be reactivated (PRD §5.7)."
+    },
+    "superseded_by": {
+      "type": ["string", "null"],
+      "default": null,
+      "description": "Default: null. Set to the id of the successor entry when this entry is archived in favor of something else; null when there is no successor (including on active entries)."
+    },
+    "notes": {
+      "type": ["string", "null"],
+      "default": null,
+      "description": "Default: null. The user's own words: why this was saved, caveats, overlap notes captured at ingest time."
+    },
+    "added": {
+      "type": "string",
+      "format": "date",
+      "pattern": "^\\d{4}-\\d{2}-\\d{2}$",
+      "description": "ISO 8601 date (YYYY-MM-DD) the entry was first captured. No default — always set at creation, never rewritten."
+    },
+    "verified": {
+      "type": "string",
+      "format": "date",
+      "pattern": "^\\d{4}-\\d{2}-\\d{2}$",
+      "description": "ISO 8601 date (YYYY-MM-DD) of the last verification of the source. No default — set at creation, refreshed only by an explicit lazy re-verify (PRD §5.2)."
+    },
+    "dismissals": {
+      "type": "integer",
+      "minimum": 0,
+      "default": 0,
+      "description": "Default: 0. Count of times a report for this entry was ignored in a similar context (D-008). Increments only; an archive nudge fires at threshold (default 3, D-009) but the counter itself is never auto-reset."
+    },
+
+    "url": {
+      "type": ["string", "null"],
+      "default": null,
+      "description": "Pack-only. Default: null (must be null/absent on step entries). Source URL; required on pack entries."
+    },
+    "repo": {
+      "type": ["string", "null"],
+      "default": null,
+      "description": "Pack-only, and optional even on pack entries (per PRD §6 example). Default: null. Repository URL when distinct from url — e.g. a docs site's url with a separate GitHub repo."
+    },
+    "stack": {
+      "type": ["array", "null"],
+      "items": { "type": "string" },
+      "default": null,
+      "description": "Pack-only. Default: null (must be null/absent on step entries). Recorded at ingest, never enforced as a filter (PRD §4); an empty array means \"stack recorded as not applicable,\" distinct from null meaning \"not recorded.\""
+    },
+    "install": {
+      "type": ["string", "null"],
+      "default": null,
+      "description": "Pack-only. Default: null (must be null/absent on step entries). Install string, e.g. \"npm i dialkit\"; required on pack entries."
+    },
+    "summary": {
+      "type": ["string", "null"],
+      "default": null,
+      "description": "Pack-only. Default: null (must be null/absent on step entries). 2-3 sentences: what it is and what it's good at; required on pack entries."
+    },
+    "surfaces_when": {
+      "type": ["array", "null"],
+      "items": { "type": "string" },
+      "minItems": 1,
+      "default": null,
+      "description": "Pack-only. Default: null (must be null/absent on step entries). Machine-side match conditions generated at ingest; required (non-empty) on pack entries — this is the field the surfacing gate matches against."
+    },
+    "ambient_line": {
+      "type": ["string", "null"],
+      "default": null,
+      "description": "Pack-only. Default: null (must be null/absent on step entries). The one-liner that earns this entry a slot in the manifest (hard-capped at ~25 lines, PRD §5.3); required on pack entries."
+    },
+
+    "instruction": {
+      "type": ["string", "null"],
+      "default": null,
+      "description": "Step-only. Default: null (must be null/absent on pack entries). Imperative practice text; required on step entries."
+    },
+    "phase": {
+      "anyOf": [
+        { "enum": ["init", "ongoing", "milestone", "wrap"] },
+        { "type": "null" }
+      ],
+      "default": null,
+      "description": "Step-only. Default: null (must be null/absent on pack entries). When the step executes; required on step entries. \"init\" steps run once at /scout start; \"ongoing\"/\"milestone\" steps render into the standing-instructions block; \"wrap\" steps run at project close (PRD §5.3, §5.4)."
+    },
+    "automation": {
+      "type": ["string", "null"],
+      "default": null,
+      "description": "Step-only, and optional even on step entries. Default: null (must be null/absent on pack entries). Script or skill path if this step is automated rather than purely a standing instruction."
+    },
+    "produces": {
+      "type": ["string", "null"],
+      "default": null,
+      "description": "Step-only, and optional even on step entries. Default: null (must be null/absent on pack entries). Artifact created/maintained by this step, e.g. \"CHANGELOG.md\"."
+    }
+  },
+
+  "allOf": [
+    {
+      "if": {
+        "required": ["type"],
+        "properties": { "type": { "const": "pack" } }
+      },
+      "then": {
+        "required": ["url", "install", "summary", "surfaces_when", "ambient_line"],
+        "properties": {
+          "url": { "type": "string", "minLength": 1 },
+          "install": { "type": "string", "minLength": 1 },
+          "summary": { "type": "string", "minLength": 1 },
+          "surfaces_when": { "type": "array", "minItems": 1 },
+          "ambient_line": { "type": "string", "minLength": 1 },
+          "instruction": { "type": "null" },
+          "phase": { "type": "null" },
+          "automation": { "type": "null" },
+          "produces": { "type": "null" }
+        }
+      }
+    },
+    {
+      "if": {
+        "required": ["type"],
+        "properties": { "type": { "const": "step" } }
+      },
+      "then": {
+        "required": ["instruction", "phase"],
+        "properties": {
+          "instruction": { "type": "string", "minLength": 1 },
+          "phase": { "enum": ["init", "ongoing", "milestone", "wrap"] },
+          "url": { "type": "null" },
+          "repo": { "type": "null" },
+          "stack": { "type": "null" },
+          "install": { "type": "null" },
+          "summary": { "type": "null" },
+          "surfaces_when": { "type": "null" },
+          "ambient_line": { "type": "null" }
+        }
+      }
+    }
+  ]
+}

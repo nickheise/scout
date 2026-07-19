@@ -1,0 +1,25 @@
+{
+  "schema": 1,
+  "id": "decision-log",
+  "type": "step",
+  "title": "Maintain a decision log",
+  "status": "active",
+  "superseded_by": null,
+  "notes": "Adopted after losing track of why a rewrite was scrapped on a prior project — the changelog said what changed, nothing said why.",
+  "added": "2026-07-17",
+  "verified": "2026-07-17",
+  "dismissals": 0,
+
+  "url": null,
+  "repo": null,
+  "stack": null,
+  "install": null,
+  "summary": null,
+  "surfaces_when": null,
+  "ambient_line": null,
+
+  "instruction": "Maintain DECISIONS.md: one entry per meaningful decision, newest last, with a one-line rationale. Append-only; superseded decisions stay in the log marked superseded, not deleted.",
+  "phase": "ongoing",
+  "automation": "skills/start/init-decisions.mjs",
+  "produces": "DECISIONS.md"
+}

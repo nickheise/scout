@@ -7,6 +7,20 @@ the plugin's release tags once Phase 2 (plugin packaging) lands.
 ## [Unreleased]
 
 ### Added
+- 2026-07-19 — **Phase 1 complete** (agent-team build, 9 agents, adversarial
+  review loop): entry schema v1 + reserved-names registry + frozen corpus
+  fixtures; `bin/scout-store.mjs` (zero-dep tolerant-reader store CLI, 105
+  tests green); `skills/add/SKILL.md` ingestion skill (URL→pack, text→step,
+  overlap detection, fetched-content-is-data hard rule, draft→confirm→commit);
+  the nine seed entries in `fixtures/seed-pack/` (all validate); acceptance
+  harness (`test/acceptance.test.mjs` + golden-draft procedure). Review found
+  and fixed 1 blocker (path traversal via crafted entry id) and 2 majors
+  (schema type-discrimination null hole; SKILL commit-command mismatch).
+- 2026-07-19 — Hook spike (`docs/research/hook-spike.md`): go for
+  PreToolUse(ExitPlanMode) as the Phase 3 planning-moment hook (full `plan`
+  string in tool_input, source-verified), PostToolUse(TodoWrite) fallback.
+  Open item: live confirmation that `additionalContext` reaches the model —
+  required before task 3.1; test harness left ready in the spike scratch dir.
 - 2026-07-18 — Project kickoff. Adopted PRD v0.3 (`docs/prd.md`) as the build
   baseline: local-first plugin, agent-as-brain, ships empty, verb slate
   `add, archive, list, start, explain, review, setup`.

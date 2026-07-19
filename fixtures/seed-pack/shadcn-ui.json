@@ -1,0 +1,27 @@
+{
+  "schema": 1,
+  "id": "shadcn-ui",
+  "type": "pack",
+  "title": "shadcn/ui",
+  "status": "active",
+  "superseded_by": null,
+  "notes": "One of the references that shaped Scout (PRD §6); the default component foundation for React app work. Copy-in, not a dependency — components land in the repo and get edited there, which is also why its polish standard is the bar for Scout's own browse page (D-006).",
+  "added": "2026-07-18",
+  "verified": "2026-07-18",
+  "dismissals": 0,
+  "url": "https://ui.shadcn.com",
+  "repo": "https://github.com/shadcn-ui/ui",
+  "stack": ["react", "tailwind"],
+  "install": "npx shadcn@latest init",
+  "summary": "A set of open-code React components you copy into your project and own — \"customize, extend, and build on\" — rather than install as a package dependency. Positioned as the foundation for a design system: standard app UI (dialogs, forms, tables, command menus) scaffolded via a CLI (`init` for new apps, `add <component>` for pieces), with the source living in your repo from then on.",
+  "surfaces_when": [
+    "building a dialog, dropdown, form, data table, or command menu in a React app",
+    "starting a new React or Next.js app that needs a component foundation or design system",
+    "a plan calls for accessible UI primitives the project will customize and own rather than take as a locked dependency"
+  ],
+  "ambient_line": "shadcn/ui — copy-in React components; reach for it when building standard UI in a React app.",
+  "instruction": null,
+  "phase": null,
+  "automation": null,
+  "produces": null
+}

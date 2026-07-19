@@ -1,0 +1,23 @@
+{
+  "schema": 1,
+  "id": "agent-team-builds",
+  "type": "step",
+  "title": "Agent-team builds",
+  "status": "active",
+  "superseded_by": null,
+  "notes": "The threshold is the qualitative three-part test of D-005, judged by the agent — deliberately no line-count number. Review is adversarial and separate from build; builders get well-specified, file-scoped tasks.",
+  "added": "2026-07-18",
+  "verified": "2026-07-18",
+  "dismissals": 0,
+  "url": null,
+  "repo": null,
+  "stack": null,
+  "install": null,
+  "summary": null,
+  "surfaces_when": null,
+  "ambient_line": null,
+  "instruction": "For large features — multi-file, multi-day, or architecturally novel — plan first, then build with an agent team: a dedicated orchestrator, a reviewer, and several build subagents. Assign models per task — capable models for orchestration and review, lighter models for well-specified builds — keeping cost and tokens reasonable.",
+  "phase": "ongoing",
+  "automation": null,
+  "produces": null
+}

@@ -1,0 +1,31 @@
+{
+  "schema": 1,
+  "id": "shadcn-ui",
+  "type": "pack",
+  "title": "shadcn/ui",
+  "status": "active",
+  "superseded_by": null,
+  "notes": "One of the references that shaped Scout's own tenets (§3.5) — kept in the pack for the irony as much as the utility.",
+  "added": "2026-07-17",
+  "verified": "2026-07-17",
+  "dismissals": 0,
+
+  "url": "https://ui.shadcn.com",
+  "repo": "https://github.com/shadcn-ui/ui",
+  "stack": ["react", "tailwind"],
+  "install": "npx shadcn@latest add <component>",
+  "summary": "Copy-in, ownable component recipes built on Radix primitives and Tailwind. Not a dependency you install and forget — code you own and can edit.",
+  "surfaces_when": [
+    "the feature needs a styled, accessible UI component (dialog, dropdown, form control, etc.)",
+    "the project already uses Tailwind and wants consistent component patterns"
+  ],
+  "ambient_line": "shadcn/ui — ownable component recipes on Radix + Tailwind.",
+
+  "instruction": null,
+  "phase": null,
+  "automation": null,
+  "produces": null,
+
+  "x_future": "placeholder for a hypothetical schema-2 field this schema-1 reader has never heard of — must round-trip untouched, not be rejected",
+  "x_future_license_hint": { "spdx": "MIT", "confidence": "unverified" }
+}
