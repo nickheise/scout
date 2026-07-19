@@ -19,6 +19,7 @@ const REPO_ROOT = path.join(__dirname, '..');
 const SEED_PACK = path.join(REPO_ROOT, 'fixtures', 'seed-pack');
 const COMPILE_BIN = path.join(REPO_ROOT, 'bin', 'scout-compile.mjs');
 const GOLDEN = path.join(__dirname, 'golden', 'compile-seed-pack.txt');
+const INDEX_GOLDEN = path.join(__dirname, 'golden', 'compile-index-seed-pack.txt');
 
 function tmpPackDir() {
   const dir = fs.mkdtempSync(path.join(os.tmpdir(), 'scout-compile-test-'));
@@ -196,4 +197,64 @@ test('a repeated compile of an unchanged pack is byte-identical (determinism for
   const first = compilePack(SEED_PACK).body;
   const second = compilePack(SEED_PACK).body;
   assert.equal(first, second);
+});
+
+// ---------------------------------------------------------------------------
+// --index / indexLines — the matching index (PRD §5.3/§5.6, task 3.1)
+// ---------------------------------------------------------------------------
+
+test('indexLines against the seed pack matches the golden file', () => {
+  const result = compilePack(SEED_PACK);
+  const golden = fs.readFileSync(INDEX_GOLDEN, 'utf8');
+  assert.equal(result.indexLines.join('\n') + '\n', golden);
+});
+
+test('CLI: scout-compile.mjs --pack fixtures/seed-pack --index matches the golden file byte-for-byte', () => {
+  const stdout = execFileSync('node', [COMPILE_BIN, '--pack', SEED_PACK, '--index'], { encoding: 'utf8' });
+  const golden = fs.readFileSync(INDEX_GOLDEN, 'utf8');
+  assert.equal(stdout, golden);
+});
+
+test('each index line is "id: cond1; cond2; ..." — every surfaces_when condition present, semicolon-joined', () => {
+  const result = compilePack(SEED_PACK);
+  const dialkitLine = result.indexLines.find((l) => l.startsWith('dialkit:'));
+  assert.ok(dialkitLine, 'expected a dialkit index line');
+  assert.equal(
+    dialkitLine,
+    'dialkit: tuning animation springs, easing curves, colors, or layout numbers by feel while the app is running; ' +
+      'a plan involves iterating on interface parameters (spring physics, thresholds, sizes) that would otherwise mean edit-and-reload cycles; ' +
+      'prototyping motion or visual design where someone needs live knobs over component props without code changes'
+  );
+});
+
+test('indexLines are never gated by the manifest cap — a cap of 3 still yields all 5 index lines', () => {
+  const result = compilePack(SEED_PACK, { cap: 3 });
+  assert.equal(result.overCap, true);
+  assert.equal(result.indexLines.length, 5);
+});
+
+test('CLI --index exits 0 with output even when the manifest is over cap', () => {
+  const stdout = execFileSync('node', [COMPILE_BIN, '--pack', SEED_PACK, '--cap', '3', '--index'], {
+    encoding: 'utf8',
+  });
+  assert.equal(stdout.trim().split('\n').length, 5);
+});
+
+test('CLI --index --json prints {"indexLines": [...]}', () => {
+  const stdout = execFileSync('node', [COMPILE_BIN, '--pack', SEED_PACK, '--index', '--json'], {
+    encoding: 'utf8',
+  });
+  const parsed = JSON.parse(stdout);
+  assert.equal(parsed.indexLines.length, 5);
+  assert.match(parsed.indexLines[0], /^dialkit: /);
+});
+
+test('empty pack dir yields empty indexLines, no error', () => {
+  const dir = tmpPackDir();
+  try {
+    const result = compilePack(dir);
+    assert.deepEqual(result.indexLines, []);
+  } finally {
+    fs.rmSync(dir, { recursive: true, force: true });
+  }
 });

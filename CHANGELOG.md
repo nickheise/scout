@@ -7,6 +7,20 @@ the plugin's release tags once Phase 2 (plugin packaging) lands.
 ## [Unreleased]
 
 ### Added
+- 2026-07-19 — **Phase 3 complete** (plugin v0.2.0): planning-moment hook
+  (`bin/scout-hook-plan.mjs` + `hooks/hooks.json`) — PreToolUse(ExitPlanMode)
+  primary, PostToolUse(TodoWrite) fallback, dual delivery per D-013
+  (`SCOUT_HOOK_DELIVERY`), six silent fast-exit guards, <100ms, 10k-cap-safe;
+  `compile --index`; the surfacing skill (the one model-invoked skill: 3-question
+  gate, cap 2, rejection ledger `.scout/ledger.jsonl`, D-008 dismissals, nudge-once
+  at 3, supersession redirect, lazy verification); `/scout:review` retroactive
+  backstop with D-008 reconciliation + D-009 recurrence proposals. Adversarial
+  review verdict accept-after-fixes; reviewer hand-walked the animated-background
+  scenario (Paper Shaders surfaces, keyword matches ledgered). 193/193 tests.
+- 2026-07-19 — Post-review tightening: review-recorded dismissals now also
+  write `dismissed-inferred` ledger lines (closes the live/retroactive drift);
+  `test/packaging.test.mjs` asserts manifest-version and skills-array
+  invariants in CI, which cannot hard-gate on the claude CLI.
 - 2026-07-19 — **Phase 2 complete**: compile (manifest cap 25, refuses over
   cap; init-with-produces steps emit maintenance lines), managed-block writer
   (sync-hash edit detection, corruption refusal, atomic writes, CRLF-safe —

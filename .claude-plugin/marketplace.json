@@ -10,7 +10,7 @@
     {
       "name": "scout",
       "source": "./",
-      "version": "0.1.0",
+      "version": "0.2.0",
       "description": "A curated cross-project pack for your agent, compiled into a capped ambient manifest. Not a memory tool: no transcript recall, no database — a plain folder you own."
     }
   ]

@@ -21,9 +21,17 @@
 //      scaffolding and stay out; phase:"wrap" steps run at project close —
 //      neither belongs in a block that lives in context continuously.
 //
+// A third, independent output — the **matching index** (PRD §5.3/§5.6: "the
+// host agent judges the plan against the full active surfaces_when index")
+// — is available via `--index` / `indexLines`. One line per active pack
+// entry: `id: condition 1; condition 2; ...`. Unlike the manifest, the index
+// is never capped or blocked by the manifest cap — it exists so
+// scout-hook-plan.mjs (task 3.1) has cheap, complete matching material even
+// on a planning moment where the manifest itself is over cap.
+//
 // This module is both a CLI and a library (mirrors scout-store.mjs) so
-// skills/start and scout-mcp.mjs can call compilePack() in-process instead
-// of shelling out.
+// skills/start, scout-mcp.mjs, and scout-hook-plan.mjs can call compilePack()
+// in-process instead of shelling out.
 //
 // Zero npm dependencies: plain Node >= 18 built-ins + scout-store.mjs only.
 
@@ -39,6 +47,15 @@ const __filename = fileURLToPath(import.meta.url);
 export const DEFAULT_MANIFEST_CAP = 25;
 
 const STANDING_PHASES = ['ongoing', 'milestone'];
+
+/**
+ * Render one matching-index line for an active pack entry: "id: cond1;
+ * cond2; ...". `surfaces_when` is required non-empty on pack entries by
+ * schema/entry.v1.json, so no fallback is needed here.
+ */
+function renderIndexLine(entry) {
+  return `${entry.id}: ${entry.surfaces_when.join('; ')}`;
+}
 
 /**
  * True if a step entry belongs in the standing-instructions block: its own
@@ -62,6 +79,10 @@ function isStandingStep(e) {
  * Shape:
  *   {
  *     cap, packCount, manifestLines: string[],
+ *     indexLines: string[],  // matching index, always populated regardless
+ *                             // of overCap (see module header) — one
+ *                             // "id: cond1; cond2; ..." line per active
+ *                             // pack entry, id-alphabetical
  *     standingSteps: [{ id, title, phase, instruction }],
  *     overCap: boolean, overflowIds: string[] (only when overCap),
  *     body: string   // the assembled managed-block body text (empty when
@@ -85,12 +106,16 @@ export function compilePack(packDir, opts = {}) {
   // listEntries() already sorts by id; that's our determinism source (golden
   // tests depend on stable ordering across runs).
   const manifestLines = packEntries.map((e) => e.ambient_line);
+  // The matching index is independent of the manifest cap (module header) —
+  // compute it unconditionally so both return branches below carry it.
+  const indexLines = packEntries.map(renderIndexLine);
 
   if (manifestLines.length > cap) {
     return {
       cap,
       packCount: manifestLines.length,
       manifestLines: [],
+      indexLines,
       standingSteps: [],
       overCap: true,
       overflowIds: packEntries.map((e) => e.id),
@@ -114,6 +139,7 @@ export function compilePack(packDir, opts = {}) {
     cap,
     packCount: manifestLines.length,
     manifestLines,
+    indexLines,
     standingSteps,
     overCap: false,
     overflowIds: [],
@@ -170,6 +196,7 @@ function parseArgs(argv) {
   for (let i = 0; i < argv.length; i++) {
     const arg = argv[i];
     if (arg === '--json') flags.json = true;
+    else if (arg === '--index') flags.index = true;
     else if (arg === '--pack') flags.pack = argv[++i];
     else if (arg === '--cap') flags.cap = Number(argv[++i]);
     else if (arg === '--help' || arg === '-h') flags.help = true;
@@ -179,15 +206,21 @@ function parseArgs(argv) {
 
 function usage() {
   return [
-    'usage: scout-compile.mjs [--pack <dir>] [--cap <n>] [--json]',
+    'usage: scout-compile.mjs [--pack <dir>] [--cap <n>] [--json] [--index]',
     '',
     'Compiles the active pack into the manifest + standing-instructions block.',
     'Prints the assembled block body to stdout (ready to pipe into',
     'scout-block.mjs write <file>). --json prints the structured pieces',
     'instead (manifestLines, standingSteps, body, cap, ...).',
     '',
+    '--index prints the matching index instead (PRD §5.3/§5.6): one',
+    '"id: cond1; cond2; ..." line per active pack entry, id-alphabetical.',
+    'Never blocked by the manifest cap — with --json, prints {"indexLines":',
+    '[...]} instead of newline-joined text.',
+    '',
     'Exits 1 (no output body) if the manifest exceeds its cap — the error',
-    'message names the overflow and points to /scout:archive.',
+    'message names the overflow and points to /scout:archive. --index is',
+    'unaffected by this (it exits 0 regardless of manifest cap state).',
   ].join('\n');
 }
 
@@ -202,6 +235,15 @@ function main() {
 
   for (const w of result.warnings) {
     console.error(`scout-compile: warning: skipped unreadable entry: ${w}`);
+  }
+
+  if (flags.index) {
+    if (flags.json) {
+      console.log(JSON.stringify({ indexLines: result.indexLines }, null, 2));
+    } else if (result.indexLines.length > 0) {
+      console.log(result.indexLines.join('\n'));
+    }
+    return;
   }
 
   if (result.overCap) {
