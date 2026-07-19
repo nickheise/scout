@@ -1,0 +1,54 @@
+name: CI
+
+on:
+  push:
+  pull_request:
+
+jobs:
+  test:
+    name: Node ${{ matrix.node-version }}
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        node-version: [20, 24]
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up Node ${{ matrix.node-version }}
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ matrix.node-version }}
+
+      # zero npm dependencies except @modelcontextprotocol/sdk (the MCP
+      # server task, bin/scout-mcp.mjs) — everything else in bin/ is plain
+      # Node >=18, no build step.
+      - name: Install dependencies
+        run: npm ci
+
+      # Node 24 breaks the bare "node --test test/" directory form; the
+      # glob form is required everywhere (see plan.md house rules).
+      - name: Run unit + acceptance tests
+        run: node --test test/*.test.mjs
+
+      - name: Validate the seed pack (fixtures/seed-pack)
+        run: node bin/scout-store.mjs validate --all --pack fixtures/seed-pack
+
+      - name: Validate the frozen schema corpus (schema/corpus/v1)
+        run: node bin/scout-store.mjs validate --all --pack schema/corpus/v1
+
+      # Best-effort: `claude` is the Claude Code CLI and is not guaranteed to
+      # be present (or network-reachable, or licensed for CI use) on hosted
+      # GitHub runners. We still want the check to run and report when it
+      # can, but a missing/failing CLI here must never redden the required
+      # test+validate signal above — hence continue-on-error. Treat any
+      # failure surfaced here as informational until Anthropic documents an
+      # official CI-friendly install path for `claude plugin validate`.
+      - name: Validate plugin manifest (best-effort, requires claude CLI)
+        continue-on-error: true
+        run: |
+          if command -v claude >/dev/null 2>&1; then
+            claude plugin validate . --strict
+          else
+            echo "claude CLI not available on this runner — skipping (see step comment); install locally to verify before tagging a release."
+          fi

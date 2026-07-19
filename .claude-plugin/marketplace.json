@@ -1,0 +1,17 @@
+{
+  "name": "scout",
+  "owner": {
+    "name": "Nick Heise"
+  },
+  "metadata": {
+    "description": "Scout's own marketplace: a curated cross-project pack and compiled ambient manifest for Claude Code, distributed subscribe-not-fork from this single repo."
+  },
+  "plugins": [
+    {
+      "name": "scout",
+      "source": "./",
+      "version": "0.1.0",
+      "description": "A curated cross-project pack for your agent, compiled into a capped ambient manifest. Not a memory tool: no transcript recall, no database — a plain folder you own."
+    }
+  ]
+}

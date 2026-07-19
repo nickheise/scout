@@ -1,0 +1,18 @@
+## Scout pack
+
+The following tools and practices are in the user's active Scout pack.
+Reach for them when they genuinely fit — see `/scout:explain <id>` for
+full detail on any entry.
+
+- DialKit — floating dev panel for live-tweaking UI values; use when tuning motion or design params.
+- emilkowalski/skills — Emil's design-engineering skills; reach for animation and UI-polish passes.
+- mattpocock/skills — Matt's engineering-workflow skills; use for alignment interviews, TDD, handoffs.
+- Paper Shaders — zero-dependency canvas shaders; use for animated backgrounds and gradient effects.
+- shadcn/ui — copy-in React components; reach for it when building standard UI in a React app.
+
+## Scout standing instructions
+
+- For large features — multi-file, multi-day, or architecturally novel — plan first, then build with an agent team: a dedicated orchestrator, a reviewer, and several build subagents. Assign models per task — capable models for orchestration and review, lighter models for well-specified builds — keeping cost and tokens reasonable.
+- When a project begins, create CHANGELOG.md at the repo root. Then maintain it for the life of the project: whenever a meaningful, user-visible change lands, append a dated entry describing it in one or two plain-language lines — as part of landing the change itself, never batched for later. Keep the newest entries at the top.
+- Maintain DECISIONS.md as an append-only log of meaningful project decisions. One entry per decision, newest last: a short numbered title (D-001, D-002, …), the date, a status (proposed → accepted), and the reasoning in a few sentences. An overturned decision is never deleted — it stays in the log marked superseded by its successor. Record each decision at the moment it is made, while the reasoning is fresh; create the file on the first decision if it does not exist yet.
+- After any stakeholder demo, or when a major feature first works end-to-end, prompt to capture screenshots of the working state. Save them inside the project with the date and a short label, so the build keeps a visual history of what worked when. Prompt, then capture — never screenshot silently.
