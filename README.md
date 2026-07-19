@@ -36,13 +36,13 @@ Claude Code plugins namespace their commands with the plugin name and a
 |---|---|
 | `/scout:add` | Add a link or a practice to your pack. Paste a URL and it's fetched, analyzed, and drafted; describe a practice in plain words and it drafts a step. Every draft is shown for confirmation before anything is saved. |
 | `/scout:start` | The per-project ritual. A short interview, scaffolding of init-step artifacts (changelog, decision log, …), and injection of the compiled manifest into your project's `CLAUDE.md`/`AGENTS.md` as a managed block. Idempotent — re-run any time. |
-| `/scout:list` | List your active pack, by tier and phase. |
+| `/scout:list` | List your active pack, by type and phase. |
 | `/scout:archive` | Retire an entry, optionally pointing at what superseded it. |
 | `/scout:explain` | Show an entry's full provenance — where it came from, when it was verified, why it's in the pack. |
-| `/scout:review` | Retroactive backstop: reviews the current project against your full active pack and reports anything that should have surfaced but didn't. |
+| `/scout:survey` | Retroactive backstop: surveys the current project against your full active pack and reports anything that should have surfaced but didn't. |
 | `/scout:setup` | First-ever onboarding: choose your pack location, optionally point it at a git remote (Tier 1), and offer a history scan that proposes entries from your own revealed practices. |
 
-**Shipped today:** `add`, `start`, `list`, `archive`, `explain`, `review`.
+**Shipped today:** `add`, `start`, `list`, `archive`, `explain`, `survey`.
 `setup` is designed (see `docs/plan.md` §4, Phase 4) and lands as this
 plugin's next version — because it's a subscribe-not-fork plugin, you get
 it automatically (see [Updates](#how-updates-work), below), no
@@ -71,7 +71,7 @@ reports.
 - **"Nothing surfaced" is the good, common result** — not a fallback message
   to apologize for. A card only appears when a match earns its place; most
   planning moments should produce silence.
-- **`/scout:review`** runs the identical gate retroactively against a
+- **`/scout:survey`** runs the identical gate retroactively against a
   project's actual history (commits, CHANGELOG, dependencies) instead of a
   live plan — the backstop for whatever the ambient hook missed. Same cap,
   same restraint, same ledger.
@@ -107,7 +107,7 @@ alone is the whole product for most people.
 
 | Tier | What it adds | Requirements |
 |---|---|---|
-| **0 — Plugin** (default) | Full Scout, as designed: local pack, ingestion, manifest, surfacing, all verbs. Shipped today: `add`, `start`, `list`, `archive`, `explain`, `review`; `setup` lands as this plugin's next version (see "Shipped today," above). Working in under 60 seconds. | Just the plugin. Degrades gracefully outside Claude Code (see below) — nothing else required. |
+| **0 — Plugin** (default) | Full Scout, as designed: local pack, ingestion, manifest, surfacing, all verbs. Shipped today: `add`, `start`, `list`, `archive`, `explain`, `survey`; `setup` lands as this plugin's next version (see "Shipped today," above). Working in under 60 seconds. | Just the plugin. Degrades gracefully outside Claude Code (see below) — nothing else required. |
 | **1 — Synced pack** | Point your pack folder at a personal git remote: cross-machine sync, history, a free Pages-hosted browse page. | A git remote you own. |
 | **2 — Remote connector** (optional) | A self-hosted MCP endpoint (e.g. a Cloudflare Worker) for claude.ai connectors and a permanent add-from-anywhere URL. | Self-hosting appetite. Documented, optional, never the default — design doc lands in Phase 5 (task 5.3, not yet written). |
 
@@ -129,12 +129,13 @@ running — because it's plain text compiled into `CLAUDE.md`/`AGENTS.md`.
 Your agent has standing awareness of your active pack on day one, everywhere,
 the same way it "knows" your dependencies exist.
 
-The **reports layer is Claude Code-only.** Gated, planning-moment surfacing
-(`/scout:review` and its ambient counterpart) runs on Claude Code's hook
-system, which other agents don't expose. Outside Claude Code you keep full
-ambient awareness; you lose the proactive nudge at planning time. The docs
-say this plainly because a tool that quietly does less than advertised is
-worse than one that says so.
+The **reports layer is Claude Code-only.** Gated, planning-moment reports
+run on Claude Code's hook system, which other agents don't expose (and
+`/scout:survey`, the retroactive backstop to that layer, is a Claude Code
+plugin command). Outside Claude Code you keep full ambient awareness; you
+lose the proactive nudge at planning time. The docs say this plainly
+because a tool that quietly does less than advertised is worse than one
+that says so.
 
 ## File-over-app, kept literally
 

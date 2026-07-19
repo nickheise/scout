@@ -3,10 +3,11 @@
 *Scout goes ahead and reports back what's useful — sets up camp at project start, then hands you the right tool from the pack at the moment it applies.*
 
 **Name:** Scout (command namespace: `/scout`) · **The pack** is the link-collection module; **the manifest** is its compiled ambient index
-**Version:** 0.3 · July 18, 2026
+**Version:** 0.4 · July 19, 2026
 **Owner:** Nick
 **Status:** Draft — open-source direction folded in
-**Changes in 0.3:** plugin-first/local-first inversion (tiers), agent-as-brain principle, embeddings deferred, ships-empty, final verb slate (`add, archive, list, start, explain, review, setup`), the tracks concept and courier prompt, three-plane update model, discovery-not-curation stance, ninth seed entry.
+**Changes in 0.3:** plugin-first/local-first inversion (tiers), agent-as-brain principle, embeddings deferred, ships-empty, the tracks concept and courier prompt, three-plane update model, discovery-not-curation stance, ninth seed entry.
+**Changes in 0.4:** `review` → `survey` (fixes the code-review ambiguity; plain English and in-register), verb slate locked (`add, archive, list, start, explain, survey, setup`), the register doctrine ("plain in, brand out"), the write-deliberate/read-ambient principle (tenet 7).
 
 ---
 
@@ -33,6 +34,7 @@ One store (a folder of files the user owns), one command namespace, one setup ri
 4. **Local by default.** After install, everything happens on the filesystem or inside the host agent. No servers, no accounts, no telemetry. Data leaves the machine only when the user physically carries it (see §5.8, §7.3).
 5. **Ships empty; structure, not content.** Scout imposes no defaults. Shipping "the best 25 libraries" would converge every user's output (the shadcn homogenization lesson: it had an ownership escape hatch, and defaults won anyway). Taste is emergent — it lives in the pack's contents, its archives, and its supersession chains, never in a Scout-shipped list.
 6. **Restraint.** Scout expects to say nothing most of the time. Suggestions pass a gate; rejections are logged; "nothing surfaced" is a good result.
+7. **Write-deliberate, read-ambient.** Three ways into the pack (`add`, setup's scan, wrap-phase nudges — each user-ratified); no retrieval verb out. Using the pack is `start` wiring it into a project and reports arriving unbidden; `survey` is a backstop, not a workflow. The day someone needs a "use my pack" command, zero-recall has failed.
 
 ## 4. Non-goals
 
@@ -135,7 +137,7 @@ Invoked once per user (`/scout setup`), immediately after plugin install:
 - **Always-on layer:** the manifest simply exists in context. The agent plans features with standing awareness of the active pack, the same way it "knows" React exists. No trigger to miss. Because the manifest is plain text in CLAUDE.md/AGENTS.md, this layer works in *any* agent — Cursor, Codex, etc. — on day one.
 - **Reports layer (Claude Code):** a hook fires on planning moments (plan/todo generation preferred over raw prompts — richer matching material, fewer noisier moments). The host agent judges the plan against the full active `surfaces_when` index and injects survivors as a compact **report**: link, one-liner, why it matched. The user clicks through to refresh their memory, then adopts or ignores.
 - **The gate** (pattern: Emil Kowalski's find-animation-opportunities — a filter as much as a finder): every candidate must pass (1) does this feature genuinely benefit, or is it a surface-level keyword match? (2) is adopting now meaningfully cheaper than retrofitting later? (3) has this entry been dismissed in a similar context? Failures are logged to a **rejection ledger** with reasons — richer signal than raw dismissal counts. Hard cap: max 2 reports per planning moment. A quiet system that's right is trusted; a chatty system is learned-around and dies. Target: reports feel apt ≥ 2 of 3 times, and "nothing surfaced" is a good result.
-- **`review` (retroactive backstop):** ambient surfacing is the offense; `/scout review` is the safety net. At milestone/wrap, reviews the project against the full active pack and reports missed opportunities — gate-filtered and capped exactly like live reports. (Known naming tradeoff: some users will expect code review; the output immediately self-corrects, and the plain-language win outweighs it.)
+- **`survey` (retroactive backstop):** ambient surfacing is the offense; `/scout survey` is the safety net. At milestone/wrap, surveys the whole project against the full active pack and reports missed opportunities — gate-filtered and capped exactly like live reports. Plain English ("survey the site") and perfectly in-register (surveying terrain is scout work), with none of the code-review ambiguity `review` carried.
 - **Graceful degradation:** hooks are Claude Code-specific. Elsewhere, users get the manifest layer (full ambient awareness) without gated planning-time reports. The docs say this plainly.
 
 ### 5.7 Lifecycle
@@ -205,14 +207,14 @@ A first-class design boundary. **User-invoked** actions are explicit, deliberate
 | `/scout list [filter]` | Same | Readable listing by type/status. |
 | `/scout explain <id>` | Same | Full entry detail *with provenance*: summary, surfaces_when, notes, supersession history, dismissal history, reasoning. The name promises reasoning, and the output delivers it. |
 | `/scout start` | Same | The per-project ritual (§5.4). Once per project. |
-| `/scout review` | Same | Retroactive backstop against the full pack (§5.6). Milestone/wrap moments. |
+| `/scout survey` | Same | Retroactive backstop against the full pack (§5.6). Milestone/wrap moments. |
 | `/scout setup` | Same | First-ever onboarding + optional history scan (§5.5). Once per user. |
 | Browse page | Any browser | View collection (Steps / Pack tabs), archive graveyard with supersession chains, reactivate. Static; local or Pages. |
 | The courier prompt | User's own chat session | User-run chat-history scan; user chooses what crosses into the pack (§5.5). |
 | Adopt / ignore a report | In-flow during coding | The user's call; ignoring in similar contexts feeds the dismissal counter. |
 | Answer an archive nudge | In-flow | One-time "archive this?" at dismissal threshold. |
 
-**Verb slate — final: `add, archive, list, start, explain, review, setup`.** Every verb is a common English word; nothing programmer-coded. `start` (per-project) vs `setup` (once ever) are distinguished by scope. **Register rule:** frequency determines register — everyday commands take universal names; brand names live in concepts and copy ("tracks," "reports," "the pack"), never in required vocabulary. **Layering rule** (via Pocock): user-invoked commands orchestrate model-invoked machinery but never chain into other user-invoked commands — the command surface stays flat.
+**Verb slate — locked: `add, archive, list, start, explain, survey, setup`.** Every verb is a common English word; nothing programmer-coded. `start` (per-project) vs `setup` (once ever) are distinguished by scope. **Register doctrine — plain in, brand out:** the user speaks to Scout in plain English (commands cost recall, so they take universal names); Scout speaks back in-world (narration and output cost nothing to read, so they can carry the brand). Scan narration and report framing draw from the expedition vocabulary — *reading your tracks… gathering signals… surveying past projects… here are the markers, with evidence* — none of which anyone must ever remember or type. Brand names live in concepts, copy, and Scout's voice; never in required vocabulary. **Layering rule** (via Pocock): user-invoked commands orchestrate model-invoked machinery but never chain into other user-invoked commands — the command surface stays flat.
 
 ### 7.2 Model-invoked
 
@@ -270,15 +272,15 @@ Phases 1–2 are testable inside a single Claude Code session before anything is
 
 ## 11. Prior art & parked ideas
 
-- **emilkowalski/skills → find-animation-opportunities:** the gate-and-reject posture. Adopted: the surfacing gate, rejection ledger with reasons, hard report caps, "nothing surfaced is a good result," fetched-content-is-data rule, adoption-ready cards. Its retroactive mode is inverted into `/scout review` — backstop, not primary mechanism.
+- **emilkowalski/skills → find-animation-opportunities:** the gate-and-reject posture. Adopted: the surfacing gate, rejection ledger with reasons, hard report caps, "nothing surfaced is a good result," fetched-content-is-data rule, adoption-ready cards. Its retroactive mode is inverted into `/scout survey` — backstop, not primary mechanism.
 - **mattpocock/skills:** independently organizes on the user-invoked/model-invoked axis (§7), validating the boundary. Adopted: the layering rule, the per-repo interview pattern (now inside `start`), and the plugin "subscribe rather than fork" distribution model.
 - **Obsidian:** file-over-app as trust architecture (§3, tenet 2).
-- **Parked — expedition patches:** earned collectibles at Any Distance Achievement Medal quality, rewarding *curation, never accumulation* (first supersession, a review that finds nothing, a season under the manifest cap — never entry counts). Locally generated; shared via the courier pattern: paste a locally minted code into a static client-side renderer on the site — no registry, no server, no account. Codes are forgeable by design: patches are collectibles, not credentials, and adding verification means adding a secret, a server, and unraveling the thesis over a sticker. Detail lives in the marketing PRD; v-later.
+- **Parked — expedition patches:** earned collectibles at Any Distance Achievement Medal quality, rewarding *curation, never accumulation* (first supersession, a survey that finds nothing, a season under the manifest cap — never entry counts). Locally generated; shared via the courier pattern: paste a locally minted code into a static client-side renderer on the site — no registry, no server, no account. Codes are forgeable by design: patches are collectibles, not credentials, and adding verification means adding a secret, a server, and unraveling the thesis over a sticker. Detail lives in the marketing PRD; v-later.
 - **Parked — supersession chains as shared-pack centerpiece:** the archive is the richest taste signal (what someone stopped using, and why). v2.
 
 ## 12. Open questions
 
-1. ~~Service name.~~ **Resolved: Scout, with the pack.** Wilderness/expedition register — warm, not twee, not military. Lexicon (capped, user-facing nouns only): **Scout**, **the pack**, **the manifest**, **reports**, **tracks** (the *concept* behind setup's scan — retired as a verb, alive in copy: "Scout reads tracks, not answers"). Machinery keeps literal names.
+1. ~~Service name.~~ **Resolved: Scout, with the pack.** Wilderness/expedition register — warm, not twee, not military. Lexicon (capped, user-facing nouns only): **Scout**, **the pack**, **the manifest**, **reports**, **tracks** (the *concept* behind setup's scan — retired as a verb, alive in copy: "Scout reads tracks, not answers"). Scout's *voice* additionally draws on **signals** (what the scan detects), **markers** (what it proposes, evidence attached), and expedition narration ("gathering signals… surveying past projects…") per the register doctrine (§7.1) — voice vocabulary is free because nobody has to remember it. Machinery keeps literal names.
 2. ~~Store substrate.~~ **Resolved: local folder / user's git repo (Tiers 0–1); optional self-hosted Worker at Tier 2 only.**
 3. **Dismissal capture mechanics:** what concretely counts as an "ignore"? Report surfaced + different library chosen for the same need = strong signal; report surfaced + feature abandoned = not. Define before Phase 3.
 4. **Milestone trigger definition** for the screenshot step: current draft is "after any stakeholder demo, or when a major feature first works end-to-end, prompt to capture." Confirm or refine.

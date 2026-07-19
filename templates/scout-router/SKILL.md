@@ -1,6 +1,6 @@
 ---
 name: scout
-description: Route "/scout <verb> <args>" (no colon) to the Scout plugin's real machinery — add, archive, list, start, explain, review, setup. A personal convenience for people who'd rather type /scout than /scout:verb; contains no logic of its own.
+description: Route "/scout <verb> <args>" (no colon) to the Scout plugin's real machinery — add, archive, list, start, explain, survey, setup. A personal convenience for people who'd rather type /scout than /scout:verb; contains no logic of its own.
 disable-model-invocation: true
 argument-hint: "<verb> [args]"
 allowed-tools: SlashCommand
@@ -13,7 +13,7 @@ exactly one reason (DECISIONS.md D-012): a Claude Code **plugin** can
 never claim the bare `/scout` command — plugin commands are always
 namespaced `plugin:skill`, so the real verbs live at `/scout:add`,
 `/scout:archive`, `/scout:list`, `/scout:start`, `/scout:explain`,
-`/scout:review`, `/scout:setup`. A **personal** skill installed at
+`/scout:survey`, `/scout:setup`. A **personal** skill installed at
 `~/.claude/skills/scout/` (this file) *is* invoked as the literal bare
 `/scout`, with everything after it in `$ARGUMENTS` — so it can catch that
 form and hand it straight to the plugin. The two namespaces never conflict;
@@ -34,7 +34,7 @@ clean; nothing here duplicates anything the plugin already does).
    read the pack, or do anything beyond string-splitting and invoking a
    command, stop — that logic belongs in the plugin skill, not here.
 2. **Only the seven-verb slate.** `add`, `archive`, `list`, `start`,
-   `explain`, `review`, `setup`. Anything else is unrecognized — say so and
+   `explain`, `survey`, `setup`. Anything else is unrecognized — say so and
    list the seven verbs. Don't guess a "close enough" verb.
 3. **Pass arguments through unchanged.** Whatever follows the verb in
    `$ARGUMENTS` goes to the plugin command verbatim — no reformatting, no
@@ -53,7 +53,7 @@ verb candidate; everything after it (with original spacing collapsed to a
 single pass-through string) is the argument text for that verb.
 
 If `$ARGUMENTS` is empty, or the first token isn't one of `add`, `archive`,
-`list`, `start`, `explain`, `review`, `setup` (case-insensitive), stop and
+`list`, `start`, `explain`, `survey`, `setup` (case-insensitive), stop and
 list the seven verbs with a one-line reminder of what each does (pull the
 one-liners from `/scout:list`'s own plugin description if you have it
 loaded, or state them plainly) — don't invoke anything.

@@ -2,7 +2,7 @@
 
 Scout's plugin verbs are always namespaced with a colon —
 `/scout:add`, `/scout:archive`, `/scout:list`, `/scout:start`,
-`/scout:explain`, `/scout:review`, `/scout:setup` — because Claude Code
+`/scout:explain`, `/scout:survey`, `/scout:setup` — because Claude Code
 plugins can never claim a bare top-level command (D-012 in `DECISIONS.md`).
 If you'd rather type `/scout add <url>` without the colon, install this
 tiny personal-skill router once. It contains no Scout logic of its own —

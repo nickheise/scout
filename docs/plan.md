@@ -1,7 +1,8 @@
 # Scout — build plan
 
-Baseline: `docs/prd.md` (v0.3). Decisions: `DECISIONS.md` (D-001…D-011; all
-PRD §12 open questions resolved except the non-blocking manifest-cap tuning).
+Baseline: `docs/prd.md` (v0.4 — verb slate locked with `survey`, register
+doctrine, tenet 7). Decisions: `DECISIONS.md` (D-001…D-014; all PRD §12 open
+questions resolved except the non-blocking manifest-cap tuning).
 Research inputs: `docs/research/*.md`. Plan owner: staff-engineer session
 acting as orchestrator; execution by agent team (§6).
 
@@ -10,7 +11,7 @@ acting as orchestrator; execution by agent team (§6).
 One repo, four products in it:
 
 1. **The plugin** — `.claude-plugin/plugin.json` + skills for the seven verbs
-   (`/scout:add|archive|list|start|explain|review|setup`), hooks, and a
+   (`/scout:add|archive|list|start|explain|survey|setup`), hooks, and a
    bundled stdio MCP server. The repo is its own single-plugin marketplace
    (`.claude-plugin/marketplace.json`, source `./`) — mattpocock pattern,
    subscribe-not-fork, versioned releases, `claude plugin validate --strict`
@@ -41,7 +42,7 @@ scout/
 │   ├── list/SKILL.md          # user-invoked
 │   ├── explain/SKILL.md       # user-invoked; provenance
 │   ├── start/SKILL.md         # user-invoked; interview + init + injection
-│   ├── review/SKILL.md        # user-invoked; retroactive gate
+│   ├── survey/SKILL.md        # user-invoked; retroactive gate
 │   ├── setup/SKILL.md         # user-invoked; onboarding + history scan
 │   └── surfacing/SKILL.md     # THE one model-invoked skill (gate, ledger,
 │                              #   dismissals, supersession redirect,
@@ -114,7 +115,7 @@ scout/
 | 3.0 **Spike first**: log ExitPlanMode/TodoWrite hook payloads; verify additionalContext re-enters context; CLI vs IDE behavior; disable-state respect | findings written to `docs/research/hook-spike.md`; go/no-go on hook shape |
 | 3.1 `scout-hook-plan.mjs` + hooks.json — inject pointer + gate instruction at planning moments | <100ms; ≤10k chars; recursion-guarded; silent when pack empty/absent |
 | 3.2 `skills/surfacing` — the gate (3 questions), rejection ledger with reasons, cap 2, supersession redirect, lazy verification, dismissal capture per D-008, archive nudge at 3 | scripted scenario runs: apt match, keyword-only match rejected, archived-entry redirect, dismissal→nudge→respect answer |
-| 3.3 `skills/review` — retroactive backstop, same gate + caps | live run on a scratch project |
+| 3.3 `skills/survey` — retroactive backstop, same gate + caps | live run on a scratch project |
 
 ### Phase 4 — setup + history scan (cold start)
 | Task | Acceptance |

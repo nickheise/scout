@@ -226,7 +226,7 @@ Two cases, two timings — never conflate them:
 3. Check the nudge (below). Otherwise say nothing — a wave-off needs no
    acknowledgment beyond respecting it.
 
-**Inferred — judged only at wrap / milestone / `/scout:review` moments,
+**Inferred — judged only at wrap / milestone / `/scout:survey` moments,
 never mid-project.** For each report this project's ledger (and this
 session) shows as `surfaced`: was that need subsequently **built with a
 different approach** in this project? Only then is it an ignore — increment

@@ -8,7 +8,7 @@ allowed-tools: Bash(node "${CLAUDE_PLUGIN_ROOT}/bin/scout-store.mjs" *)
 
 # /scout:list — a readable listing of the pack
 
-You are showing the user their own pack back to them, clearly organized.
+You are showing the user what their pack carries, clearly organized.
 This is a pure read: nothing is written, nothing is asked for confirmation,
 because nothing changes.
 

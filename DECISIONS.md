@@ -125,6 +125,28 @@ hook implements both delivery mechanisms behind a constant — `additionalContex
 a documented two-minute self-check so any machine can confirm which works.
 Flip the default when Q2 closes; no rework either way.
 
+## D-014 — Adopt PRD v0.4: `review` → `survey`, register doctrine, tenet 7 (2026-07-19, accepted)
+
+`docs/prd.md` updated to v0.4 (supersedes the v0.3 baseline referenced in
+D-001; all other decisions unaffected). Three changes, all applied
+retroactively to built artifacts:
+1. **Verb rename `review` → `survey`** — fixes the code-review ambiguity the
+   PRD previously accepted as a known tradeoff; plain English and in-register
+   (surveying terrain is scout work). Verb slate LOCKED:
+   `add, archive, list, start, explain, survey, setup`. Plugin bumps to
+   0.3.0 (user-facing rename).
+2. **Register doctrine — plain in, brand out** (§7.1): commands take
+   universal names; Scout's narration and report framing may draw on the
+   expedition voice (*signals, markers, reading tracks, surveying*) because
+   output costs nothing to read and nothing to remember. Machinery keeps
+   literal names.
+3. **Tenet 7 — write-deliberate, read-ambient**: three user-ratified ways
+   into the pack, no retrieval verb out; `survey` is a backstop, not a
+   workflow. Compliance note: the shipped MCP server exposes no search tool
+   at all (seven CRUD/compile tools only) — if retrieval machinery is ever
+   added for the matching step, it stays model-side and is never documented
+   as a "search your pack" user workflow.
+
 ---
 
 ## Pending decisions

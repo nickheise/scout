@@ -91,7 +91,7 @@ for any fact on this list.
    mention in your findings that pulling it first would pick up entries
    added on other machines — offer, never pull unasked.
 
-Then present what you found, compactly: pack size (active entries, steps
+Then report back what you found, compactly: pack size (active entries, steps
 by phase), which artifacts already exist, where the block lives or would
 go, whether this is a first run or a refresh. The user should be able to
 see the whole plan before answering a single question.

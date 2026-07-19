@@ -6,6 +6,16 @@ the plugin's release tags once Phase 2 (plugin packaging) lands.
 
 ## [Unreleased]
 
+### Changed
+- 2026-07-19 — **PRD v0.4 adopted and retrofitted** (D-014, plugin v0.3.0):
+  `/scout:review` renamed `/scout:survey` across skills, router, manifests,
+  and docs (verb slate locked: add, archive, list, start, explain, survey,
+  setup); register-doctrine voice pass ("plain in, brand out") over
+  user-facing narration — survey's code-review apology removed, expedition
+  vocabulary only in framing, never in required vocabulary; tenet-7 audit
+  passed (no retrieval-verb workflow anywhere; the MCP server exposes no
+  search tool). Adversarial review verdict: accept. 193/193 tests.
+
 ### Added
 - 2026-07-19 — **Phase 3 complete** (plugin v0.2.0): planning-moment hook
   (`bin/scout-hook-plan.mjs` + `hooks/hooks.json`) — PreToolUse(ExitPlanMode)
