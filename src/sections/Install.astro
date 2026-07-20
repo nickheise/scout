@@ -1,0 +1,89 @@
+---
+// Beat 5 — Pack up (install + tiers). CopyBlock island, tier table, and
+// works-with row, verbatim from docs/copy-deck.md.
+import { SITE } from "../config";
+import CopyBlock from "../components/CopyBlock";
+---
+
+<section id="install" data-beat="5-install">
+  <div class="container-field flex flex-col gap-8">
+    <div class="flex flex-col gap-6">
+      <h2 class="font-heading text-3xl font-semibold text-forest-600">Pack up.</h2>
+
+      <CopyBlock
+        client:idle
+        text={SITE.installCommand}
+        label="install command"
+        goatcounterEvent="install-copy"
+      />
+    </div>
+
+    <div class="flex flex-col gap-6">
+      <p class="text-base text-ink leading-relaxed">
+        Tiers are depth, not paywalls. Everything is free and open source —
+        Tier 0 is the whole product.
+      </p>
+
+      <div class="overflow-x-auto">
+        <table class="w-full text-sm">
+          <thead>
+            <tr class="border-b border-ink/12">
+              <th class="px-4 py-3 text-left font-medium text-ink">Tier</th>
+              <th class="px-4 py-3 text-left font-medium text-ink">What</th>
+              <th class="px-4 py-3 text-left font-medium text-ink">
+                You get
+              </th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr class="border-b border-ink/12">
+              <td class="px-4 py-3 text-ink">
+                <strong>Tier 0</strong>
+              </td>
+              <td class="px-4 py-3 text-ink">The plugin</td>
+              <td class="px-4 py-3 text-ink">
+                Full Scout. ~60 seconds. Zero config, zero keys.
+              </td>
+            </tr>
+            <tr class="border-b border-ink/12">
+              <td class="px-4 py-3 text-ink">
+                <strong>Tier 1</strong>
+              </td>
+              <td class="px-4 py-3 text-ink">
+                Point your pack at a git remote
+              </td>
+              <td class="px-4 py-3 text-ink">
+                Cross-machine sync. A free Pages page to browse your pack.
+              </td>
+            </tr>
+            <tr>
+              <td class="px-4 py-3 text-ink">
+                <strong>Tier 2</strong>
+              </td>
+              <td class="px-4 py-3 text-ink">
+                Optional self-hosted connector
+              </td>
+              <td class="px-4 py-3 text-ink">
+                claude.ai accounts. Add-from-anywhere URL.
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <div class="border-t border-ink/12 pt-6 flex flex-col gap-2">
+        <p class="text-base text-ink leading-relaxed">
+          <strong>Works with:</strong> Claude Code — manifest + reports · Any
+          AGENTS.md-aware agent — manifest.
+        </p>
+        <!-- Router callout (D-016): quiet, never in screenshots or the demo. -->
+        <p class="text-sm text-ink-muted leading-relaxed">
+          Prefer <code class="code-inline">/scout add</code> without the colon? An optional <a
+            href={`${SITE.githubUrl}/blob/main/docs/router.md`}
+            class="underline hover:text-ink transition-colors"
+          >router skill</a> gets you there — one extra step.
+        </p>
+      </div>
+    </div>
+  </div>
+</section>

@@ -1,0 +1,16 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="240" height="240" viewBox="0 0 240 240">
+  <!--
+    Subtle topographic-line texture (PLAN.md §3, PRD §5) — barely-there,
+    paper-register section background. Tiled via the `.bg-topo` utility
+    (styles/global.css). Decorative only; opacity is baked into each path
+    (~4-5%) rather than relying on CSS so the tile works identically
+    regardless of where it's used.
+  -->
+  <g fill="none" stroke="#4a3826" stroke-width="1" stroke-linecap="round">
+    <path d="M-10 30 Q 20 12 50 30 T 110 30 T 170 30 T 230 30 T 250 30" stroke-opacity="0.05" />
+    <path d="M-10 70 Q 15 95 45 72 T 105 74 T 165 70 T 225 73 T 250 71" stroke-opacity="0.045" />
+    <path d="M-10 118 Q 22 100 52 118 T 112 116 T 172 119 T 232 117 T 250 118" stroke-opacity="0.055" />
+    <path d="M-10 160 Q 18 182 48 162 T 108 163 T 168 161 T 228 163 T 250 162" stroke-opacity="0.04" />
+    <path d="M-10 205 Q 24 188 54 206 T 114 204 T 174 207 T 234 205 T 250 205" stroke-opacity="0.05" />
+  </g>
+</svg>

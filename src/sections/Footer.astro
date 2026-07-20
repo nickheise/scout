@@ -1,0 +1,75 @@
+---
+// Footer — links, example-packs gallery, credit, license, analytics.
+// Copy verbatim from docs/copy-deck.md.
+import { SITE } from "../config";
+---
+
+<footer id="footer" data-beat="footer">
+  <div class="container-field flex flex-col gap-8">
+    <!-- Links row -->
+    <div class="flex flex-wrap gap-4 text-sm text-ink">
+      <a
+        href={SITE.githubUrl}
+        class="hover:text-forest transition-colors"
+      >
+        GitHub
+      </a>
+      <span class="text-ink/40">·</span>
+      <a
+        href={SITE.docsUrl}
+        class="hover:text-forest transition-colors"
+      >
+        Docs
+      </a>
+      <span class="text-ink/40">·</span>
+      <span>Example packs</span>
+    </div>
+
+    <!-- Example packs section -->
+    <div class="flex flex-col gap-4">
+      <!-- Builder note (copy-deck, not rendered): Nick's pack first, plus
+           volunteered others. Never "starter packs." Scout ships empty. -->
+      <p class="text-base text-ink leading-relaxed">
+        Packs are personal — here's what some look like.
+      </p>
+      <div class="flex flex-col gap-3 pl-4 text-base text-ink leading-relaxed">
+        <div>
+          <strong>Nick's pack</strong> — the nine entries that shaped Scout
+        </div>
+        <!-- Additional packs from community would go here -->
+      </div>
+    </div>
+
+    <!-- Credit, license, analytics -->
+    <div class="border-t border-ink/12 pt-6 flex flex-col gap-3 text-sm text-ink-muted leading-relaxed">
+      <p>
+        Built on ideas from <a
+          href="https://github.com/emilkowalski/skills"
+          class="underline hover:text-ink transition-colors"
+        >emilkowalski/skills</a> and <a
+          href="https://github.com/mattpocock/skills"
+          class="underline hover:text-ink transition-colors"
+        >mattpocock/skills</a> — generous prior art, generously acknowledged.
+      </p>
+      <p>MIT licensed.</p>
+      {
+        /* Analytics disclosure — renders ONLY when GoatCounter is actually
+           wired up (SITE.goatcounter set in src/config.ts). The disclosure
+           must never ship while analytics aren't real. */
+        SITE.goatcounter && (
+          <p>
+            This site counts pageviews with
+            <a
+              href="https://www.goatcounter.com/"
+              class="underline hover:text-ink transition-colors"
+            >
+              GoatCounter
+            </a>
+            — open source, cookieless, no personal data. Scout itself phones
+            home to no one.
+          </p>
+        )
+      }
+    </div>
+  </div>
+</footer>
