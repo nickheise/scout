@@ -1,0 +1,96 @@
+---
+// Beat 4 — The philosophy (three tenets, trust line, tracks copy bridge).
+// Content verbatim from docs/copy-deck.md Beat 4.
+import Icon from "../components/Icon.astro";
+---
+
+<section id="philosophy" data-beat="4-philosophy" class="topo-wash topo-wash-philosophy">
+  <div class="container-field">
+    <div class="typeset mx-auto max-w-2xl space-y-12">
+      <h2 class="text-3xl font-medium text-forest-600">
+        Three things Scout believes.
+      </h2>
+
+      {/* Three tenets with stamp icon treatment */}
+      <div class="space-y-8">
+        {/* Tenet 1: Zero recall */}
+        <div class="space-y-2">
+          <div class="flex items-center gap-2">
+            <Icon
+              name="stamp"
+              size={20}
+              class="text-trail-500 shrink-0"
+            />
+            <h3 class="text-lg font-medium text-ink">
+              Zero recall.
+            </h3>
+          </div>
+          <p class="text-ink text-sm leading-relaxed">
+            If you have to remember to use it, it's already failed. Nothing in
+            Scout requires remembering — not a command, not a keyword, not that
+            it exists.
+          </p>
+        </div>
+
+        {/* Tenet 2: Restraint */}
+        <div class="space-y-2">
+          <div class="flex items-center gap-2">
+            <Icon
+              name="stamp"
+              size={20}
+              class="text-trail-500 shrink-0"
+            />
+            <h3 class="text-lg font-medium text-ink">
+              Restraint.
+            </h3>
+          </div>
+          <p class="text-ink text-sm leading-relaxed">
+            Scout expects to say nothing most of the time. Suggestions pass a
+            gate; rejections are logged; two per moment, max. The whole
+            manifest is capped at 25 lines — smaller than most CLAUDE.md
+            files. "Nothing surfaced" is a good result.
+          </p>
+        </div>
+
+        {/* Tenet 3: Your pack, your files */}
+        <div class="space-y-2">
+          <div class="flex items-center gap-2">
+            <Icon
+              name="stamp"
+              size={20}
+              class="text-trail-500 shrink-0"
+            />
+            <h3 class="text-lg font-medium text-ink">
+              Your pack, your files.
+            </h3>
+          </div>
+          <p class="text-ink text-sm leading-relaxed">
+            Entries live in a plain folder you own — file over app. Scout's
+            code updates via plugin; your data never leaves your hands. Scout
+            has no brain of its own: your agent does the thinking. No server,
+            no account, no API key, ever.
+          </p>
+        </div>
+      </div>
+
+      {/* Trust line (small, below tenets) */}
+      <p class="text-xs text-ink-muted">
+        Local-first. No telemetry. Ships empty — your pack is yours from entry
+        one. MIT licensed.
+      </p>
+
+      {/* Tracks copy blockquote (bridges into Beat 4.5) */}
+      <blockquote class="border-l-2 border-forest-400 pl-4 py-2 italic text-ink">
+        <p class="mb-3">
+          Scout doesn't ask what you would do. It reads what you did.
+        </p>
+        <p>
+          Stated preferences — what you'd answer in an onboarding interview —
+          are unreliable. Revealed preferences — what your repos show you did,
+          repeatedly — are the ground truth. Scout reads tracks, not answers.
+          That's why there's no setup questionnaire.
+        </p>
+      </blockquote>
+    </div>
+  </div>
+</section>

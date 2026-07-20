@@ -1,0 +1,93 @@
+---
+// Beat 3 — How it works (the loop).
+// Four illustrated steps + rituals line, verbatim from docs/copy-deck.md.
+// Icons: pack, waypoint (manifest), stamp (reports — trail-600, NOT the
+// reserved --color-report token, which is exclusive to the Beat 2 demo's
+// report line), compass (survey).
+// Responsive: 4-up desktop, stacked mobile.
+
+import Icon from "../components/Icon.astro";
+---
+
+<section id="how-it-works" data-beat="3-how-it-works">
+  <div class="container-field">
+    <h2 class="font-heading text-3xl font-semibold text-forest-600 mb-12">
+      The loop.
+    </h2>
+
+    <!-- Four illustrated steps — responsive grid (4 cols desktop, 1 col mobile) -->
+    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8 mb-8">
+      <!-- Step 1: Pack it -->
+      <div class="flex flex-col">
+        <div class="mb-4 text-trail-500">
+          <Icon name="pack" size={32} class="text-trail-500" />
+        </div>
+        <h3 class="font-heading text-xl font-semibold text-ink mb-3">
+          Pack it
+        </h3>
+        <p class="text-base text-ink leading-relaxed">
+          <code class="code-inline">
+            /scout:add
+          </code>
+          {' '}a URL from anywhere. Scout reads it, drafts the entry, and files it
+          with the conditions where it applies.
+        </p>
+      </div>
+
+      <!-- Step 2: The manifest -->
+      <div class="flex flex-col">
+        <div class="mb-4 text-trail-500">
+          <Icon name="waypoint" size={32} class="text-trail-500" />
+        </div>
+        <h3 class="font-heading text-xl font-semibold text-ink mb-3">
+          The manifest
+        </h3>
+        <p class="text-base text-ink leading-relaxed">
+          <code class="code-inline">
+            /scout:start
+          </code>
+          {' '}on a new project writes a compact packing list into your agent's
+          context. Capped small on purpose: a pack you can't carry is a pack you
+          don't bring.
+        </p>
+      </div>
+
+      <!-- Step 3: Reports -->
+      <div class="flex flex-col">
+        <div class="mb-4 text-trail-600">
+          <Icon name="stamp" size={32} class="text-trail-600" />
+        </div>
+        <h3 class="font-heading text-xl font-semibold text-ink mb-3">
+          Reports
+        </h3>
+        <p class="text-base text-ink leading-relaxed">
+          While you build, matches that survive Scout's gate surface as one-line
+          reports. Ignore them freely — Scout learns from that too.
+        </p>
+      </div>
+
+      <!-- Step 4: Survey -->
+      <div class="flex flex-col">
+        <div class="mb-4 text-forest-500">
+          <Icon name="compass" size={32} class="text-forest-500" />
+        </div>
+        <h3 class="font-heading text-xl font-semibold text-ink mb-3">
+          Survey
+        </h3>
+        <p class="text-base text-ink leading-relaxed">
+          Before you ship,
+          {' '}<code class="code-inline">
+            /scout:survey
+          </code>
+          {' '}walks the whole project for anything you missed.
+        </p>
+      </div>
+    </div>
+
+    <!-- Rituals line — quiet placement below the four steps -->
+    <p class="text-sm text-ink-muted leading-relaxed mt-12 pt-8 border-t border-paper-300">
+      Scout also carries your project rituals — changelog, decision log, how you
+      build big features — so every project starts the same way.
+    </p>
+  </div>
+</section>

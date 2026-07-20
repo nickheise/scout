@@ -1,0 +1,40 @@
+---
+// Beat 4.5 — Meet your taste (the tracks prompt). Content verbatim from
+// docs/copy-deck.md Beat 4.5. The CopyBlock island displays config.tracksPrompt
+// (placeholder pending Scout core, D-010). This block and the Beat 1/5 install
+// block are a deliberate pair — equal visual weight (PRD §4.5).
+import { SITE } from "../config";
+import CopyBlock from "../components/CopyBlock";
+---
+
+<section id="tracks-prompt" data-beat="4.5-tracks-prompt" class="topo-wash topo-wash-tracks">
+  <div class="container-field">
+    <div class="typeset mx-auto max-w-2xl space-y-8">
+      <h2 class="text-3xl font-medium text-forest-600">
+        Meet your taste.
+      </h2>
+
+      {/* Lede */}
+      <p class="text-ink leading-relaxed">
+        Before you install anything: paste this into any Claude or Codex chat.
+        It reads your own history — in your session, where Scout can't see —
+        and hands back the libraries, tools, and habits that keep showing up in
+        your work. A list that's unmistakably yours.
+      </p>
+
+      {/* CopyBlock island (deliberate pair with Beat 1/5 install block) */}
+      <CopyBlock
+        client:idle
+        text={SITE.tracksPrompt}
+        label="tracks prompt"
+        multiline={true}
+        goatcounterEvent="tracks-copy"
+      />
+
+      {/* Handoff line */}
+      <p class="text-ink text-sm leading-relaxed">
+        Bring what rings true into <code class="code-inline">/scout:setup</code> — leave the rest.
+      </p>
+    </div>
+  </div>
+</section>

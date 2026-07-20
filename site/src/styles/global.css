@@ -1,0 +1,406 @@
+@import "tailwindcss";
+@import "./typeset.css";
+@import "tw-animate-css";
+@import "shadcn/tailwind.css";
+
+@custom-variant dark (&:is(.dark *));
+
+/* ==========================================================================
+ * Fonts — self-hosted, subsetted (latin), variable, with metric-matched
+ * fallbacks (D-012: General Sans / Fraunces / iA Writer Mono).
+ *
+ * Each real family ships alongside a "* Fallback" @font-face that points at
+ * a local system font but overrides its metrics (ascent/descent/line-gap/
+ * size-adjust) to match the web font's box as closely as possible — this is
+ * what keeps CLS near zero while the real font loads (font-display: swap).
+ *
+ * Fallback metrics below use well-established reference values for the
+ * named system fonts (unitsPerEm/ascent/descent/xHeight), the same figures
+ * used across the industry's font-fallback tooling (e.g. Capsize, next/font).
+ * Real font metrics were read directly from the shipped files via fontTools.
+ * ========================================================================== */
+
+/* unicode-range shared by all three families — matches the latin subset
+ * used when generating the woff2 files (basic latin + latin-1 + common
+ * punctuation/typographic extras). */
+@font-face {
+  font-family: "Fraunces Variable";
+  src:
+    url("/fonts/fraunces/Fraunces-Variable-latin.woff2") format("woff2-variations"),
+    url("/fonts/fraunces/Fraunces-Variable-latin.woff2") format("woff2");
+  font-weight: 100 900;
+  font-style: normal;
+  font-display: swap;
+  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+2000-206F, U+2074, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
+}
+
+@font-face {
+  font-family: "Fraunces Variable";
+  src:
+    url("/fonts/fraunces/Fraunces-Italic-Variable-latin.woff2") format("woff2-variations"),
+    url("/fonts/fraunces/Fraunces-Italic-Variable-latin.woff2") format("woff2");
+  font-weight: 100 900;
+  font-style: italic;
+  font-display: swap;
+  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+2000-206F, U+2074, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
+}
+
+/* Fraunces fallback — Georgia is a widely-installed serif with a warm,
+ * characterful skeleton close to Fraunces' proportions.
+ * Real (Fraunces): upm 2000, ascent 1956, descent -510, lineGap 0, xHeight 964.
+ * Georgia reference: upm 2048, xHeight 1071. */
+@font-face {
+  font-family: "Fraunces Fallback";
+  src: local("Georgia");
+  ascent-override: 106.11%;
+  descent-override: 27.67%;
+  line-gap-override: 0%;
+  size-adjust: 92.17%;
+}
+
+@font-face {
+  font-family: "General Sans Variable";
+  src:
+    url("/fonts/general-sans/GeneralSans-Variable-latin.woff2") format("woff2-variations"),
+    url("/fonts/general-sans/GeneralSans-Variable-latin.woff2") format("woff2");
+  font-weight: 200 700;
+  font-style: normal;
+  font-display: swap;
+  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+2000-206F, U+2074, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
+}
+
+@font-face {
+  font-family: "General Sans Variable";
+  src:
+    url("/fonts/general-sans/GeneralSans-VariableItalic-latin.woff2") format("woff2-variations"),
+    url("/fonts/general-sans/GeneralSans-VariableItalic-latin.woff2") format("woff2");
+  font-weight: 200 700;
+  font-style: italic;
+  font-display: swap;
+  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+2000-206F, U+2074, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
+}
+
+/* General Sans fallback — Arial/Helvetica-class metrics (humanist grotesque,
+ * near-universal availability).
+ * Real (General Sans): upm 1000, ascent 1010, descent -240, lineGap 100, xHeight 538.
+ * Arial reference: upm 2048, xHeight 1062. */
+@font-face {
+  font-family: "General Sans Fallback";
+  src: local("Arial");
+  ascent-override: 97.35%;
+  descent-override: 23.13%;
+  line-gap-override: 9.64%;
+  size-adjust: 103.75%;
+}
+
+@font-face {
+  font-family: "iA Writer Mono Variable";
+  src:
+    url("/fonts/ia-writer-mono/iAWriterMonoV-latin.woff2") format("woff2-variations"),
+    url("/fonts/ia-writer-mono/iAWriterMonoV-latin.woff2") format("woff2");
+  font-weight: 400 700;
+  font-style: normal;
+  font-display: swap;
+  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+2000-206F, U+2074, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
+}
+
+/* iA Writer Mono fallback — Courier New is the one monospace virtually
+ * guaranteed to be locally installed everywhere.
+ * Real (iA Writer Mono): upm 1000, ascent 780, descent -220, lineGap 300, xHeight 516.
+ * Courier New reference: upm 2048, xHeight 848. */
+@font-face {
+  font-family: "iA Writer Mono Fallback";
+  src: local("Courier New");
+  ascent-override: 62.59%;
+  descent-override: 17.65%;
+  line-gap-override: 24.07%;
+  size-adjust: 124.62%;
+}
+
+/* ==========================================================================
+ * Brand design tokens (PLAN.md §3, PRD §5) — expedition field guide.
+ * Paper/cream base, forest + trail-marker accents, warm ink text, and the
+ * single reserved --color-report signal (exclusive to the demo's
+ * Scout-report line — never use it anywhere else on the site).
+ * ========================================================================== */
+@theme {
+  /* Paper — warm cream background scale, lightest to a deeper card tone. */
+  --color-paper-50: oklch(98.8% 0.006 90);
+  --color-paper-100: oklch(97.3% 0.011 85);
+  --color-paper-200: oklch(94.8% 0.017 80);
+  --color-paper-300: oklch(90.5% 0.023 75);
+  --color-paper-400: oklch(84% 0.03 70);
+  --color-paper: var(--color-paper-100);
+
+  /* Ink — warm near-black text, never a true cold black. */
+  --color-ink: oklch(23% 0.024 55);
+  --color-ink-muted: oklch(42% 0.024 55);
+  --color-ink-faint: oklch(52% 0.02 55); /* darkened from 60% to clear 4.5:1 on paper-100 (review finding) */
+
+  /* Forest — primary accent (headings emphasis, primary actions, links). */
+  --color-forest-400: oklch(56% 0.09 152);
+  --color-forest-500: oklch(46% 0.085 152);
+  --color-forest-600: oklch(36% 0.075 152);
+  --color-forest-700: oklch(28% 0.06 152);
+  --color-forest: var(--color-forest-600);
+
+  /* Trail-marker — warm ochre/orange accent (waypoints, secondary emphasis). */
+  --color-trail-400: oklch(74% 0.13 60);
+  --color-trail-500: oklch(66% 0.15 55);
+  --color-trail-600: oklch(56% 0.15 50);
+  --color-trail: var(--color-trail-500);
+
+  /* Report — RESERVED. The one high-contrast signal color, exclusively for
+   * the demo's "Scout found something" report line (PRD §5). Deliberately a
+   * different hue family and a much higher chroma than trail-marker so it
+   * cannot be mistaken for the ambient accent palette. Do not use this
+   * token anywhere else in the site. */
+  --color-report: oklch(56% 0.22 25);
+
+  /* Fonts — fed from the typeset variables (D-012), which carry the real
+   * family + metric-matched-fallback stacks defined above. */
+  --font-heading: var(--typeset-font-heading);
+  --font-body: var(--typeset-font-body);
+  --font-mono: var(--typeset-font-mono);
+  --font-sans: var(--typeset-font-body);
+
+  /* Radius — slightly less rounded than shadcn's default: a paper card, not
+   * an app pill. */
+  --radius: 0.5rem;
+}
+
+/* Topographic-line texture — subtle, paper-register section background.
+ * Barely-there hand-drawn contour lines at ~4-5% opacity; decorative only.
+ * Shipped as a static file (public/textures/topo.svg) rather than an
+ * inlined data-URI: Astro/Vite's CSS asset pipeline tries to resolve
+ * long inline data-URIs as file paths in this project's build (ENAMETOOLONG),
+ * so a real static asset sidesteps that entirely and is cacheable besides. */
+:root {
+  --texture-topo: url("/textures/topo.svg");
+}
+
+@utility bg-topo {
+  background-image: var(--texture-topo);
+  background-repeat: repeat;
+  background-size: 240px 240px;
+}
+
+/* Topo-wash — masked gradient wash (craft-gap-inventory Lane B #7). Instead
+ * of the flat repeated tile above, this composites the same topo-line SVG
+ * as a *mask* over 2 soft radial-gradient "blooms" per section, so each
+ * section that opts in reads with quiet depth/variation rather than every
+ * instance looking visually identical. Fully static — no canvas, no motion;
+ * the reference's canvas dither loop is deliberately not ported (decorative
+ * animation is out of budget site-wide).
+ *
+ * `.topo-wash` supplies the shared plumbing (positioning, the mask itself,
+ * a half-tile-offset second layer for a richer weave); pair it with one of
+ * the per-section bloom recipes below, which position + tint the color so
+ * Hero/Philosophy/Tracks-prompt each read slightly differently instead of
+ * being identical twins. `mask-mode: alpha` reads the SVG's baked-in
+ * stroke-opacity directly (rather than luminance, which would double-count
+ * the already-dark stroke color and wash out to nearly nothing). */
+.topo-wash {
+  position: relative;
+  isolation: isolate;
+}
+
+.topo-wash::before,
+.topo-wash::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  pointer-events: none;
+  -webkit-mask-image: var(--texture-topo);
+  mask-image: var(--texture-topo);
+  mask-mode: alpha;
+  -webkit-mask-repeat: repeat;
+  mask-repeat: repeat;
+  -webkit-mask-size: 240px 240px;
+  mask-size: 240px 240px;
+}
+
+.topo-wash::after {
+  -webkit-mask-position: 120px 120px;
+  mask-position: 120px 120px;
+}
+
+/* Hero (Beat 1) — a single quiet bloom hanging from the top, forest-toned,
+ * behind the headline. */
+.topo-wash-hero::before {
+  background-image:
+    radial-gradient(55% 60% at 50% 0%, color-mix(in srgb, var(--color-forest-500) 16%, transparent), transparent 72%),
+    radial-gradient(30% 40% at 85% 75%, color-mix(in srgb, var(--color-trail-500) 12%, transparent), transparent 74%);
+}
+.topo-wash-hero::after {
+  background-image:
+    radial-gradient(70% 75% at 50% -10%, color-mix(in srgb, var(--color-forest-500) 9%, transparent), transparent 76%);
+}
+
+/* Philosophy (Beat 4) — two quieter blooms drifting toward opposite edges,
+ * trail-toned to echo the tenets' stamp icons. */
+.topo-wash-philosophy::before {
+  background-image:
+    radial-gradient(35% 45% at 6% 18%, color-mix(in srgb, var(--color-trail-500) 14%, transparent), transparent 72%),
+    radial-gradient(38% 48% at 96% 82%, color-mix(in srgb, var(--color-trail-500) 12%, transparent), transparent 74%);
+}
+.topo-wash-philosophy::after {
+  background-image:
+    radial-gradient(45% 55% at 0% 50%, color-mix(in srgb, var(--color-forest-500) 8%, transparent), transparent 76%);
+}
+
+/* Tracks-prompt (Beat 4.5) — a single bloom low-right, forest-toned, so
+ * this section reads as its own moment rather than a repeat of the hero. */
+.topo-wash-tracks::before {
+  background-image:
+    radial-gradient(50% 60% at 92% 92%, color-mix(in srgb, var(--color-forest-500) 15%, transparent), transparent 74%),
+    radial-gradient(28% 35% at 8% 12%, color-mix(in srgb, var(--color-trail-500) 10%, transparent), transparent 74%);
+}
+.topo-wash-tracks::after {
+  background-image:
+    radial-gradient(60% 70% at 100% 100%, color-mix(in srgb, var(--color-forest-500) 8%, transparent), transparent 78%);
+}
+
+/* Inline <code> styling (craft-gap-inventory Lane B #8) — one consistent
+ * treatment for lexicon-adjacent inline code in prose, replacing three
+ * treatments that had drifted apart across HowItWorks/TracksPrompt/Install.
+ * A scoped utility class (applied directly at each call site) rather than a
+ * bare `code` element selector, so it can never reach into CopyBlock's own
+ * <code>/<pre> — a deliberately different, already-reviewed display. */
+@utility code-inline {
+  font-family: var(--font-mono);
+  font-size: 0.875em;
+  background-color: var(--color-paper-200);
+  color: var(--color-forest-600);
+  border-radius: var(--radius-sm);
+  padding: 0.125em 0.375em;
+  overflow-wrap: anywhere;
+}
+
+/* Inline lexicon-noun chip (craft-gap-inventory Lane B #11, PRD §5's "a
+ * restrained badge/stamp system for the lexicon nouns"). Wraps an
+ * already-verbatim word mid-sentence in a soft-background chip — no new
+ * copy. Uses --color-trail (never --color-report, which stays exclusive to
+ * the Beat 2 demo's report line). */
+@utility lexicon-chip {
+  color: var(--color-trail-600);
+  background-color: color-mix(in srgb, var(--color-trail) 10%, transparent);
+  border-radius: var(--radius-sm);
+  padding: 1px 8px 2px;
+  white-space: nowrap;
+}
+
+/* Shared section container rhythm (Layout.astro / all sections use this). */
+@utility container-field {
+  margin-inline: auto;
+  width: 100%;
+  max-width: 72rem;
+  padding-inline: 1.5rem;
+}
+
+@layer base {
+  /* Baseline vertical rhythm between beats — sections may override with
+   * more specific rules for beat-particular treatments. */
+  section[data-beat] {
+    padding-block: clamp(3rem, 6vw, 6rem);
+  }
+  footer[data-beat] {
+    padding-block: clamp(2rem, 4vw, 4rem);
+  }
+}
+
+/* shadcn component token mapping — brand values (D-002/§3). Paper/ink/forest
+ * replace the neutral shadcn defaults; radius scale unchanged in shape. */
+@theme inline {
+    --color-sidebar-ring: var(--sidebar-ring);
+    --color-sidebar-border: var(--sidebar-border);
+    --color-sidebar-accent-foreground: var(--sidebar-accent-foreground);
+    --color-sidebar-accent: var(--sidebar-accent);
+    --color-sidebar-primary-foreground: var(--sidebar-primary-foreground);
+    --color-sidebar-primary: var(--sidebar-primary);
+    --color-sidebar-foreground: var(--sidebar-foreground);
+    --color-sidebar: var(--sidebar);
+    --color-chart-5: var(--chart-5);
+    --color-chart-4: var(--chart-4);
+    --color-chart-3: var(--chart-3);
+    --color-chart-2: var(--chart-2);
+    --color-chart-1: var(--chart-1);
+    --color-ring: var(--ring);
+    --color-input: var(--input);
+    --color-border: var(--border);
+    --color-destructive: var(--destructive);
+    --color-accent-foreground: var(--accent-foreground);
+    --color-accent: var(--accent);
+    --color-muted-foreground: var(--muted-foreground);
+    --color-muted: var(--muted);
+    --color-secondary-foreground: var(--secondary-foreground);
+    --color-secondary: var(--secondary);
+    --color-primary-foreground: var(--primary-foreground);
+    --color-primary: var(--primary);
+    --color-popover-foreground: var(--popover-foreground);
+    --color-popover: var(--popover);
+    --color-card-foreground: var(--card-foreground);
+    --color-card: var(--card);
+    --color-foreground: var(--foreground);
+    --color-background: var(--background);
+    --radius-sm: calc(var(--radius) * 0.6);
+    --radius-md: calc(var(--radius) * 0.8);
+    --radius-lg: var(--radius);
+    --radius-xl: calc(var(--radius) * 1.4);
+    --radius-2xl: calc(var(--radius) * 1.8);
+    --radius-3xl: calc(var(--radius) * 2.2);
+    --radius-4xl: calc(var(--radius) * 2.6);
+}
+
+:root {
+    --background: var(--color-paper-100);
+    --foreground: var(--color-ink);
+    --card: var(--color-paper-50);
+    --card-foreground: var(--color-ink);
+    --popover: var(--color-paper-50);
+    --popover-foreground: var(--color-ink);
+    --primary: var(--color-forest-600);
+    --primary-foreground: var(--color-paper-50);
+    --secondary: var(--color-paper-200);
+    --secondary-foreground: var(--color-ink);
+    --muted: var(--color-paper-200);
+    --muted-foreground: var(--color-ink-muted);
+    --accent: var(--color-trail-500);
+    --accent-foreground: var(--color-paper-50);
+    --destructive: oklch(50% 0.15 22);
+    --border: oklch(23% 0.024 55 / 12%);
+    --input: oklch(23% 0.024 55 / 16%);
+    --ring: oklch(46% 0.085 152 / 45%);
+    --chart-1: var(--color-forest-500);
+    --chart-2: var(--color-trail-500);
+    --chart-3: var(--color-forest-400);
+    --chart-4: var(--color-trail-600);
+    --chart-5: var(--color-ink-muted);
+    --radius: 0.5rem;
+    --sidebar: var(--color-paper-200);
+    --sidebar-foreground: var(--color-ink);
+    --sidebar-primary: var(--color-forest-600);
+    --sidebar-primary-foreground: var(--color-paper-50);
+    --sidebar-accent: var(--color-paper-300);
+    --sidebar-accent-foreground: var(--color-ink);
+    --sidebar-border: oklch(23% 0.024 55 / 12%);
+    --sidebar-ring: oklch(46% 0.085 152 / 45%);
+}
+
+/* No dark theme by design: the brand is warm/analog paper-and-ink, explicitly
+ * NOT the dark dev-tool aesthetic (PLAN.md §3, PRD §5). `.dark` is left
+ * un-overridden so the tokens simply fall through to the :root values above
+ * if the class is ever applied — inert on purpose, not an oversight. */
+
+@layer base {
+  * {
+    @apply border-border outline-ring/50;
+    }
+  body {
+    @apply bg-background text-foreground;
+    }
+  html {
+    @apply font-sans;
+    }
+}
