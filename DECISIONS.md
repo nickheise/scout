@@ -69,10 +69,22 @@ profile) — full reasoning in `docs/research/naming.md`. The name stays Scout.
 (personal account; no org move). Domain deferred — Nick's lowest concern;
 marketing's scoutpack.dev recommendation stays on the table for when the
 site needs it. The shidoyu/scout community-marketplace entry costs us
-nothing on this path (plugin names are per-marketplace, not global); the one
-time-sensitive item is the *official* directory submission — slugs there are
-first-come and immutable, so we submit promptly once Phase 2's package
-passes the quality bar.
+nothing on this path (plugin names are per-marketplace, not global).
+
+*Correction 2026-07-20:* the "submit promptly to the official directory
+before the slug is taken" framing above was wrong — re-read against
+Anthropic's current plugin docs directly (code.claude.com/docs/en/plugins),
+not the earlier research brief. `claude-plugins-official` has **no
+submission process at all**: "Anthropic decides which plugins to include at
+its discretion. There is no application process, and the submission form
+does not add plugins to the official marketplace." There was never a
+first-come race to lose here. The only real submission path is the
+**community marketplace** (two in-app forms — claude.ai for Team/Enterprise
+orgs, or platform.claude.com/plugins/submit for individual authors — running
+`claude plugin validate` + automated safety screening, synced nightly once
+approved) — and `scout` is already taken there by shidoyu/scout, so listing
+in that specific catalog would need a rename scoped to it alone. No action
+taken; open question for Nick, not a live time-pressure item.
 
 ## D-012 — Invocation surface: plugin verbs + optional bare `/scout` router (2026-07-19, accepted)
 
