@@ -85,10 +85,17 @@ import Icon from "../components/Icon.astro";
             <p class="text-ink-faint italic">
               Planning: board view, drag layer, column drop targets…
             </p>
-            <p class="font-medium" style="color: var(--color-report);">
-              ⌖ Scout report — dnd-kit: you packed this. Drag-and-drop,
-              sortable lists. ↗
-            </p>
+            <div class="my-1 space-y-1 rounded-md border border-ink/15 bg-paper-100/70 px-3 py-2.5">
+              <p class="font-medium" style="color: var(--color-report);">
+                ⌖ dnd-kit — github.com/clauderic/dnd-kit
+              </p>
+              <p class="pl-[2ch] text-ink">
+                Modular drag-and-drop toolkit for React.
+              </p>
+              <p class="pl-[2ch] text-ink">
+                Matched: "drag-and-drop, sortable lists, draggable UI"
+              </p>
+            </div>
             <p class="text-ink">Using dnd-kit for the drag layer.</p>
             <p class="font-medium text-forest-600">
               ✓ Cards draggable between columns.
@@ -106,9 +113,10 @@ import Icon from "../components/Icon.astro";
       "Add to pack?". The developer answers y, and it's packed. Days later, a
       different project: the developer asks their agent to make the board
       cards draggable between columns. Mid-plan, a report appears on its own:
-      "Scout report — dnd-kit: you packed this. Drag-and-drop, sortable
-      lists." The agent uses dnd-kit for the drag layer, and the cards become
-      draggable between columns.
+      "dnd-kit — github.com/clauderic/dnd-kit. Modular drag-and-drop toolkit
+      for React. Matched: drag-and-drop, sortable lists, draggable UI." The
+      agent uses dnd-kit for the drag layer, and the cards become draggable
+      between columns.
     </p>
   </div>
 </section>
