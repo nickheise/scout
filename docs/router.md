@@ -10,9 +10,10 @@ it just splits your first word off and forwards the rest straight to the
 matching `/scout:<verb>` command — so it almost never needs to change even
 as the plugin updates underneath it.
 
-`/scout:setup` offers to install this for you interactively (Phase 4). This
-doc is the manual path, for anyone who wants it before then or who prefers
-to see exactly what's being copied where.
+`/scout:setup` offers to install this for you interactively (Step 3 of that
+skill). This doc is the manual path, for anyone who ran `setup` and
+declined the offer, or who prefers to see exactly what's being copied
+where before doing it themselves.
 
 ## Why this is a separate, personal install
 

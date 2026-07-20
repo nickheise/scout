@@ -6,6 +6,21 @@ the plugin's release tags once Phase 2 (plugin packaging) lands.
 
 ## [Unreleased]
 
+### Added
+- 2026-07-19 — **Phases 4+5 complete** (plugin v0.4.0) — **all PRD build
+  phases shipped.** Phase 4: `/scout:setup` (onboarding, Tier 1 offer, D-012
+  router offer, history scan with explicit named roots, evidence-attached
+  proposals capped 5–7, nothing auto-committed), `bin/scout-scan.mjs`
+  (deterministic gatherer, agent judges; truth-checked against real repos),
+  `docs/courier-prompt.md`. Phase 5: `page/index.html` zero-build browse page
+  (fetch + drag-drop modes, tolerant reader, graveyard with supersession
+  chains, stale badges, courier reactivate; passed live browser review in
+  light + dark), `docs/pages.md` (deploy path verified live after review
+  caught a broken layout), `docs/tier2-design.md` (document-only, D-010).
+  README full sweep. First review attempt died mid-response and was re-run
+  from scratch — verdict accept-after-fixes. 223/223 tests;
+  `claude plugin validate --strict` green.
+
 ### Changed
 - 2026-07-19 — **PRD v0.4 adopted and retrofitted** (D-014, plugin v0.3.0):
   `/scout:review` renamed `/scout:survey` across skills, router, manifests,

@@ -1,0 +1,6 @@
+{
+  "name": "project-b",
+  "dependencies": { "react": "^18.0.0" },
+  "devDependencies": { "eslint": "^8.0.0", "jest": "^29.0.0" },
+  "scripts": { "build": "node build.js" }
+}

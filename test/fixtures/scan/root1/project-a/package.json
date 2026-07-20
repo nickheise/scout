@@ -1,0 +1,6 @@
+{
+  "name": "project-a",
+  "dependencies": { "react": "^18.0.0", "lodash": "^4.17.0" },
+  "devDependencies": { "eslint": "^8.0.0" },
+  "scripts": { "build": "node build.js", "test": "node --test" }
+}

@@ -1,0 +1,5 @@
+{
+  "name": "project-c",
+  "dependencies": { "vue": "^3.0.0" },
+  "scripts": { "dev": "vite" }
+}

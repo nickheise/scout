@@ -40,19 +40,54 @@ Claude Code plugins namespace their commands with the plugin name and a
 | `/scout:archive` | Retire an entry, optionally pointing at what superseded it. |
 | `/scout:explain` | Show an entry's full provenance — where it came from, when it was verified, why it's in the pack. |
 | `/scout:survey` | Retroactive backstop: surveys the current project against your full active pack and reports anything that should have surfaced but didn't. |
-| `/scout:setup` | First-ever onboarding: choose your pack location, optionally point it at a git remote (Tier 1), and offer a history scan that proposes entries from your own revealed practices. |
+| `/scout:setup` | First-ever onboarding: choose your pack location, optionally point it at a git remote (Tier 1), optionally install the bare `/scout` router, and offer a history scan that proposes entries from your own revealed practices. |
 
-**Shipped today:** `add`, `start`, `list`, `archive`, `explain`, `survey`.
-`setup` is designed (see `docs/plan.md` §4, Phase 4) and lands as this
-plugin's next version — because it's a subscribe-not-fork plugin, you get
-it automatically (see [Updates](#how-updates-work), below), no
-reinstall needed.
+All seven verbs are shipped. Because Scout is a subscribe-not-fork plugin,
+every fix and addition lands for installed users on their next update
+check — no reinstall, no manual step (see [the three-plane update
+model](#the-three-plane-update-model), below).
+
+## Cold start
+
+Scout ships empty on purpose (tenet 5 — structure, not content: shipping
+"the best 25 libraries" would just homogenize everyone's output). That
+raises an obvious question: what does day one look like with nothing in
+the pack yet? Run `/scout:setup` once, right after install:
+
+1. **Confirm where the pack lives** — the default, `~/.scout/pack`, needs
+   zero configuration; optionally point it at a git remote you own
+   (Tier 1: sync, history, a free browse page) and optionally install the
+   bare `/scout` router (see [below](#prefer-typing-scout-add-without-the-colon)).
+2. **The history scan, offered, not imposed.** Rather than ask what you
+   *say* you reach for — stated preferences are unreliable, and the
+   question itself imposes a menu — Scout reads a corpus you name (your
+   repos: `package.json` dependencies, recurring practice files, patterns
+   across per-project `CLAUDE.md`s) and proposes entries from what you
+   *actually* did, evidence attached ("framer-motion — found in 5 of 7
+   repos"). You name the roots; nothing is read until you do. Every
+   proposal is a draft you approve individually — the scan proposes, you
+   ratify. Declining is a complete, correct answer; `/scout:add` builds
+   the same pack one deliberate entry at a time.
+3. **The courier prompt**, for the one corpus Scout will never touch
+   itself: your claude.ai chat history. `/scout:setup` points you at
+   [`docs/courier-prompt.md`](docs/courier-prompt.md) — a prompt *you*
+   run yourself, in your own chat session, scoped to recurring tooling
+   only (never a personality read). You read the output privately and
+   carry whatever rings true into `/scout:add` by hand. The boundary gets
+   crossed by your own hands, or not at all.
+
+Skipping every optional piece is still a complete, successful setup —
+an empty pack is the starting line, not a failure state.
 
 ## Reports
 
-Beyond the always-on manifest (§ above — the ambient layer that works in any
-agent), Scout has a second, Claude-Code-only layer: gated, planning-moment
-reports.
+Beyond the always-on manifest (the ambient layer described above, which
+works in any agent), Scout has a second, Claude-Code-only layer: gated,
+planning-moment reports. There is deliberately no "use my pack" command — reports arrive
+unbidden, at the moment they'd apply, and `/scout:survey` (below) is a
+backstop for what the ambient hook missed, not a retrieval workflow you run
+to go looking. The day that command felt necessary would mean zero-recall
+had already failed (tenet 7).
 
 - **The planning-moment hook** fires on `PreToolUse(ExitPlanMode)` (primary
   trigger — the model has just written a full plan) and falls back to
@@ -98,7 +133,30 @@ to *personal* skills. Scout ships a tiny, logic-free personal router
 forwards `/scout <verb> <args>` straight into the plugin's real machinery.
 It contains no duplicated logic, so it almost never needs updating even as
 the plugin evolves underneath it. `/scout:setup` offers to install it for
-you (Phase 4); see `docs/router.md` for the manual install steps today.
+you interactively (Step 3 of that skill); see `docs/router.md` for the
+manual install steps if you'd rather do it yourself.
+
+## Browse your pack
+
+Once you have entries, `page/index.html` is a self-contained, zero-build
+browse page: Pack and Steps tabs, stale-age badges, and a graveyard of
+archived entries with their supersession chains (D-006 — hand-polished to
+shadcn-grade, no framework, no build step). Open it straight from disk
+(`open page/index.html`) and drag your pack folder onto it, or serve it
+over HTTP for a self-reading mode that fetches the pack directly — see
+[`page/README.md`](page/README.md) for both paths.
+
+It's read-only by design (D-011): there's no writable connection from a
+static page back into your files. **Reactivate** on an archived card
+copies a plain-language instruction to your clipboard (`reactivate <id> in
+my scout pack`) for you to paste to your agent, which makes the actual
+edit — the same courier pattern used everywhere else a boundary gets
+crossed (see [Cold start](#cold-start), above).
+
+Tier 1 (below) turns this into a free, publicly hosted browse page via
+GitHub Pages — no server, just your existing pack repo. See
+[`docs/pages.md`](docs/pages.md) for the repo layout and the two ways to
+wire it up, walked through against Scout's own seed pack.
 
 ## Tiers
 
@@ -107,9 +165,9 @@ alone is the whole product for most people.
 
 | Tier | What it adds | Requirements |
 |---|---|---|
-| **0 — Plugin** (default) | Full Scout, as designed: local pack, ingestion, manifest, surfacing, all verbs. Shipped today: `add`, `start`, `list`, `archive`, `explain`, `survey`; `setup` lands as this plugin's next version (see "Shipped today," above). Working in under 60 seconds. | Just the plugin. Degrades gracefully outside Claude Code (see below) — nothing else required. |
-| **1 — Synced pack** | Point your pack folder at a personal git remote: cross-machine sync, history, a free Pages-hosted browse page. | A git remote you own. |
-| **2 — Remote connector** (optional) | A self-hosted MCP endpoint (e.g. a Cloudflare Worker) for claude.ai connectors and a permanent add-from-anywhere URL. | Self-hosting appetite. Documented, optional, never the default — design doc lands in Phase 5 (task 5.3, not yet written). |
+| **0 — Plugin** (default) | Full Scout, as designed: local pack, ingestion, manifest, surfacing, all seven verbs. Working in under 60 seconds. | Just the plugin. Degrades gracefully outside Claude Code (see below) — nothing else required. |
+| **1 — Synced pack** | Point your pack folder at a personal git remote: cross-machine sync, history, a free Pages-hosted browse page ([`docs/pages.md`](docs/pages.md)). | A git remote you own. |
+| **2 — Remote connector** (optional) | A self-hosted MCP endpoint (e.g. a Cloudflare Worker) for claude.ai connectors and a permanent add-from-anywhere URL. Design and deploy-guide skeleton: [`docs/tier2-design.md`](docs/tier2-design.md) (document-only — D-010; build it only when you actually want it). | Self-hosting appetite. Documented, optional, never the default. |
 
 ## The three-plane update model
 
@@ -168,11 +226,15 @@ disambiguate in practice.
 - `docs/prd.md` — the product requirements this repo builds toward.
 - `docs/plan.md` — build plan, phases, and binding technical rules.
 - `docs/router.md` — install steps for the optional bare-`/scout` router.
+- `docs/courier-prompt.md` — the copyable chat-history prompt for cold
+  start (see [Cold start](#cold-start), above).
+- `docs/pages.md` — publishing your pack's browse page on GitHub Pages
+  (Tier 1); see [Browse your pack](#browse-your-pack), above.
+- `docs/tier2-design.md` — the self-hosted remote-connector design and
+  deploy-guide skeleton (Tier 2, document-only — D-010).
 - `docs/hook-selfcheck.md` — two-minute procedure to confirm which planning-moment
   hook delivery mechanism (`additionalContext` vs. the `exit 2` fallback) is
   actually reaching the model on your machine; see [Reports](#reports) above.
-- The Tier 2 remote connector design doc is planned for Phase 5 (task 5.3,
-  not yet written); it will land at `docs/tier2-design.md`.
 - `DECISIONS.md` — the project's append-only decision log.
 - `CHANGELOG.md` — what shipped, when.
 

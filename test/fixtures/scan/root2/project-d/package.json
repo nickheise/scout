@@ -1,0 +1,5 @@
+{
+  "name": "project-d",
+  "dependencies": { "react": "^18.0.0" },
+  "scripts": { "start": "node index.js" }
+}

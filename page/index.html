@@ -1,0 +1,1124 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="color-scheme" content="light dark">
+<title>Scout — the pack</title>
+<style>
+  /* ------------------------------------------------------------------ */
+  /* Tokens — neutral palette, light/dark via prefers-color-scheme.     */
+  /* ------------------------------------------------------------------ */
+  :root {
+    --bg: #fafafa;
+    --card: #ffffff;
+    --border: #e4e4e7;
+    --border-strong: #d4d4d8;
+    --fg: #18181b;
+    --muted: #71717a;
+    --faint: #a1a1aa;
+    --subtle: #f4f4f5;
+    --ring: #a1a1aa;
+    --amber-bg: #fffbeb;
+    --amber-border: #fde68a;
+    --amber-fg: #92400e;
+    --shadow: 0 1px 2px rgb(0 0 0 / 0.04), 0 2px 8px rgb(0 0 0 / 0.04);
+    --shadow-toast: 0 4px 12px rgb(0 0 0 / 0.12), 0 1px 3px rgb(0 0 0 / 0.08);
+    --ease-out: cubic-bezier(0.23, 1, 0.32, 1);
+    --mono: ui-monospace, "SF Mono", SFMono-Regular, Menlo, Consolas, monospace;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --bg: #09090b;
+      --card: #131316;
+      --border: #27272a;
+      --border-strong: #3f3f46;
+      --fg: #fafafa;
+      --muted: #a1a1aa;
+      --faint: #71717a;
+      --subtle: #1c1c1f;
+      --ring: #52525b;
+      --amber-bg: #1f1a0b;
+      --amber-border: #57431a;
+      --amber-fg: #fbbf24;
+      --shadow: none;
+      --shadow-toast: 0 4px 16px rgb(0 0 0 / 0.5);
+    }
+  }
+
+  * { box-sizing: border-box; }
+  html, body { margin: 0; padding: 0; }
+  body {
+    background: var(--bg);
+    color: var(--fg);
+    font: 15px/1.55 -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto,
+      "Helvetica Neue", Arial, sans-serif;
+    -webkit-font-smoothing: antialiased;
+    min-height: 100vh;
+  }
+  .wrap {
+    max-width: 44rem;
+    margin: 0 auto;
+    padding: 3rem 1.25rem 4rem;
+  }
+  a { color: inherit; }
+  code {
+    font-family: var(--mono);
+    font-size: 0.85em;
+    background: var(--subtle);
+    border: 1px solid var(--border);
+    border-radius: 5px;
+    padding: 0.1em 0.35em;
+  }
+  pre {
+    background: var(--subtle);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 0.75rem 0.9rem;
+    overflow-x: auto;
+    font-family: var(--mono);
+    font-size: 0.8rem;
+    line-height: 1.5;
+  }
+  pre code { background: none; border: none; padding: 0; font-size: inherit; }
+
+  /* ------------------------------------------------------------------ */
+  /* Header                                                              */
+  /* ------------------------------------------------------------------ */
+  header { margin-bottom: 2rem; }
+  .mark {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.6rem;
+    margin-bottom: 0.35rem;
+  }
+  .mark svg { display: block; color: var(--muted); }
+  h1 {
+    font-size: 1.35rem;
+    font-weight: 650;
+    letter-spacing: -0.015em;
+    margin: 0;
+  }
+  .header-sub {
+    color: var(--muted);
+    font-size: 0.85rem;
+    margin: 0;
+  }
+
+  /* ------------------------------------------------------------------ */
+  /* Tabs — shadcn-style pill group                                      */
+  /* ------------------------------------------------------------------ */
+  .tabs {
+    display: inline-flex;
+    gap: 2px;
+    background: var(--subtle);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 3px;
+    margin-bottom: 1.25rem;
+  }
+  .tab {
+    appearance: none;
+    border: none;
+    background: transparent;
+    color: var(--muted);
+    font: inherit;
+    font-size: 0.85rem;
+    font-weight: 550;
+    padding: 0.3rem 0.9rem;
+    border-radius: 7px;
+    cursor: pointer;
+    transition: color 150ms ease, background-color 150ms ease;
+  }
+  .tab[aria-selected="true"] {
+    background: var(--card);
+    color: var(--fg);
+    box-shadow: var(--shadow);
+    border: 1px solid var(--border);
+    padding: calc(0.3rem - 1px) calc(0.9rem - 1px);
+  }
+  .tab:focus-visible { outline: 2px solid var(--ring); outline-offset: 1px; }
+  .tab .count { color: var(--faint); font-weight: 450; margin-left: 0.3rem; }
+
+  /* ------------------------------------------------------------------ */
+  /* Cards                                                               */
+  /* ------------------------------------------------------------------ */
+  .cards { display: flex; flex-direction: column; gap: 0.75rem; }
+  .card {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 1rem 1.15rem;
+    box-shadow: var(--shadow);
+    transition: border-color 150ms ease;
+  }
+  @media (hover: hover) and (pointer: fine) {
+    .card:hover { border-color: var(--border-strong); }
+  }
+  .card-head {
+    display: flex;
+    align-items: baseline;
+    gap: 0.6rem;
+    flex-wrap: wrap;
+  }
+  .card-title {
+    font-size: 0.98rem;
+    font-weight: 620;
+    letter-spacing: -0.01em;
+    margin: 0;
+  }
+  .card-title a { text-decoration: none; }
+  .card-title a:hover { text-decoration: underline; text-underline-offset: 3px; }
+  .ext {
+    color: var(--faint);
+    font-size: 0.75em;
+    margin-left: 0.15rem;
+  }
+  .card-id {
+    font-family: var(--mono);
+    font-size: 0.72rem;
+    color: var(--faint);
+  }
+  .card-body {
+    margin: 0.4rem 0 0;
+    color: var(--muted);
+    font-size: 0.88rem;
+  }
+  .card-meta {
+    display: flex;
+    align-items: center;
+    gap: 0.45rem;
+    flex-wrap: wrap;
+    margin-top: 0.7rem;
+    font-size: 0.75rem;
+    color: var(--faint);
+  }
+  .dates { white-space: nowrap; }
+  .dot { color: var(--border-strong); }
+
+  .chip {
+    display: inline-flex;
+    align-items: center;
+    background: var(--subtle);
+    border: 1px solid var(--border);
+    border-radius: 999px;
+    padding: 0.05rem 0.55rem;
+    font-size: 0.72rem;
+    color: var(--muted);
+    font-family: var(--mono);
+  }
+  .badge {
+    display: inline-flex;
+    align-items: center;
+    border-radius: 999px;
+    padding: 0.05rem 0.55rem;
+    font-size: 0.72rem;
+    font-weight: 550;
+    border: 1px solid var(--border);
+    color: var(--muted);
+  }
+  .badge.stale {
+    background: var(--amber-bg);
+    border-color: var(--amber-border);
+    color: var(--amber-fg);
+  }
+  .badge.phase { font-family: var(--mono); font-weight: 450; }
+
+  /* One tasteful entrance: staggered card fade on first render only.   */
+  .cards.enter .card {
+    opacity: 0;
+    animation: card-in 350ms var(--ease-out) forwards;
+  }
+  @keyframes card-in {
+    from { opacity: 0; transform: translateY(6px); }
+    to   { opacity: 1; transform: translateY(0); }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .cards.enter .card { animation: card-fade 250ms ease forwards; }
+    @keyframes card-fade { from { opacity: 0; } to { opacity: 1; } }
+  }
+
+  .card.flash { border-color: var(--ring); box-shadow: 0 0 0 3px color-mix(in srgb, var(--ring) 25%, transparent); }
+
+  /* ------------------------------------------------------------------ */
+  /* Graveyard                                                           */
+  /* ------------------------------------------------------------------ */
+  .graveyard { margin-top: 2.25rem; }
+  .graveyard-head {
+    display: flex;
+    align-items: baseline;
+    gap: 0.5rem;
+    margin-bottom: 0.3rem;
+  }
+  .graveyard-head h2 {
+    font-size: 0.95rem;
+    font-weight: 620;
+    margin: 0;
+  }
+  .graveyard-head .count { color: var(--faint); font-size: 0.8rem; }
+  .graveyard-sub {
+    color: var(--faint);
+    font-size: 0.8rem;
+    margin: 0 0 0.9rem;
+  }
+  .card.archived { background: transparent; box-shadow: none; }
+  .card.archived .card-title { color: var(--muted); }
+  .chain {
+    margin-top: 0.55rem;
+    font-size: 0.8rem;
+    color: var(--muted);
+  }
+  .chain a {
+    text-decoration: underline;
+    text-underline-offset: 3px;
+    text-decoration-color: var(--border-strong);
+  }
+  .chain .arrow { color: var(--faint); padding: 0 0.2rem; }
+  .chain .missing { color: var(--faint); font-style: italic; }
+
+  .btn {
+    appearance: none;
+    font: inherit;
+    font-size: 0.78rem;
+    font-weight: 550;
+    color: var(--fg);
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 0.28rem 0.7rem;
+    cursor: pointer;
+    transition: transform 140ms var(--ease-out), border-color 150ms ease,
+      background-color 150ms ease;
+  }
+  @media (hover: hover) and (pointer: fine) {
+    .btn:hover { border-color: var(--border-strong); }
+  }
+  .btn:active { transform: scale(0.97); }
+  .btn:focus-visible { outline: 2px solid var(--ring); outline-offset: 1px; }
+  .card-actions { margin-top: 0.75rem; }
+
+  /* ------------------------------------------------------------------ */
+  /* Loader panel (no pack found yet)                                    */
+  /* ------------------------------------------------------------------ */
+  .loader { margin-top: 0.5rem; }
+  .loader-note {
+    color: var(--muted);
+    font-size: 0.88rem;
+    margin: 0 0 1rem;
+  }
+  .dropzone {
+    border: 1.5px dashed var(--border-strong);
+    border-radius: 12px;
+    padding: 2.25rem 1.5rem;
+    text-align: center;
+    color: var(--muted);
+    transition: border-color 150ms ease, background-color 150ms ease;
+  }
+  .dropzone.over { border-color: var(--ring); background: var(--subtle); }
+  .dropzone p { margin: 0.35rem 0; font-size: 0.88rem; }
+  .dropzone .pickers {
+    display: flex;
+    justify-content: center;
+    gap: 0.5rem;
+    margin-top: 0.85rem;
+  }
+  .serve-hint { margin-top: 1.25rem; }
+  .serve-hint summary {
+    cursor: pointer;
+    color: var(--muted);
+    font-size: 0.83rem;
+  }
+  .serve-hint[open] summary { margin-bottom: 0.5rem; }
+  .serve-hint p { color: var(--muted); font-size: 0.83rem; }
+
+  /* ------------------------------------------------------------------ */
+  /* Empty state / skip notes / footer / toast                           */
+  /* ------------------------------------------------------------------ */
+  .empty {
+    text-align: center;
+    padding: 3.5rem 1rem;
+    color: var(--muted);
+  }
+  .empty svg { color: var(--faint); margin-bottom: 0.75rem; }
+  .empty p { margin: 0.2rem 0; font-size: 0.9rem; }
+  .empty code { font-size: 0.8rem; }
+
+  .skip-notes {
+    background: var(--amber-bg);
+    border: 1px solid var(--amber-border);
+    border-radius: 10px;
+    padding: 0.7rem 0.95rem;
+    margin-bottom: 1rem;
+    font-size: 0.8rem;
+    color: var(--amber-fg);
+  }
+  .skip-notes strong { font-weight: 620; }
+  .skip-notes ul { margin: 0.3rem 0 0; padding-left: 1.1rem; }
+  .skip-notes li { margin: 0.1rem 0; }
+  .skip-notes code { background: transparent; border-color: var(--amber-border); color: inherit; }
+
+  footer {
+    margin-top: 3.5rem;
+    padding-top: 1.25rem;
+    border-top: 1px solid var(--border);
+    color: var(--faint);
+    font-size: 0.78rem;
+    display: flex;
+    justify-content: space-between;
+    gap: 1rem;
+    flex-wrap: wrap;
+  }
+  footer a { color: var(--muted); text-decoration: none; }
+  footer a:hover { text-decoration: underline; text-underline-offset: 3px; }
+
+  #toast {
+    position: fixed;
+    left: 50%;
+    bottom: 1.5rem;
+    transform: translateX(-50%) translateY(calc(100% + 1.5rem));
+    background: var(--card);
+    color: var(--fg);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    box-shadow: var(--shadow-toast);
+    padding: 0.65rem 1rem;
+    font-size: 0.83rem;
+    max-width: min(26rem, calc(100vw - 2rem));
+    opacity: 0;
+    pointer-events: none;
+    transition: transform 400ms var(--ease-out), opacity 400ms ease;
+    z-index: 10;
+  }
+  #toast.show {
+    transform: translateX(-50%) translateY(0);
+    opacity: 1;
+  }
+  @media (prefers-reduced-motion: reduce) {
+    #toast { transform: translateX(-50%); transition: opacity 200ms ease; }
+    #toast.show { transform: translateX(-50%); }
+  }
+
+  .hidden { display: none !important; }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header>
+    <div class="mark">
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+           stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+        <circle cx="12" cy="12" r="9"></circle>
+        <polygon points="15.5,8.5 13.5,13.5 8.5,15.5 10.5,10.5"></polygon>
+      </svg>
+      <h1 id="pack-name">Scout</h1>
+    </div>
+    <p class="header-sub" id="header-sub">the pack, in a browser — read-only by design</p>
+  </header>
+
+  <main>
+    <!-- Loader: shown when no pack has been read yet -->
+    <section id="loader" class="loader hidden" aria-label="Load a pack">
+      <p class="loader-note" id="loader-reason"></p>
+      <div class="dropzone" id="dropzone">
+        <p><strong>Drop your pack here</strong></p>
+        <p>the folder itself, or its <code>.json</code> entry files</p>
+        <div class="pickers">
+          <button class="btn" id="pick-files" type="button">Choose files</button>
+          <button class="btn" id="pick-folder" type="button">Choose a folder</button>
+        </div>
+        <input type="file" id="file-input" accept=".json,application/json" multiple class="hidden">
+        <input type="file" id="folder-input" webkitdirectory class="hidden">
+      </div>
+      <details class="serve-hint" id="serve-hint">
+        <summary>Prefer the page to read the pack by itself?</summary>
+        <p>Serve this folder over HTTP with a <code>pack/</code> directory beside
+        <code>index.html</code>, plus a <code>pack/index.json</code> listing the entry files:</p>
+        <pre><code>node -e "const fs=require('fs');fs.writeFileSync('pack/index.json',JSON.stringify(fs.readdirSync('pack').filter(f=>f.endsWith('.json')&&f!=='index.json').sort(),null,2)+'\n')"
+python3 -m http.server</code></pre>
+        <p>Browsers block <code>fetch()</code> from <code>file://</code> pages, so opening this file
+        directly always uses the drop target above.</p>
+      </details>
+    </section>
+
+    <!-- Skip notes: files that could not be read -->
+    <div id="skip-notes" class="skip-notes hidden" role="status"></div>
+
+    <!-- Tabs + panels -->
+    <div id="browser" class="hidden">
+      <div class="tabs" role="tablist" aria-label="Entry type">
+        <button class="tab" role="tab" id="tab-pack" aria-selected="true" aria-controls="panel-pack">
+          Pack <span class="count" id="count-pack"></span>
+        </button>
+        <button class="tab" role="tab" id="tab-step" aria-selected="false" aria-controls="panel-step">
+          Steps <span class="count" id="count-step"></span>
+        </button>
+      </div>
+      <section id="panel-pack" role="tabpanel" aria-labelledby="tab-pack"></section>
+      <section id="panel-step" role="tabpanel" aria-labelledby="tab-step" class="hidden"></section>
+    </div>
+
+    <!-- Empty pack -->
+    <div id="empty" class="empty hidden">
+      <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+           stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+        <circle cx="12" cy="12" r="9"></circle>
+        <polygon points="15.5,8.5 13.5,13.5 8.5,15.5 10.5,10.5"></polygon>
+      </svg>
+      <p><strong>A pack starts empty on purpose</strong></p>
+      <p><code>/scout:add</code> packs the first entry.</p>
+    </div>
+  </main>
+
+  <footer>
+    <span>The page reads the pack; it never writes.</span>
+    <span>plain files, readable forever</span>
+  </footer>
+</div>
+
+<div id="toast" role="status" aria-live="polite"></div>
+
+<!-- ==================================================================== -->
+<!-- Core: pure functions, no DOM access. Kept separate so they can be    -->
+<!-- unit-tested in Node by extracting this block.                        -->
+<!-- ==================================================================== -->
+<script id="scout-core">
+(function (root) {
+  'use strict';
+
+  var ID_RE = /^[a-z0-9][a-z0-9-]*$/;
+  var DATE_RE = /^\d{4}-\d{2}-\d{2}$/;
+  var PHASES = ['init', 'ongoing', 'milestone', 'wrap'];
+  var STALE_DAYS = 90;
+
+  function isDateString(v) {
+    return typeof v === 'string' && DATE_RE.test(v) && !isNaN(Date.parse(v + 'T00:00:00Z'));
+  }
+
+  function optString(v) {
+    return typeof v === 'string' && v.trim() ? v.trim() : null;
+  }
+
+  // Tolerant reader: unknown fields are ignored, malformed optional fields
+  // degrade to null; only the fields the page cannot render without cause a
+  // skip (returned as { ok:false, reason }).
+  function validateEntry(data) {
+    if (data === null || typeof data !== 'object' || Array.isArray(data)) {
+      return { ok: false, reason: 'not a JSON object' };
+    }
+    if (data.schema !== 1) {
+      return {
+        ok: false,
+        reason: data.schema === undefined
+          ? 'missing "schema" field'
+          : 'schema ' + JSON.stringify(data.schema) + ' — this page reads schema 1'
+      };
+    }
+    if (typeof data.id !== 'string' || !ID_RE.test(data.id)) {
+      return { ok: false, reason: 'missing or malformed "id"' };
+    }
+    if (data.type !== 'pack' && data.type !== 'step') {
+      return { ok: false, reason: 'unknown "type" (expected "pack" or "step")' };
+    }
+    if (typeof data.title !== 'string' || !data.title.trim()) {
+      return { ok: false, reason: 'missing "title"' };
+    }
+    return {
+      ok: true,
+      entry: {
+        id: data.id,
+        type: data.type,
+        title: data.title.trim(),
+        status: data.status === 'archived' ? 'archived' : 'active',
+        superseded_by:
+          typeof data.superseded_by === 'string' && ID_RE.test(data.superseded_by)
+            ? data.superseded_by : null,
+        added: isDateString(data.added) ? data.added : null,
+        verified: isDateString(data.verified) ? data.verified : null,
+        url: optString(data.url),
+        stack: Array.isArray(data.stack)
+          ? data.stack.filter(function (s) { return typeof s === 'string' && s.trim(); })
+          : null,
+        install: optString(data.install),
+        ambient_line: optString(data.ambient_line),
+        instruction: optString(data.instruction),
+        phase: PHASES.indexOf(data.phase) !== -1 ? data.phase : null
+      }
+    };
+  }
+
+  function daysSince(dateStr, todayStr) {
+    if (!isDateString(dateStr) || !isDateString(todayStr)) return null;
+    var ms = Date.parse(todayStr + 'T00:00:00Z') - Date.parse(dateStr + 'T00:00:00Z');
+    return Math.floor(ms / 86400000);
+  }
+
+  function isStale(verified, todayStr) {
+    var d = daysSince(verified, todayStr);
+    return d !== null && d > STALE_DAYS;
+  }
+
+  // Follow superseded_by pointers from an entry. Returns an array of ids
+  // (excluding the starting entry), cycle-safe; a pointer to a missing entry
+  // ends the chain with that id still included (rendered as "not in pack").
+  function buildChain(entry, byId) {
+    var chain = [];
+    var seen = {};
+    seen[entry.id] = true;
+    var next = entry.superseded_by;
+    while (next && !seen[next]) {
+      seen[next] = true;
+      chain.push(next);
+      var e = byId[next];
+      next = e ? e.superseded_by : null;
+    }
+    return chain;
+  }
+
+  // Fetch mode: derive a pack name from the page URL. "/scout/page/" -> "scout".
+  function derivePackNameFromPath(pathname, hostname) {
+    var segs = (pathname || '').split('/').filter(Boolean);
+    if (segs.length && /\.[a-z0-9]+$/i.test(segs[segs.length - 1])) segs.pop();
+    while (segs.length && (segs[segs.length - 1] === 'page' || segs[segs.length - 1] === 'pack')) {
+      segs.pop();
+    }
+    if (segs.length) return decodeURIComponent(segs[segs.length - 1]);
+    if (hostname && hostname !== 'localhost' && hostname !== '127.0.0.1') {
+      return hostname.replace(/\.github\.io$/, '');
+    }
+    return null;
+  }
+
+  // Local mode: folder name from a picked/dropped directory. "pack" alone is
+  // too generic to be a name.
+  function derivePackNameFromFolder(folderName) {
+    if (typeof folderName !== 'string') return null;
+    var name = folderName.trim();
+    if (!name || name === 'pack' || name === '.') return null;
+    return name;
+  }
+
+  function formatDate(dateStr) {
+    if (!isDateString(dateStr)) return null;
+    var months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun',
+                  'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+    var p = dateStr.split('-');
+    return months[Number(p[1]) - 1] + ' ' + Number(p[2]) + ', ' + p[0];
+  }
+
+  function reactivateInstruction(id) {
+    return 'reactivate ' + id + ' in my scout pack';
+  }
+
+  var ScoutCore = {
+    STALE_DAYS: STALE_DAYS,
+    validateEntry: validateEntry,
+    daysSince: daysSince,
+    isStale: isStale,
+    buildChain: buildChain,
+    derivePackNameFromPath: derivePackNameFromPath,
+    derivePackNameFromFolder: derivePackNameFromFolder,
+    formatDate: formatDate,
+    reactivateInstruction: reactivateInstruction
+  };
+  root.ScoutCore = ScoutCore;
+})(typeof window !== 'undefined' ? window : globalThis);
+</script>
+
+<!-- ==================================================================== -->
+<!-- App: data loading (fetch mode + local mode) and rendering.           -->
+<!-- ==================================================================== -->
+<script>
+(function () {
+  'use strict';
+  var C = window.ScoutCore;
+
+  var $ = function (id) { return document.getElementById(id); };
+  var els = {
+    packName: $('pack-name'), headerSub: $('header-sub'),
+    loader: $('loader'), loaderReason: $('loader-reason'),
+    dropzone: $('dropzone'), serveHint: $('serve-hint'),
+    fileInput: $('file-input'), folderInput: $('folder-input'),
+    skipNotes: $('skip-notes'),
+    browser: $('browser'),
+    tabPack: $('tab-pack'), tabStep: $('tab-step'),
+    countPack: $('count-pack'), countStep: $('count-step'),
+    panelPack: $('panel-pack'), panelStep: $('panel-step'),
+    empty: $('empty'), toast: $('toast')
+  };
+
+  var state = { entries: [], byId: {}, skipped: [], today: todayISO(), activeTab: 'pack' };
+
+  function todayISO() {
+    var d = new Date();
+    return d.getFullYear() + '-' +
+      String(d.getMonth() + 1).padStart(2, '0') + '-' +
+      String(d.getDate()).padStart(2, '0');
+  }
+
+  function esc(s) {
+    return String(s).replace(/[&<>"']/g, function (c) {
+      return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c];
+    });
+  }
+
+  /* ---------------- data ingestion ---------------- */
+
+  // files: [{ name, text }]; source: 'fetch' | 'local'
+  function ingest(files, packName, source) {
+    state.entries = [];
+    state.byId = {};
+    state.skipped = [];
+
+    files.forEach(function (f) {
+      var data;
+      try {
+        data = JSON.parse(f.text);
+      } catch (err) {
+        state.skipped.push({ file: f.name, reason: 'not valid JSON' });
+        return;
+      }
+      var v = C.validateEntry(data);
+      if (!v.ok) {
+        state.skipped.push({ file: f.name, reason: v.reason });
+        return;
+      }
+      if (state.byId[v.entry.id]) {
+        state.skipped.push({ file: f.name, reason: 'duplicate id "' + v.entry.id + '"' });
+        return;
+      }
+      state.byId[v.entry.id] = v.entry;
+      state.entries.push(v.entry);
+    });
+
+    render(packName, source, files.length);
+  }
+
+  /* ---------------- fetch mode ---------------- */
+
+  function tryFetchMode() {
+    if (location.protocol === 'file:') {
+      showLoader('file');
+      return;
+    }
+    fetch('./pack/index.json', { cache: 'no-store' })
+      .then(function (res) {
+        if (!res.ok) throw { code: 'missing' };
+        return res.json().catch(function () { throw { code: 'badindex' }; });
+      })
+      .then(function (listing) {
+        var names = Array.isArray(listing) ? listing
+          : listing && Array.isArray(listing.files) ? listing.files
+          : listing && Array.isArray(listing.entries) ? listing.entries
+          : null;
+        if (!names) throw { code: 'badindex' };
+        names = names.filter(function (n) {
+          return typeof n === 'string' && /^[\w.-]+\.json$/.test(n) && n !== 'index.json';
+        });
+        return Promise.all(names.map(function (n) {
+          return fetch('./pack/' + n, { cache: 'no-store' })
+            .then(function (r) {
+              if (!r.ok) return { name: n, text: '', failed: 'HTTP ' + r.status };
+              return r.text().then(function (t) { return { name: n, text: t }; });
+            })
+            .catch(function () { return { name: n, text: '', failed: 'fetch failed' }; });
+        }));
+      })
+      .then(function (files) {
+        var ok = [];
+        files.forEach(function (f) {
+          if (f.failed) state.skipped.push({ file: f.name, reason: f.failed });
+          else ok.push(f);
+        });
+        var pre = state.skipped.slice();
+        ingest(ok, C.derivePackNameFromPath(location.pathname, location.hostname), 'fetch');
+        state.skipped = pre.concat(state.skipped);
+        renderSkipNotes();
+      })
+      .catch(function (err) {
+        showLoader(err && err.code ? err.code : 'network');
+      });
+  }
+
+  /* ---------------- local mode ---------------- */
+
+  function showLoader(reason) {
+    var msg;
+    if (reason === 'file') {
+      msg = 'Opened straight from disk — browsers keep <code>file://</code> pages from ' +
+            'fetching, so hand the pack over below.';
+    } else if (reason === 'missing') {
+      msg = 'No <code>pack/index.json</code> beside this page yet. Generate one (see below) ' +
+            'or load the pack directly.';
+      els.serveHint.open = true;
+    } else if (reason === 'badindex') {
+      msg = '<code>pack/index.json</code> exists but isn’t a JSON array of filenames. ' +
+            'Regenerate it (see below) or load the pack directly.';
+      els.serveHint.open = true;
+    } else {
+      msg = 'Couldn’t reach <code>./pack/</code> from here. Load the pack directly below.';
+    }
+    els.loaderReason.innerHTML = msg;
+    els.loader.classList.remove('hidden');
+    els.browser.classList.add('hidden');
+    els.empty.classList.add('hidden');
+  }
+
+  function readFileList(fileList) {
+    var files = Array.prototype.slice.call(fileList).filter(function (f) {
+      return /\.json$/i.test(f.name) && f.name !== 'index.json';
+    });
+    var folderName = null;
+    var first = fileList[0];
+    if (first && first.webkitRelativePath) {
+      folderName = first.webkitRelativePath.split('/')[0];
+    }
+    return Promise.all(files.map(function (f) {
+      return f.text().then(function (t) { return { name: f.name, text: t }; });
+    })).then(function (read) {
+      ingest(read, C.derivePackNameFromFolder(folderName), 'local');
+    });
+  }
+
+  // Drag-and-drop, including directory drops via webkitGetAsEntry.
+  function readDrop(dataTransfer) {
+    var items = dataTransfer.items;
+    if (items && items.length && items[0].webkitGetAsEntry) {
+      var entries = [];
+      for (var i = 0; i < items.length; i++) {
+        var e = items[i].webkitGetAsEntry && items[i].webkitGetAsEntry();
+        if (e) entries.push(e);
+      }
+      var folderName = entries.length === 1 && entries[0].isDirectory ? entries[0].name : null;
+      collectFromEntries(entries, 0).then(function (files) {
+        ingest(files, C.derivePackNameFromFolder(folderName), 'local');
+      });
+      return;
+    }
+    if (dataTransfer.files && dataTransfer.files.length) readFileList(dataTransfer.files);
+  }
+
+  function collectFromEntries(entries, depth) {
+    if (depth > 3) return Promise.resolve([]);
+    return Promise.all(entries.map(function (entry) {
+      if (entry.isFile) {
+        if (!/\.json$/i.test(entry.name) || entry.name === 'index.json') {
+          return Promise.resolve([]);
+        }
+        return new Promise(function (resolve) {
+          entry.file(function (file) {
+            file.text().then(function (t) { resolve([{ name: entry.name, text: t }]); },
+                             function () { resolve([]); });
+          }, function () { resolve([]); });
+        });
+      }
+      if (entry.isDirectory) {
+        return new Promise(function (resolve) {
+          var reader = entry.createReader();
+          var all = [];
+          (function readBatch() {
+            reader.readEntries(function (batch) {
+              if (!batch.length) {
+                collectFromEntries(all, depth + 1).then(resolve);
+                return;
+              }
+              all = all.concat(Array.prototype.slice.call(batch));
+              readBatch();
+            }, function () { resolve([]); });
+          })();
+        });
+      }
+      return Promise.resolve([]);
+    })).then(function (nested) {
+      return nested.reduce(function (a, b) { return a.concat(b); }, []);
+    });
+  }
+
+  /* ---------------- rendering ---------------- */
+
+  function render(packName, source, fileCount) {
+    els.loader.classList.add('hidden');
+
+    if (packName) {
+      els.packName.textContent = packName;
+      document.title = packName + ' — a Scout pack';
+    } else {
+      els.packName.textContent = 'Scout';
+    }
+
+    var packs = state.entries.filter(function (e) { return e.type === 'pack'; });
+    var steps = state.entries.filter(function (e) { return e.type === 'step'; });
+    var archived = state.entries.filter(function (e) { return e.status === 'archived'; }).length;
+
+    var parts = [];
+    parts.push(packs.length + ' pack ' + (packs.length === 1 ? 'entry' : 'entries'));
+    parts.push(steps.length + ' ' + (steps.length === 1 ? 'step' : 'steps'));
+    if (archived) parts.push(archived + ' in the graveyard');
+    els.headerSub.textContent = parts.join(' · ') +
+      (source === 'fetch' ? ' · reading ./pack/' : ' · loaded locally');
+
+    renderSkipNotes();
+
+    if (!state.entries.length) {
+      els.browser.classList.add('hidden');
+      els.empty.classList.remove('hidden');
+      return;
+    }
+
+    els.empty.classList.add('hidden');
+    els.browser.classList.remove('hidden');
+
+    els.countPack.textContent = String(packs.filter(isActive).length);
+    els.countStep.textContent = String(steps.filter(isActive).length);
+
+    els.panelPack.innerHTML = panelHTML(packs);
+    els.panelStep.innerHTML = panelHTML(steps);
+
+    // One entrance, staggered, first render only.
+    ['panelPack', 'panelStep'].forEach(function (key) {
+      var lists = els[key].querySelectorAll('.cards');
+      Array.prototype.forEach.call(lists, function (list) {
+        list.classList.add('enter');
+        Array.prototype.forEach.call(list.children, function (card, i) {
+          card.style.animationDelay = Math.min(i, 8) * 40 + 'ms';
+        });
+      });
+    });
+
+    setTab(state.activeTab, true);
+    wireCardActions(els.panelPack);
+    wireCardActions(els.panelStep);
+  }
+
+  function isActive(e) { return e.status === 'active'; }
+
+  function byNewest(a, b) {
+    var da = a.added || '', db = b.added || '';
+    if (da !== db) return da < db ? 1 : -1;
+    return a.title.localeCompare(b.title);
+  }
+
+  function panelHTML(entries) {
+    var active = entries.filter(isActive).sort(byNewest);
+    var gone = entries.filter(function (e) { return !isActive(e); }).sort(byNewest);
+    var html = '';
+
+    if (active.length) {
+      html += '<div class="cards">' + active.map(cardHTML).join('') + '</div>';
+    } else if (entries.length) {
+      html += '<p class="loader-note">Nothing active here right now.</p>';
+    } else {
+      html += '<p class="loader-note">Nothing of this type in the pack yet.</p>';
+    }
+
+    if (gone.length) {
+      html += '<div class="graveyard">' +
+        '<div class="graveyard-head"><h2>Graveyard</h2>' +
+        '<span class="count">' + gone.length + '</span></div>' +
+        '<p class="graveyard-sub">Archived, never deleted — every entry keeps its history.</p>' +
+        '<div class="cards">' + gone.map(cardHTML).join('') + '</div>' +
+        '</div>';
+    }
+    return html;
+  }
+
+  function cardHTML(e) {
+    var archived = e.status === 'archived';
+    var stale = !archived && C.isStale(e.verified, state.today);
+    var h = '<article class="card' + (archived ? ' archived' : '') +
+            '" id="entry-' + esc(e.id) + '">';
+
+    h += '<div class="card-head">';
+    h += '<h3 class="card-title">';
+    if (e.url) {
+      h += '<a href="' + esc(e.url) + '" target="_blank" rel="noopener noreferrer">' +
+           esc(e.title) + '<span class="ext" aria-hidden="true">↗</span></a>';
+    } else {
+      h += esc(e.title);
+    }
+    h += '</h3>';
+    h += '<span class="card-id">' + esc(e.id) + '</span>';
+    if (archived) h += '<span class="badge">archived</span>';
+    if (e.type === 'step' && e.phase) h += '<span class="badge phase">' + esc(e.phase) + '</span>';
+    if (stale) {
+      var d = C.daysSince(e.verified, state.today);
+      h += '<span class="badge stale" title="Last verified ' +
+           esc(C.formatDate(e.verified) || e.verified) +
+           '">stale · verified ' + d + 'd ago</span>';
+    }
+    h += '</div>';
+
+    var body = e.type === 'pack' ? e.ambient_line : e.instruction;
+    if (body) h += '<p class="card-body">' + esc(body) + '</p>';
+
+    var meta = [];
+    if (e.stack && e.stack.length) {
+      meta.push(e.stack.map(function (s) {
+        return '<span class="chip">' + esc(s) + '</span>';
+      }).join(''));
+    }
+    var dates = [];
+    if (e.added) dates.push('added ' + C.formatDate(e.added));
+    if (e.verified) dates.push('verified ' + C.formatDate(e.verified));
+    if (dates.length) meta.push('<span class="dates">' + esc(dates.join(' · ')) + '</span>');
+    if (meta.length) {
+      h += '<div class="card-meta">' + meta.join('<span class="dot">·</span>') + '</div>';
+    }
+
+    if (archived) {
+      h += chainHTML(e);
+      h += '<div class="card-actions"><button class="btn" type="button" ' +
+           'data-reactivate="' + esc(e.id) + '">Reactivate</button></div>';
+    }
+
+    h += '</article>';
+    return h;
+  }
+
+  function chainHTML(e) {
+    var chain = C.buildChain(e, state.byId);
+    if (!chain.length) return '';
+    var crumbs = chain.map(function (id) {
+      var target = state.byId[id];
+      if (!target) {
+        return '<span class="missing">' + esc(id) + ' (not in pack)</span>';
+      }
+      return '<a href="#entry-' + esc(id) + '" data-goto="' + esc(id) + '">' +
+             esc(target.title) + '</a>';
+    });
+    return '<p class="chain">↳ superseded by ' +
+           crumbs.join('<span class="arrow">→</span>') + '</p>';
+  }
+
+  function renderSkipNotes() {
+    if (!state.skipped.length) {
+      els.skipNotes.classList.add('hidden');
+      return;
+    }
+    var items = state.skipped.map(function (s) {
+      return '<li><code>' + esc(s.file) + '</code> — ' + esc(s.reason) + '</li>';
+    }).join('');
+    els.skipNotes.innerHTML =
+      '<strong>' + state.skipped.length + ' file' +
+      (state.skipped.length === 1 ? '' : 's') +
+      ' left out</strong> (the rest of the pack loaded fine)<ul>' + items + '</ul>';
+    els.skipNotes.classList.remove('hidden');
+  }
+
+  /* ---------------- tabs ---------------- */
+
+  function setTab(which, silent) {
+    state.activeTab = which;
+    var isPack = which === 'pack';
+    els.tabPack.setAttribute('aria-selected', String(isPack));
+    els.tabStep.setAttribute('aria-selected', String(!isPack));
+    els.panelPack.classList.toggle('hidden', !isPack);
+    els.panelStep.classList.toggle('hidden', isPack);
+    if (!silent) {
+      // Tab content swaps instantly on purpose: switching is frequent,
+      // animation would only slow it down.
+    }
+  }
+  els.tabPack.addEventListener('click', function () { setTab('pack'); });
+  els.tabStep.addEventListener('click', function () { setTab('step'); });
+
+  /* ---------------- card actions ---------------- */
+
+  function wireCardActions(panel) {
+    Array.prototype.forEach.call(panel.querySelectorAll('[data-reactivate]'), function (btn) {
+      btn.addEventListener('click', function () {
+        var id = btn.getAttribute('data-reactivate');
+        var text = C.reactivateInstruction(id);
+        copyText(text).then(function (ok) {
+          if (ok) {
+            showToast('Copied. Paste it to your agent — it edits the pack; this page never does.');
+          } else {
+            showToast('Clipboard unavailable — tell your agent: “' + text + '”');
+          }
+        });
+      });
+    });
+    Array.prototype.forEach.call(panel.querySelectorAll('[data-goto]'), function (link) {
+      link.addEventListener('click', function (ev) {
+        ev.preventDefault();
+        gotoEntry(link.getAttribute('data-goto'));
+      });
+    });
+  }
+
+  function gotoEntry(id) {
+    var entry = state.byId[id];
+    if (!entry) return;
+    setTab(entry.type === 'step' ? 'step' : 'pack');
+    var el = document.getElementById('entry-' + id);
+    if (!el) return;
+    el.scrollIntoView({ behavior: 'smooth', block: 'center' });
+    el.classList.add('flash');
+    setTimeout(function () { el.classList.remove('flash'); }, 1400);
+  }
+
+  function copyText(text) {
+    if (navigator.clipboard && navigator.clipboard.writeText) {
+      return navigator.clipboard.writeText(text).then(
+        function () { return true; },
+        function () { return legacyCopy(text); }
+      );
+    }
+    return Promise.resolve(legacyCopy(text));
+  }
+
+  function legacyCopy(text) {
+    var ta = document.createElement('textarea');
+    ta.value = text;
+    ta.setAttribute('readonly', '');
+    ta.style.position = 'fixed';
+    ta.style.opacity = '0';
+    document.body.appendChild(ta);
+    ta.select();
+    var ok = false;
+    try { ok = document.execCommand('copy'); } catch (err) { /* stay false */ }
+    ta.remove();
+    return ok;
+  }
+
+  var toastTimer = null;
+  function showToast(msg) {
+    els.toast.textContent = msg;
+    els.toast.classList.add('show');
+    if (toastTimer) clearTimeout(toastTimer);
+    toastTimer = setTimeout(function () {
+      els.toast.classList.remove('show');
+    }, 3600);
+  }
+
+  /* ---------------- pickers & drag-drop ---------------- */
+
+  els.fileInput.addEventListener('change', function () {
+    if (els.fileInput.files.length) readFileList(els.fileInput.files);
+  });
+  els.folderInput.addEventListener('change', function () {
+    if (els.folderInput.files.length) readFileList(els.folderInput.files);
+  });
+  $('pick-files').addEventListener('click', function () { els.fileInput.click(); });
+  $('pick-folder').addEventListener('click', function () { els.folderInput.click(); });
+
+  // Drops are accepted anywhere on the page, any time — a new drop replaces
+  // the loaded pack.
+  window.addEventListener('dragover', function (ev) {
+    ev.preventDefault();
+    els.dropzone.classList.add('over');
+  });
+  window.addEventListener('dragleave', function (ev) {
+    if (!ev.relatedTarget) els.dropzone.classList.remove('over');
+  });
+  window.addEventListener('drop', function (ev) {
+    ev.preventDefault();
+    els.dropzone.classList.remove('over');
+    if (ev.dataTransfer) readDrop(ev.dataTransfer);
+  });
+
+  /* ---------------- boot ---------------- */
+  tryFetchMode();
+})();
+</script>
+</body>
+</html>

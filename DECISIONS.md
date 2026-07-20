@@ -161,3 +161,4 @@ retroactively to built artifacts:
 | P-6 | GitHub org/repo + plugin marketplace name | PRD §12.8 | Resolved → D-007 |
 | P-7 | Browse page stack + reactivation mechanism | PRD §5.7/§7.1 gap | Resolved → D-006, D-011 |
 | P-8 | Tier 2 remote connector scope | Scope | Resolved → D-010 |
+| P-9 | PRD prose writes space form (`/scout add`) while colon form (`/scout:add`) is the only real syntax (D-007/D-012). Marketing flagged the same drift in the site PRD. Next PRD revision: switch prose to colon form, or add a one-line "space form = concept, colon form = typed" note. Owner's call — repo docs already use colon form everywhere. | Marketing thread, 2026-07-19 | Open — non-blocking |
