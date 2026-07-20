@@ -218,6 +218,32 @@ D-014).
 
 ---
 
+## D-017 — Context cost is a CI-gated invariant; audit before restructuring (2026-07-20, accepted)
+
+Scout's most expensive path is also its most invisible: a planning moment
+costs ~4,200–4,800 tokens (hook injection + `surfacing/SKILL.md`),
+uncached and unbidden, and its designed-common outcome is silence. A tool
+whose silent path is expensive earns a poor-value-exchange reputation — so
+context cost becomes a first-class invariant, like the manifest cap.
+
+Decision, three parts. (1) Every user-facing artifact's size is measured
+and modeled in `docs/research/token-audit.md` on a frequency×cache basis
+(always-on / per-planning-moment / per-verb). (2) Those sizes are frozen
+as freeze-plus-headroom budgets in `test/budgets.test.mjs`: growth
+requires a deliberate budget bump in the same diff — cost changes become
+reviewable line items, never silent. Two behavioral invariants are gated
+alongside the sizes: all seven verbs keep `disable-model-invocation:
+true` (T1 hygiene), and the hook's `MAX_OUTPUT_CHARS` stays ≤ 4,000.
+(3) The audit's restructuring findings (surfacing fast-path, doctrine-as-
+artifact extraction for the `survey`→`surfacing` and `setup`→`add`
+cross-reads) are explicitly **deferred** behind the skill-quality
+checklist pass from the "Building Great Agent Skills" review — cutting
+tokens by moving doctrine out of the model's face is a behavior change,
+and it wants the deletion test's live-usage data first. Audit → checklist
+→ restructure, in that order (owner-confirmed 2026-07-20).
+
+---
+
 ## Pending decisions
 
 | # | Question | Source | Status |
