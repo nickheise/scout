@@ -192,6 +192,30 @@ matching the copy deck's FAQ verbatim. `package.json`'s description was left
 alone — it's `private: true` and never rendered on a comparison surface.
 Validated with `claude plugin validate --strict .` (passed).
 
+## D-016 — One namespace only: skip the community marketplace under a mismatched name (2026-07-20, accepted)
+
+Verified platform mechanic: a marketplace entry's `name` can differ from the
+plugin's own `plugin.json` `name`, and when it does, **the marketplace entry
+name — not the plugin's own name — governs that install's command
+namespace**. So listing Scout in Anthropic's community marketplace under an
+alternate entry name (e.g. `getscout`, since `scout` is already taken there
+by an unrelated plugin, shidoyu/scout) would work mechanically: our own
+marketplace stays `/scout:*` and the community listing would be `/getscout:*`
+for whoever installs from that catalog — two real command surfaces for one
+plugin, split by install source.
+
+Decision: never split. Our own marketplace and any other marketplace listing
+must use the identical entry name, full stop — a user's command surface
+should never depend on where they discovered Scout. Consequence: since
+`scout` is unavailable in the community marketplace and a mismatched name is
+now ruled out on principle, **Scout does not list in the community
+marketplace** under the current name. This isn't a loss — our own
+subscribe-from-`nickheise/scout` distribution is complete and independent of
+that catalog; a community listing was always discovery upside, never a
+dependency. Revisit only if the `scout` slug there ever frees up, or if a
+full-project rename is ever on the table (it currently isn't — see D-007,
+D-014).
+
 ---
 
 ## Pending decisions
