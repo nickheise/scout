@@ -147,6 +147,27 @@ retroactively to built artifacts:
    added for the matching step, it stays model-side and is never documented
    as a "search your pack" user workflow.
 
+## D-015 — Marketing site lifted into monorepo at `/site` (2026-07-20, accepted)
+
+The marketing site (built standalone as `scout-marketing` per that repo's own
+D-013, which named this exact trigger — "once the site reaches a stable
+point") is merged here as `site/` via `git subtree add --squash`, now that
+Scout core is public with all five build phases shipped (v0.4.0). Full
+site-side history (kickoff through the brand-positioning pass and demo
+reconciliation against this repo's real output) is squashed into one commit
+(`985ed71`) rather than interleaved, keeping this repo's phase-based commit
+history legible; the site's own decision/changelog record stays intact
+inside `site/DECISIONS.md` and `site/CHANGELOG.md` as the detailed history.
+The standalone `scout-marketing` repo is now superseded — no further pushes
+expected there; new site work lands in `site/` going forward.
+
+Consequence for P-9 below: the site thread's brand positioning canvas
+(`site/docs/scout-positioning.md`) recommended a category-anchored one-liner
+for comparison surfaces (README, plugin directory, launch post) — *"memory
+for your coding agent's taste, not its transcripts."* Canonical strings are
+in `site/docs/copy-deck.md`'s final section. Not yet applied to this
+repo's own README/directory listing — flagged as follow-up, not done here.
+
 ---
 
 ## Pending decisions

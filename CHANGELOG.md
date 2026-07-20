@@ -7,6 +7,7 @@ the plugin's release tags once Phase 2 (plugin packaging) lands.
 ## [Unreleased]
 
 ### Added
+- 2026-07-20 — Marketing site lifted into the monorepo at `site/` (D-015), subtree-merged with squashed history from the standalone `scout-marketing` repo now that Scout is public and all five build phases are shipped. Brings the brand positioning canvas, demo reconciled against this repo's real output captures, and the launch-post draft along with it.
 - 2026-07-19 — **Phases 4+5 complete** (plugin v0.4.0) — **all PRD build
   phases shipped.** Phase 4: `/scout:setup` (onboarding, Tier 1 offer, D-012
   router offer, history scan with explicit named roots, evidence-attached
