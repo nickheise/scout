@@ -12,6 +12,13 @@
  * round caps/joins, stroke=currentColor, no fills. `copy` and `check` are
  * extras (not in the PLAN §3 glyph list) added so CopyBlock's copy-state
  * swap can use the same sprite instead of a second icon system.
+ *
+ * blaze/tracks/cairn added per docs/visual-language.md §4 (D-019) — the
+ * wayfinding-family candidates queued in the sprite inventory. `pack` was
+ * redrawn in the same pass: the old single shoulder-strap arc bridging the
+ * body read as a padlock shackle at small sizes, so the straps are now two
+ * separate curves (no bridge) and the inner lines resolve into a proper
+ * front-pocket rect instead of a floating, disconnected line pair.
  */
 ---
 
@@ -31,11 +38,54 @@
       stroke-linecap="round"
       stroke-linejoin="round"
     >
-      <path d="M8.5 9V6.5a3.5 3.5 0 0 1 7 0V9" />
+      <path d="M8.7 9c0-2.2.6-4.5 1.7-4.5" />
+      <path d="M15.3 9c0-2.2-.6-4.5-1.7-4.5" />
       <rect x="5" y="9" width="14" height="12" rx="3" />
-      <path d="M9 21v-5.5" />
-      <path d="M15 21v-5.5" />
-      <path d="M9.5 13.5h5" />
+      <rect x="8.5" y="13" width="7" height="6.5" rx="1.5" />
+      <path d="M9 15.2h6" />
+    </symbol>
+
+    <!-- blaze (two stacked trail-blaze paint marks) -->
+    <symbol
+      id="icon-blaze"
+      viewBox="0 0 24 24"
+      fill="none"
+      stroke="currentColor"
+      stroke-width="1.75"
+      stroke-linecap="round"
+      stroke-linejoin="round"
+    >
+      <rect x="8" y="4" width="8" height="7" rx="3" />
+      <rect x="8" y="13" width="8" height="7" rx="3" />
+    </symbol>
+
+    <!-- tracks (two offset boot prints) -->
+    <symbol
+      id="icon-tracks"
+      viewBox="0 0 24 24"
+      fill="none"
+      stroke="currentColor"
+      stroke-width="1.75"
+      stroke-linecap="round"
+      stroke-linejoin="round"
+    >
+      <path d="M6 21c-1.1 0-2-.7-2-2.2 0-1.3.5-2.1 1-2.7-.4-.5-.7-1.1-.7-1.9 0-1.5 1-2.7 2.2-2.7s2.2 1.2 2.2 2.7c0 .8-.3 1.4-.7 1.9.5.6 1 1.4 1 2.7 0 1.5-.9 2.2-2 2.2Z" />
+      <path d="M15.5 13c-1 0-1.8-.6-1.8-2 0-1.1.4-1.9.9-2.4-.4-.5-.6-1-.6-1.7 0-1.3.9-2.4 2-2.4s2 1.1 2 2.4c0 .7-.2 1.2-.6 1.7.5.5.9 1.3.9 2.4 0 1.4-.8 2-1.8 2Z" />
+    </symbol>
+
+    <!-- cairn (three stacked stones) -->
+    <symbol
+      id="icon-cairn"
+      viewBox="0 0 24 24"
+      fill="none"
+      stroke="currentColor"
+      stroke-width="1.75"
+      stroke-linecap="round"
+      stroke-linejoin="round"
+    >
+      <path d="M5.5 19a6.5 2.4 0 1 0 13 0 6.5 2.4 0 1 0 -13 0" />
+      <path d="M7 14.2a5 2.1 0 1 0 10 0 5 2.1 0 1 0 -10 0" />
+      <path d="M8.3 9.8a3.6 1.8 0 1 0 7.2 0 3.6 1.8 0 1 0 -7.2 0" />
     </symbol>
 
     <!-- waypoint marker (trail blaze on a stake) -->

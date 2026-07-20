@@ -2,7 +2,8 @@
 /**
  * Renders one glyph from the field-guide icon sprite (IconSprite.astro) via
  * <use>. PLAN.md §3 glyph set: pack, waypoint, compass, contour, stamp,
- * arrow — plus copy/check (CopyBlock's copy-state swap).
+ * arrow — plus blaze, tracks, cairn (docs/visual-language.md §4, D-019) and
+ * copy/check (CopyBlock's copy-state swap).
  *
  * Decorative by default (aria-hidden). Pass `label` when the icon carries
  * meaning on its own (no adjacent visible text) to expose it to assistive
@@ -15,6 +16,9 @@ export type IconName =
   | "contour"
   | "stamp"
   | "arrow"
+  | "blaze"
+  | "tracks"
+  | "cairn"
   | "copy"
   | "check";
 

@@ -54,9 +54,8 @@ Monoline stroke system: 24px grid, 1.75px stroke, `stroke: currentColor`, Lucide
 
 ### Sprite inventory
 
-Current: pack, waypoint, compass, contour, stamp, arrow.
-Candidate additions (each carries product meaning, not just vibe): **blaze**, **tracks**, **cairn**.
-Known polish item: the pack glyph reads padlock-like at small sizes — needs a strap/buckle line or side pocket, or swap that usage for the blaze mark.
+Current: pack, waypoint, compass, contour, stamp, arrow, blaze, tracks, cairn.
+Pack glyph redrawn: the shoulder strap is now two separate curves instead of one arc bridging the body (that bridge plus the rounded rect read as a padlock shackle at small sizes), and the inner detail resolved into a proper front-pocket rect. Applied: tracks sits beside the stated/revealed-preferences blockquote in `Philosophy.astro` (D-019 glyph map: tracks = revealed preferences). The HowItWorks "Pack it" step keeps the pack glyph rather than swapping to blaze — pack maps to "the category itself," which is what that step is; blaze is reserved for reports.
 
 ## 5. Reference sites (from the demo-craft research, July 2026)
 

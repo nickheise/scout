@@ -1,6 +1,8 @@
 ---
 // Beat 4 — The philosophy (three tenets, trust line, tracks copy bridge).
-// Content verbatim from docs/copy-deck.md Beat 4.
+// Content verbatim from docs/copy-deck.md Beat 4. Tracks glyph (D-019 glyph
+// map: tracks = revealed preferences) marks the bridge blockquote's opening
+// line — decorative only, no copy change.
 import Icon from "../components/Icon.astro";
 ---
 
@@ -81,8 +83,13 @@ import Icon from "../components/Icon.astro";
 
       {/* Tracks copy blockquote (bridges into Beat 4.5) */}
       <blockquote class="border-l-2 border-forest-400 pl-4 py-2 italic text-ink">
-        <p class="mb-3">
-          Scout doesn't ask what you would do. It reads what you did.
+        <p class="mb-3 flex items-start gap-2">
+          <Icon
+            name="tracks"
+            size={20}
+            class="text-trail-500 shrink-0 translate-y-0.5"
+          />
+          <span>Scout doesn't ask what you would do. It reads what you did.</span>
         </p>
         <p>
           Stated preferences — what you'd answer in an onboarding interview —
