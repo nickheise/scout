@@ -7,6 +7,7 @@ the plugin's release tags once Phase 2 (plugin packaging) lands.
 ## [Unreleased]
 
 ### Added
+- 2026-07-20 — Pocock skill-checklist review (`docs/research/skill-checklist-review.md`): the five heavy skills walked against the trigger/structure/steering/pruning rubric from "Building Great Agent Skills". Verdict: trigger discipline and steering are strong; the weight is granularity, not crud. Five restructuring proposals (R1–R5, sequenced, risk-annotated) held for owner discussion; deletion-test candidates parked in a dogfooding register.
 - 2026-07-20 — Token-cost audit + CI budget gates (D-017). `docs/research/token-audit.md` measures every user-facing artifact's context cost on a three-tier frequency model (always-on / per-planning-moment / per-verb); `test/budgets.test.mjs` freezes those sizes as CI gates so growth requires a deliberate same-diff budget bump. Restructuring findings (F1–F3) are deferred behind the skill-quality checklist pass, per the audit's §5.
 - 2026-07-20 — Marketing site lifted into the monorepo at `site/` (D-015), subtree-merged with squashed history from the standalone `scout-marketing` repo now that Scout is public and all five build phases are shipped. Brings the brand positioning canvas, demo reconciled against this repo's real output captures, and the launch-post draft along with it.
 - 2026-07-19 — **Phases 4+5 complete** (plugin v0.4.0) — **all PRD build
