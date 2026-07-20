@@ -165,8 +165,20 @@ Consequence for P-9 below: the site thread's brand positioning canvas
 (`site/docs/scout-positioning.md`) recommended a category-anchored one-liner
 for comparison surfaces (README, plugin directory, launch post) — *"memory
 for your coding agent's taste, not its transcripts."* Canonical strings are
-in `site/docs/copy-deck.md`'s final section. Not yet applied to this
-repo's own README/directory listing — flagged as follow-up, not done here.
+in `site/docs/copy-deck.md`'s final section.
+
+**Applied (2026-07-20):** README opening line, `.claude-plugin/plugin.json`,
+and `.claude-plugin/marketplace.json` descriptions replaced — all three
+previously led with category *rejection* ("not a memory tool"), which
+Dunford's framework flags directly: a category a stranger already
+half-recognizes (claude-mem-style transcript memory) is more useful
+affirmed-then-narrowed than disclaimed outright. New framing leads with the
+category, then carves the subsegment in the same breath ("memory for your
+coding agent's taste, not its transcripts"). Added a README "Isn't this
+just…?" section (memory plugin / knowledge base / awesome list / bookmarks)
+matching the copy deck's FAQ verbatim. `package.json`'s description was left
+alone — it's `private: true` and never rendered on a comparison surface.
+Validated with `claude plugin validate --strict .` (passed).
 
 ---
 

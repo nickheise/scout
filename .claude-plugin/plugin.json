@@ -1,7 +1,7 @@
 {
   "name": "scout",
   "version": "0.4.0",
-  "description": "A curated cross-project pack for your agent: links and practices you chose, compiled into a capped ambient manifest your agent already carries into every plan. Not a memory tool \u2014 Scout never reads session transcripts and has no database; it's a plain folder of entries you own, compiled to plain text. File-over-app: a Scout update never touches your pack.",
+  "description": "Memory for your coding agent's taste, not its transcripts. Save a link once \u2014 Scout hands it to your agent at the exact moment it applies. Local-first, zero keys, ships empty. File-over-app: a Scout update never touches your pack.",
   "author": {
     "name": "Nick Heise"
   },

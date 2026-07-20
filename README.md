@@ -1,11 +1,12 @@
 # Scout
 
-**Scout is a curated cross-project pack for your agent — links and practices
-*you* chose, compiled into a small ambient manifest your agent already
-carries into every plan.** It is not a memory tool: Scout never reads session
-transcripts, keeps no database, and does no vector recall. It's a plain
-folder of entries you own, compiled to plain text your agent already "knows"
-the way it knows React exists — no trigger to miss, nothing to search for.
+**Scout is memory for your coding agent's taste** — the libraries, tools, and
+practices you meant to use, resurfaced at the exact moment they apply. Not a
+transcript-memory tool: Scout never reads session history, keeps no
+database, and does no vector recall. It's a plain folder of entries you own,
+compiled into a small ambient manifest your agent already carries into every
+plan — the way it "knows" React exists. No trigger to miss, nothing to
+search for, no server, no account, no API key.
 
 > If you've found `scout` in the community marketplace and expected a
 > web-search plugin: that's a different project by a different author. This
@@ -13,6 +14,28 @@ the way it knows React exists — no trigger to miss, nothing to search for.
 > its own marketplace at `nickheise/scout`. Plugin names are per-marketplace,
 > not global, so the two coexist without conflict (see
 > [Coexistence](#coexistence-with-the-community-scout-plugin) below).
+
+### Isn't this just…?
+
+A few comparisons, since "memory for your coding agent" sounds like several
+existing things:
+
+- **A memory plugin?** Memory plugins remember what you *said* — session
+  transcripts, compressed and recalled. Scout remembers what you meant to
+  *use*. No database, no daemon, no recall-everything. A capped, curated
+  manifest of your own tools, plus reports at planning moments. Nothing
+  else.
+- **A knowledge base with extra steps?** Knowledge stores are pull-based:
+  they work great right up until the step that always fails — remembering
+  to ask. Scout is push-based and gated. The manifest is simply *in
+  context*; reports arrive unbidden. You never query your pack, because the
+  day you need to is the day it's failed.
+- **An awesome list?** An awesome list is someone else's taste, frozen.
+  Scout ships empty and fills with yours — what your repos show you
+  actually reach for, kept honest by archives and supersession. Two
+  people's packs should never look alike.
+- **Bookmarks?** Bookmarks are where this problem starts. Saving was never
+  the failing step — resurfacing is.
 
 ## Install (60 seconds)
 
