@@ -48,6 +48,12 @@ const SKILL_BUDGETS = {
 /** templates/scout-router/SKILL.md — the optional personal router. */
 const ROUTER_BUDGET = 5_000; // 4,392
 
+/** Shared reference artifacts (thin-skills direction, D-018): loaded only
+ *  when a skill follows their pointer, but budgeted like everything else. */
+const REFERENCE_BUDGETS = {
+  'references/field-notes.md': 4_200, // 3,892 — deviation contract, loaded only on a deviating run
+};
+
 /** The one always-in-context string (T1): surfacing's frontmatter
  *  description. ~195 tokens in every session on the machine. */
 const SURFACING_DESCRIPTION_BUDGET = 900; // 785
@@ -115,6 +121,13 @@ test('every shipped skill has a budget and fits inside it', () => {
 test('the bare-/scout router template fits its budget', () => {
   const size = fs.statSync(path.join(REPO_ROOT, 'templates', 'scout-router', 'SKILL.md')).size;
   assert.ok(size <= ROUTER_BUDGET, `router SKILL.md is ${size} chars, budget ${ROUTER_BUDGET}`);
+});
+
+test('every shared reference artifact has a budget and fits inside it', () => {
+  for (const [rel, budget] of Object.entries(REFERENCE_BUDGETS)) {
+    const size = fs.statSync(path.join(REPO_ROOT, rel)).size;
+    assert.ok(size <= budget, `${rel} is ${size} chars, budget ${budget}`);
+  }
 });
 
 // ---------------------------------------------------------------------------

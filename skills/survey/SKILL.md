@@ -3,7 +3,7 @@ name: survey
 description: Survey the project against your Scout pack — the retroactive backstop to ambient surfacing, not a workflow. Walks what actually got built (commits, CHANGELOG, dependencies) and reports anything in your pack that would have genuinely helped and never got surfaced. Best run at a milestone or project wrap. Same gate and cap as live in-flow reports: at most 2 findings, and "nothing missed" is the most common good outcome, not a failure. Never changes an entry without asking first.
 disable-model-invocation: true
 argument-hint: "[since <ref, date, or 'everything'>]"
-allowed-tools: Read, Write, Glob, Bash(date +%F), Bash(git log *), Bash(git diff *), Bash(git show *), Bash(git rev-parse *), Bash(git tag *), Bash(node "${CLAUDE_PLUGIN_ROOT}/bin/scout-store.mjs" *)
+allowed-tools: Read, Write, Glob, Bash(date +%F), Bash(git log *), Bash(git diff *), Bash(git show *), Bash(git rev-parse *), Bash(git tag *), Bash(node "${CLAUDE_PLUGIN_ROOT}/bin/scout-store.mjs" *), Bash(node "${CLAUDE_PLUGIN_ROOT}/bin/scout-note.mjs" *)
 ---
 
 # /scout:survey — the retroactive backstop
@@ -194,3 +194,11 @@ done.
 
 "Nothing missed, nothing to reconcile, nothing recurring" is a complete,
 successful run — not a run that failed to find something to report.
+
+## Field notes
+
+If this run deviated mechanically — a documented step failed and you
+adapted, the environment fell outside what this file covers, or the user
+corrected a step mid-run — write one field note (max one per run) per
+`${CLAUDE_PLUGIN_ROOT}/references/field-notes.md`, at the end of the run.
+Never let this block or alter the run.

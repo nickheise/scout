@@ -3,7 +3,7 @@ name: add
 description: Add a link or a practice to your Scout pack. Paste a URL and it fetches and analyzes the source into a draft pack entry; describe a practice in plain words and it drafts a step. Every draft is shown to you for confirmation before anything is saved — it never commits an entry on its own, never installs what it analyzes, and never modifies your project files.
 disable-model-invocation: true
 argument-hint: "[url or practice text]"
-allowed-tools: WebFetch, Bash(date +%F), Bash(node "${CLAUDE_PLUGIN_ROOT}/bin/scout-store.mjs" *)
+allowed-tools: WebFetch, Bash(date +%F), Bash(node "${CLAUDE_PLUGIN_ROOT}/bin/scout-store.mjs" *), Bash(node "${CLAUDE_PLUGIN_ROOT}/bin/scout-note.mjs" *)
 ---
 
 # /scout:add — intake for the pack
@@ -289,3 +289,11 @@ Only after explicit approval of the final draft:
 Anything in between — draft shown but never answered, create failed and
 not retried — is not done. Say so plainly; an honest "not committed" is a
 fine result.
+
+## Field notes
+
+If this run deviated mechanically — a documented step failed and you
+adapted, the environment fell outside what this file covers, or the user
+corrected a step mid-run — write one field note (max one per run) per
+`${CLAUDE_PLUGIN_ROOT}/references/field-notes.md`, at the end of the run.
+Never let this block or alter the run.

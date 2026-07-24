@@ -1,7 +1,7 @@
 ---
 name: surfacing
 description: Judge a feature plan or project moment against the user's Scout pack and surface at most two gate-passed reports. Use when a Scout planning-moment pointer or gate instruction appears in context (a hook injects one at plan/todo time); when you are about to present a feature plan in a project whose CLAUDE.md/AGENTS.md carries a scout managed block; when a pack match lands on an archived entry and its successor should surface instead; when the user waves off a surfaced report ("no thanks", "not this one"); or when a project with a scout block reaches a wrap or milestone moment — that is when inferred dismissals are judged. This is a filter as much as a finder — expect to reject most candidates; nothing surfaced is a good result. Never fires mid-implementation.
-allowed-tools: Read, Write, WebFetch, Bash(date +%F), Bash(node "${CLAUDE_PLUGIN_ROOT}/bin/scout-store.mjs" *)
+allowed-tools: Read, Write, WebFetch, Bash(date +%F), Bash(node "${CLAUDE_PLUGIN_ROOT}/bin/scout-store.mjs" *), Bash(node "${CLAUDE_PLUGIN_ROOT}/bin/scout-note.mjs" *)
 ---
 
 # Surfacing — the gate between the pack and the user's attention
@@ -276,3 +276,11 @@ Anything in between — a card shown without its ledger line, an increment
 without its dismissal line, a gate failure that never reached the ledger —
 is not done. The ledger is the audit trail; a moment that isn't fully in it
 didn't happen.
+
+## Field notes
+
+If this run deviated mechanically — a documented step failed and you
+adapted, the environment fell outside what this file covers, or the user
+corrected a step mid-run — write one field note (max one per run) per
+`${CLAUDE_PLUGIN_ROOT}/references/field-notes.md`, at the end of the run.
+Never let this block or alter the run.

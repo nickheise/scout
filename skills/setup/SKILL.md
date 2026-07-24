@@ -2,7 +2,7 @@
 name: setup
 description: Set Scout up for the first time — once per user, right after install. Confirms where your pack will live, optionally points it at a git remote you own (sync + history), optionally installs the bare /scout router, and offers the history scan — Scout reads the repos you name and proposes pack entries from your own revealed habits, evidence attached. Everything is offered, nothing is imposed; no directory is created, no file copied, and no entry committed without your confirmation. Skipping everything optional is a complete setup — Scout ships empty on purpose.
 disable-model-invocation: true
-allowed-tools: Read, Glob, Bash(date +%F), Bash(mkdir -p *), Bash(cp *), Bash(node "${CLAUDE_PLUGIN_ROOT}/bin/scout-store.mjs" *), Bash(node "${CLAUDE_PLUGIN_ROOT}/bin/scout-scan.mjs" *), Bash(git init *), Bash(git -C * remote *), Bash(git -C * status *)
+allowed-tools: Read, Glob, Bash(date +%F), Bash(mkdir -p *), Bash(cp *), Bash(node "${CLAUDE_PLUGIN_ROOT}/bin/scout-store.mjs" *), Bash(node "${CLAUDE_PLUGIN_ROOT}/bin/scout-scan.mjs" *), Bash(node "${CLAUDE_PLUGIN_ROOT}/bin/scout-note.mjs" *), Bash(git init *), Bash(git -C * remote *), Bash(git -C * status *)
 ---
 
 # /scout:setup — first-ever onboarding
@@ -241,3 +241,11 @@ End with a short, plain report:
 Anything in between — a folder made but never confirmed, a scan run
 against roots the user never named, an entry committed from an
 unapproved draft — is a broken setup, not a finished one. Say so plainly.
+
+## Field notes
+
+If this run deviated mechanically — a documented step failed and you
+adapted, the environment fell outside what this file covers, or the user
+corrected a step mid-run — write one field note (max one per run) per
+`${CLAUDE_PLUGIN_ROOT}/references/field-notes.md`, at the end of the run.
+Never let this block or alter the run.

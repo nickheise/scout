@@ -244,7 +244,31 @@ and it wants the deletion test's live-usage data first. Audit → checklist
 
 ---
 
-## Pending decisions
+## D-018 — Field notes: local-only deviation capture, Phase A (2026-07-24, accepted)
+
+Adopted from the Drop skill's field-report design (relayed cross-session;
+evaluation in `docs/research/field-reports.md`). Skill-mechanics knowledge
+— a documented step failing in a real environment, a user correcting a
+run — currently evaporates with the session; the dogfooding register
+(skill-checklist-review.md) is blocked on exactly that evidence.
+
+Decision. (1) **Deviation-triggered capture as an architectural
+contract**: three closed triggers (`step-failed`,
+`undocumented-environment`, `user-corrected`), max one note per run,
+smooth runs write nothing — the contract lives in one shared artifact
+(`references/field-notes.md`); skills carry only a pointer. (2) **Notes
+are machine-local, decoupled from the pack**: `~/.scout/field-notes.jsonl`
+— *not* inside the pack dir, so a Tier 1 synced pack can never carry
+error text and paths to a git remote. Nothing is collected or
+transmitted; the plugin never modifies itself from notes. (3) **Stamping
+is code, not prompt**: `bin/scout-note.mjs` validates enums and stamps
+schema/date/plugin-version/platform itself — version-filtered triage
+(dropping notes from already-fixed versions) only works if the stamp is
+never guessed. (4) **Schema designed for Phase B, building only A**: the
+note shape already carries what a courier-mediated public report would
+need (accretion-only evolution, house rules); Phase B — a user-carried,
+reviewed share surface with privacy statement and retention wording —
+stays document-only until real external users exist (D-010 pattern).
 
 | # | Question | Source | Status |
 |---|---|---|---|

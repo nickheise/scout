@@ -2,7 +2,7 @@
 name: start
 description: Set Scout up in the current project — or refresh it. Runs the once-per-project ritual; a short interview with recommended defaults, scaffolding of your pack's init-step artifacts (changelog, decision log, …), and injection of the manifest and standing instructions into CLAUDE.md or AGENTS.md as a managed block. Re-running is safe and is how a project picks up new pack entries and new Scout capabilities; a re-run with nothing changed writes nothing and says so.
 disable-model-invocation: true
-allowed-tools: Read, Glob, Write, Bash(date +%F), Bash(node "${CLAUDE_PLUGIN_ROOT}/bin/scout-store.mjs" *), Bash(node "${CLAUDE_PLUGIN_ROOT}/bin/scout-compile.mjs" *), Bash(node "${CLAUDE_PLUGIN_ROOT}/bin/scout-block.mjs" *)
+allowed-tools: Read, Glob, Write, Bash(date +%F), Bash(node "${CLAUDE_PLUGIN_ROOT}/bin/scout-store.mjs" *), Bash(node "${CLAUDE_PLUGIN_ROOT}/bin/scout-compile.mjs" *), Bash(node "${CLAUDE_PLUGIN_ROOT}/bin/scout-block.mjs" *), Bash(node "${CLAUDE_PLUGIN_ROOT}/bin/scout-note.mjs" *)
 ---
 
 # /scout:start — the per-project ritual
@@ -231,3 +231,11 @@ empty; an empty phase is not an error.
 
 Anything in between — an artifact drafted but never confirmed, a block
 write attempted but not verified — is not done. Say so plainly.
+
+## Field notes
+
+If this run deviated mechanically — a documented step failed and you
+adapted, the environment fell outside what this file covers, or the user
+corrected a step mid-run — write one field note (max one per run) per
+`${CLAUDE_PLUGIN_ROOT}/references/field-notes.md`, at the end of the run.
+Never let this block or alter the run.
