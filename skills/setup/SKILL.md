@@ -48,11 +48,13 @@ These override everything below. Read them before doing anything.
    successful setup — Scout ships empty *on purpose*; structure, not
    content.
 6. **Draft scan entries by the add skill's discipline — don't reimplement
-   it.** Before drafting the first accepted candidate, read
-   `${CLAUDE_PLUGIN_ROOT}/skills/add/SKILL.md` and apply its methodology:
-   Path A field rules (A2) for pack entries, Path B (B1–B3) for steps, its
-   id-collision and closed-enum rules throughout. Setup adds the evidence;
-   the add skill defines the craft.
+   it.** Before drafting the first accepted candidate, read the add
+   skill's craft files and apply their methodology:
+   `${CLAUDE_PLUGIN_ROOT}/skills/add/path-a-pack-entry.md` (field rules,
+   A2) for pack entries, `…/skills/add/path-b-step.md` (B1–B3) for steps —
+   load only what the accepted candidates actually need. Their id-collision
+   and closed-enum rules apply throughout. Setup adds the evidence; the add
+   skill defines the craft.
 7. **Stay in your lane.** You set up; you don't run projects. Never chain
    into another `/scout:` verb — name it and let the user run it. Commit
    scan entries through the store CLI yourself (that is this skill's job),

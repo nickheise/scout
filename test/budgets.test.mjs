@@ -35,11 +35,11 @@ const HOOK_BIN = path.join(REPO_ROOT, 'bin', 'scout-hook-plan.mjs');
 /** Per-skill SKILL.md budgets. Every skills/<name>/SKILL.md must appear
  *  here — a new skill without a budget is itself a gate failure. */
 const SKILL_BUDGETS = {
-  surfacing: 16_000, // 15,171 — T2 cost center; paid every planning moment
-  setup: 14_500, //     13,875 — + cross-reads add (F3)
-  add: 14_500, //       13,810
-  start: 13_500, //     12,911
-  survey: 12_000, //    11,482 — + cross-reads surfacing (F3)
+  surfacing: 16_000, // 15,574 — T2 cost center; paid every planning moment
+  setup: 14_500, //     14,437 — + cross-reads add's path files (R3, D-019)
+  add: 6_700, //         6,363 — R2 (D-019): paths split into path-a/path-b files below
+  start: 13_500, //     13,314
+  survey: 12_000, //    11,885 — + cross-reads surfacing (F3)
   archive: 5_000, //     4,516
   explain: 5_000, //     4,332
   list: 3_500, //        3,139
@@ -52,6 +52,9 @@ const ROUTER_BUDGET = 5_000; // 4,392
  *  when a skill follows their pointer, but budgeted like everything else. */
 const REFERENCE_BUDGETS = {
   'references/field-notes.md': 4_200, // 3,892 — deviation contract, loaded only on a deviating run
+  'skills/add/path-a-pack-entry.md': 6_500, // 6,110 — URL→pack path (R2); loaded only on Path A runs
+  'skills/add/path-b-step.md': 2_800, //      2,550 — text→step path (R2); loaded only on Path B runs
+  'skills/add/skills-repos.md': 4_800, //     4,504 — meta-repo ingestion; loaded only for skills collections
 };
 
 /** The one always-in-context string (T1): surfacing's frontmatter

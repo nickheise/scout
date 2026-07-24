@@ -270,6 +270,37 @@ need (accretion-only evolution, house rules); Phase B — a user-carried,
 reviewed share surface with privacy statement and retention wording —
 stays document-only until real external users exist (D-010 pattern).
 
+---
+
+## D-019 — Thin-skills restructure begins: add's paths split, setup points at the craft (2026-07-24, accepted)
+
+First structural application of the skill-checklist review
+(`docs/research/skill-checklist-review.md` R2+R3, owner-ruled 2026-07-24
+in the order R6-Phase-A → R2 → R3). The add skill's two paths are
+exclusive branches resolved by input shape before either is needed —
+the checklist's canonical case for external references.
+
+Decision. (1) **R2:** Path A (URL→pack) and Path B (text→step) move
+verbatim into `skills/add/path-a-pack-entry.md` and
+`skills/add/path-b-step.md`; SKILL.md keeps persona, Hard Rules, routing,
+Preflight, Commit, Done-when, and loads exactly one path file per run
+("never both" is stated in the routing). Per-invocation context drops
+from ~14.2K chars to ~12.4K (URL) / ~8.9K (step). (2) **R3:** setup Hard
+Rule 6 now points at the path files instead of all of add's SKILL.md —
+the craft is read at the granularity it exists at; the single source of
+truth is unchanged (the same files add itself executes). R2 and R3 land
+atomically because R2 alone would leave setup's pointer aimed at a file
+that no longer contains the craft. (3) Budgets updated in the same diff
+per D-017: add's budget cut 14,500 → 6,700 (the enforced reduction);
+the path files and `skills-repos.md` join the budgeted-reference table.
+R1 (surfacing's dismissal branch) stays open pending the scripted
+wave-off/wrap scenario check; R4/R5 stay gated on dogfooding evidence —
+now collectable via D-018 field notes.
+
+---
+
+## Pending decisions
+
 | # | Question | Source | Status |
 |---|---|---|---|
 | P-1 | Dismissal capture mechanics | PRD §12.3 | Resolved → D-008 |

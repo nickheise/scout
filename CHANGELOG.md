@@ -6,6 +6,9 @@ the plugin's release tags once Phase 2 (plugin packaging) lands.
 
 ## [Unreleased]
 
+### Changed
+- 2026-07-24 — `/scout:add` restructured (R2+R3, D-019): Path A and Path B moved verbatim into `path-a-pack-entry.md` / `path-b-step.md`, loaded one-per-run from the routing table — an add invocation now carries ~1.8K (URL) to ~5.3K (step) fewer chars of context. `/scout:setup` drafts scan entries from those same path files instead of reading all of add's SKILL.md. add's CI budget cut 14,500 → 6,700 to lock the reduction in.
+
 ### Added
 - 2026-07-24 — Field notes shipped (R6 Phase A, D-018): the five heavy skills now write one structured, version-stamped note to a machine-local file (`~/.scout/field-notes.jsonl`) when a run mechanically deviates — a documented step failed, the environment fell outside the docs, or the user corrected the skill mid-run. Trigger contract in `references/field-notes.md` (one shared artifact, skills carry a five-line pointer); validation and stamping in `bin/scout-note.mjs`. Local-only: never synced, collected, or transmitted, and deliberately outside the pack dir so Tier 1 sync can never carry error text to a remote.
 - 2026-07-24 — Field-reports proposal (`docs/research/field-reports.md`, R6): evaluation of the Drop skill's deviation-triggered self-improvement loop for Scout. Deviation-capture/version-stamping/notes-are-data transfer (Scout's ledger and dismissal machinery already converged on the same discipline); central collection does not — the courier pattern replaces it. Phased local-dogfooding-first; joins the R1–R5 discussion queue.
