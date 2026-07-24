@@ -35,7 +35,7 @@ const HOOK_BIN = path.join(REPO_ROOT, 'bin', 'scout-hook-plan.mjs');
 /** Per-skill SKILL.md budgets. Every skills/<name>/SKILL.md must appear
  *  here — a new skill without a budget is itself a gate failure. */
 const SKILL_BUDGETS = {
-  surfacing: 16_000, // 15,574 — T2 cost center; paid every planning moment
+  surfacing: 14_200, // 13,891 — T2 cost center; dismissal branch split out per R1 (D-020)
   setup: 14_500, //     14,437 — + cross-reads add's path files (R3, D-019)
   add: 6_700, //         6,363 — R2 (D-019): paths split into path-a/path-b files below
   start: 13_500, //     13,314
@@ -55,6 +55,7 @@ const REFERENCE_BUDGETS = {
   'skills/add/path-a-pack-entry.md': 6_500, // 6,110 — URL→pack path (R2); loaded only on Path A runs
   'skills/add/path-b-step.md': 2_800, //      2,550 — text→step path (R2); loaded only on Path B runs
   'skills/add/skills-repos.md': 4_800, //     4,504 — meta-repo ingestion; loaded only for skills collections
+  'skills/surfacing/dismissals.md': 2_600, // 2,362 — dismissal capture + nudge (R1); loaded only at wave-off/wrap moments
 };
 
 /** The one always-in-context string (T1): surfacing's frontmatter
@@ -70,7 +71,7 @@ const HOOK_CONTEXT_BUDGET = 2_000; // ~1,760
 /** The T2 ceiling: surfacing SKILL.md + a maximal hook injection is what
  *  one planning moment can cost (~5,000 tokens). Growth here is the
  *  reputational number — treat a bump as a product decision. */
-const PLANNING_MOMENT_BUDGET = 20_000; // 15,171 + 4,000 = 19,171
+const PLANNING_MOMENT_BUDGET = 18_200; // 13,891 + 4,000 = 17,891 (was 19,171 pre-R1)
 
 /** MAX_OUTPUT_CHARS is a runtime cap, but raising it raises every
  *  planning moment's price — gate the constant itself. */

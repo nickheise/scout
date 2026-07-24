@@ -299,7 +299,36 @@ now collectable via D-018 field notes.
 
 ---
 
-## Pending decisions
+## D-020 — R1 landed: surfacing's dismissal branch behind a context pointer, scenario-verified (2026-07-24, accepted)
+
+The last of the ruled restructurings (skill-checklist-review.md R1).
+Dismissal capture and the archive nudge — material serving only the
+wave-off and wrap/milestone branches — moved verbatim from
+`skills/surfacing/SKILL.md` into `skills/surfacing/dismissals.md`,
+behind a pointer section. SKILL.md drops 15,574 → 13,891 chars (~420
+tokens off every planning moment, the T2 cost center); budgets cut in
+the same diff per D-017 (surfacing 16,000 → 14,200; the combined
+planning-moment ceiling 20,000 → 18,200).
+
+The named risk — does dismissal bookkeeping still execute when the
+procedure is one hop away — was tested before landing: five isolated
+scenario agents ran the restructured skill cold (given only trigger
+context, never the procedure), with effects verified independently on
+disk (12/12 checks). Planning regression: keyword trap killed at gate
+(a), already-committed choice killed at (b), one card surfaced with its
+condition quoted verbatim, closed-enum ledger lines only. Wave-off:
+silent capture, increment + `dismissed-explicit` line. Nudge threshold:
+asked once in the exact documented shape, no marker without an answer,
+no archive. Nudge suppression: marker respected, silent. Wrap: CHANGELOG
+evidence judged built-differently (not no-signal), `dismissed-inferred`
+line naming the alternative. Every dismissal-branch agent explicitly
+followed the SKILL.md → dismissals.md pointer.
+
+Scope honesty: these scenarios verify the procedure *across the hop*
+under explicit invocation; whether surfacing gets invoked at all at
+real wave-off/wrap moments (the description-only trigger, review finding
+t2) is a production question that only dogfooding answers — field notes
+(D-018) are the instrument.
 
 | # | Question | Source | Status |
 |---|---|---|---|
