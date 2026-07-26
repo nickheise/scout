@@ -1,6 +1,6 @@
 {
   "name": "scout",
-  "version": "0.4.0",
+  "version": "0.4.1",
   "description": "Memory for your coding agent's taste, not its transcripts. Save a link once \u2014 Scout hands it to your agent at the exact moment it applies. Local-first, zero keys, ships empty. File-over-app: a Scout update never touches your pack.",
   "author": {
     "name": "Nick Heise"
@@ -8,7 +8,6 @@
   "homepage": "https://github.com/nickheise/scout",
   "repository": "https://github.com/nickheise/scout",
   "license": "MIT",
-  "hooks": "./hooks/hooks.json",
   "skills": [
     "./skills/add",
     "./skills/start",

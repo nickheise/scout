@@ -426,7 +426,7 @@ locked seven-verb slate (it's neither `survey` nor `setup`'s job as
 currently scoped) — reopening that slate is a separate decision, not
 implied by this one. No verb added, no code written.
 
-**Deferred to a later review — noted, not resolved:** whether the
+**Deferred to a later review — noted, not resolved (see also D-023):** whether the
 "dynamic workflows" era normalizes practices Scout's own tenets currently
 reject (the source post's own example — mining recent chat sessions for
 corrections — is precisely what `setup` Hard Rule 3 forbids; Scout's
@@ -434,3 +434,55 @@ courier pattern exists to keep that boundary user-carried, not
 agent-crossed). No tenet changes now. Revisit once real-world workflow
 practice has matured enough to judge whether that tension is worth
 reopening, not on a fixed date.
+
+---
+
+## D-023 — Install was broken by a redundant manifest hooks key; verify installs empirically (2026-07-26, accepted)
+
+A user install of v0.4.0 failed outright: `Duplicate hooks file detected:
+./hooks/hooks.json resolves to already-loaded file`. Root cause:
+`.claude-plugin/plugin.json` declared `"hooks": "./hooks/hooks.json"` while
+Claude Code already auto-loads that conventional path, so the manifest key
+registered it twice. Per the plugins reference, `manifest.hooks` exists only
+to point at *additional* hook files beyond the standard one.
+
+Three things worth recording beyond the one-line fix.
+
+1. **The failure was total, and silent to our own CI.** `claude plugin list`
+   reported `Status: × failed to load` — not a degraded hooks layer but the
+   entire plugin unavailable, every verb and the MCP server included. Yet
+   `claude plugin validate --strict .` passed green, because with both
+   manifests present it validates only the *marketplace* manifest, and
+   because duplicate-hooks detection happens at load time, not validate
+   time. Our packaging test and CI both relied on `validate`, so nothing
+   caught it. **Consequence: `validate` is necessary but not sufficient.
+   Release checks must include a real install into an isolated
+   `CLAUDE_CONFIG_DIR` and an assertion on `plugin list` status** — the
+   check that would have caught this. Worth automating in
+   `test/packaging.test.mjs` when the CI runner has a `claude` binary
+   available.
+2. **Version bumps are the delivery mechanism, not bookkeeping.** Because
+   `plugin.json` sets an explicit `version`, installed users only receive
+   updates when it changes. A fix committed without a bump reaches nobody
+   on the subscribe-not-fork path. Bumped 0.4.0 → 0.4.1 in both
+   `plugin.json` and `marketplace.json`.
+3. **Surface support, now documented rather than assumed.** Checked against
+   the platform docs while answering a related user question: plugins —
+   including hooks — do work in the Claude Desktop app's **Code** tab,
+   which shares configuration files with the CLI, installed through the
+   plugin manager UI rather than `/plugin`. The desktop **Chat** tab is a
+   different surface: plugin *skills* run there, hooks and subagents do
+   not. Plugins are unavailable in WSL sessions, and cloud sessions need
+   the plugin declared in `.claude/settings.json` `enabledPlugins`. The
+   README's "Where it works" table now states this; previously the docs
+   said only "Claude Code" and left users to guess whether the desktop app
+   counted.
+
+Incidental finding, recorded because it bears on D-017's cost model:
+`claude plugin details` reports Scout's always-on cost as ~1,116 tokens,
+which contradicts the token audit's ~195. The audit is right and the CLI's
+projection is a naive sum that ignores `disable-model-invocation: true` —
+verified by asking a live model in an isolated install to name every
+`scout` skill it could see, which returned `scout:surfacing` alone. No
+action needed; noted so the discrepancy isn't re-litigated from the CLI's
+number later.

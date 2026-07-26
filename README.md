@@ -1,271 +1,154 @@
 # Scout
 
-**Scout is memory for your coding agent's taste** — the libraries, tools, and
-practices you meant to use, resurfaced at the exact moment they apply. Not a
-transcript-memory tool: Scout never reads session history, keeps no
-database, and does no vector recall. It's a plain folder of entries you own,
-compiled into a small ambient manifest your agent already carries into every
-plan — the way it "knows" React exists. No trigger to miss, nothing to
-search for, no server, no account, no API key.
+Scout remembers the tools and practices you meant to use, and reminds your
+coding agent about them at the moment they'd actually help.
 
-> If you've found `scout` in the community marketplace and expected a
-> web-search plugin: that's a different project by a different author. This
-> is **Scout for Claude Code** — the pack-and-manifest tool — installed from
-> its own marketplace at `nickheise/scout`. Plugin names are per-marketplace,
-> not global, so the two coexist without conflict (see
-> [Coexistence](#coexistence-with-the-community-scout-plugin) below).
+You save something once — a library, a habit. Scout compiles everything
+you've saved into a short list that lives in your project's `CLAUDE.md`, so
+your agent always knows those things exist, the way it already knows React
+exists. Then, when you're planning a feature, Scout checks your list and
+speaks up only if something genuinely fits.
 
-### Isn't this just…?
+No database, no account, no API key. Scout never reads your chat history.
+Your saved entries are plain JSON files in a folder you own.
 
-A few comparisons, since "memory for your coding agent" sounds like several
-existing things:
-
-- **A memory plugin?** Memory plugins remember what you *said* — session
-  transcripts, compressed and recalled. Scout remembers what you meant to
-  *use*. No database, no daemon, no recall-everything. A capped, curated
-  manifest of your own tools, plus reports at planning moments. Nothing
-  else.
-- **A knowledge base with extra steps?** Knowledge stores are pull-based:
-  they work great right up until the step that always fails — remembering
-  to ask. Scout is push-based and gated. The manifest is simply *in
-  context*; reports arrive unbidden. You never query your pack, because the
-  day you need to is the day it's failed.
-- **An awesome list?** An awesome list is someone else's taste, frozen.
-  Scout ships empty and fills with yours — what your repos show you
-  actually reach for, kept honest by archives and supersession. Two
-  people's packs should never look alike.
-- **Bookmarks?** Bookmarks are where this problem starts. Saving was never
-  the failing step — resurfacing is.
-
-## Install (60 seconds)
+## Install
 
 ```
 /plugin marketplace add nickheise/scout
 /plugin install scout@scout
+/scout:setup
 ```
 
-That's it — zero configuration, zero API keys. Scout ships empty; your first
-`/scout:add` starts the pack. (`scout@scout` is not a typo: the plugin is
-named `scout` and this repo is its own marketplace, also named `scout` — the
-part before `@` is the plugin, the part after is the marketplace it came
-from.)
+`scout@scout` looks like a typo but isn't: the plugin is named `scout`, and
+it ships from its own marketplace, also named `scout`.
 
-## The seven verbs
+Scout starts empty on purpose. `/scout:setup` asks where you want your pack
+to live, then offers a few optional extras — syncing to a git remote, a scan
+of your repos for tools you already reach for. Skipping all of them is a
+perfectly good setup.
 
-Claude Code plugins namespace their commands with the plugin name and a
-**colon** — not a space. Scout's real command surface is:
+## How it works
+
+**The manifest — always on.** Each active entry contributes one line to a
+block Scout writes into your project's `CLAUDE.md` (or `AGENTS.md`). Your
+agent carries it into every conversation. Nothing to trigger, nothing to
+remember.
+
+**Reports — at planning time.** When you finish a plan, Scout checks it
+against your pack. Every candidate has to clear three questions:
+
+1. Does this genuinely help *this* plan, or does it just share a keyword?
+2. Is adopting it now actually cheaper than retrofitting it later?
+3. Did you already pass on it in a similar situation?
+
+One "no" and the candidate is dropped, silently. At most two reports ever
+appear at once. Most planning moments produce nothing at all — that's the
+design, not a failure. A tool that suggests something every time teaches you
+to skim past it, and then the one suggestion that mattered dies with the
+noise.
+
+## Commands
 
 | Command | What it does |
 |---|---|
-| `/scout:add` | Add a link or a practice to your pack. Paste a URL and it's fetched, analyzed, and drafted; describe a practice in plain words and it drafts a step. Every draft is shown for confirmation before anything is saved. |
-| `/scout:start` | The per-project ritual. A short interview, scaffolding of init-step artifacts (changelog, decision log, …), and injection of the compiled manifest into your project's `CLAUDE.md`/`AGENTS.md` as a managed block. Idempotent — re-run any time. |
-| `/scout:list` | List your active pack, by type and phase. |
-| `/scout:archive` | Retire an entry, optionally pointing at what superseded it. |
-| `/scout:explain` | Show an entry's full provenance — where it came from, when it was verified, why it's in the pack. |
-| `/scout:survey` | Retroactive backstop: surveys the current project against your full active pack and reports anything that should have surfaced but didn't. |
-| `/scout:setup` | First-ever onboarding: choose your pack location, optionally point it at a git remote (Tier 1), optionally install the bare `/scout` router, and offer a history scan that proposes entries from your own revealed practices. |
+| `/scout:add` | Save something. Paste a URL and Scout fetches and analyzes it; describe a practice in plain words and Scout drafts it. You approve every draft before it's saved. |
+| `/scout:start` | Set Scout up in a project. Short interview, scaffolds any files your practices call for, writes the manifest block. Safe to re-run — that's how a project picks up new entries. |
+| `/scout:list` | Show what's in your pack. |
+| `/scout:archive` | Retire an entry, optionally pointing at whatever replaced it. |
+| `/scout:explain` | Show where an entry came from and why it's there. |
+| `/scout:survey` | Check a finished project against your whole pack and report anything that should have come up but didn't. A backstop, not a routine. |
+| `/scout:setup` | First-time setup. Run once. |
 
-All seven verbs are shipped. Because Scout is a subscribe-not-fork plugin,
-every fix and addition lands for installed users on their next update
-check — no reinstall, no manual step (see [the three-plane update
-model](#the-three-plane-update-model), below).
+Plugin commands use a colon, not a space: `/scout:add`, not `/scout add`. If
+you'd rather type the space form, Scout ships a tiny personal router that
+forwards `/scout add` to the real command — `/scout:setup` offers to install
+it, or see [`docs/router.md`](docs/router.md).
 
-## Cold start
+## Your pack
 
-Scout ships empty on purpose (tenet 5 — structure, not content: shipping
-"the best 25 libraries" would just homogenize everyone's output). That
-raises an obvious question: what does day one look like with nothing in
-the pack yet? Run `/scout:setup` once, right after install:
+One JSON file per entry, in a folder you pick (`~/.scout/pack` by default).
+Readable with `cat`, diffable with git.
 
-1. **Confirm where the pack lives** — the default, `~/.scout/pack`, needs
-   zero configuration; optionally point it at a git remote you own
-   (Tier 1: sync, history, a free browse page) and optionally install the
-   bare `/scout` router (see [below](#prefer-typing-scout-add-without-the-colon)).
-2. **The history scan, offered, not imposed.** Rather than ask what you
-   *say* you reach for — stated preferences are unreliable, and the
-   question itself imposes a menu — Scout reads a corpus you name (your
-   repos: `package.json` dependencies, recurring practice files, patterns
-   across per-project `CLAUDE.md`s) and proposes entries from what you
-   *actually* did, evidence attached ("framer-motion — found in 5 of 7
-   repos"). You name the roots; nothing is read until you do. Every
-   proposal is a draft you approve individually — the scan proposes, you
-   ratify. Declining is a complete, correct answer; `/scout:add` builds
-   the same pack one deliberate entry at a time.
-3. **The courier prompt**, for the one corpus Scout will never touch
-   itself: your claude.ai chat history. `/scout:setup` points you at
-   [`docs/courier-prompt.md`](docs/courier-prompt.md) — a prompt *you*
-   run yourself, in your own chat session, scoped to recurring tooling
-   only (never a personality read). You read the output privately and
-   carry whatever rings true into `/scout:add` by hand. The boundary gets
-   crossed by your own hands, or not at all.
+**Updating Scout never touches your pack.** Scout ships code; your entries
+are yours. Nothing Scout releases can rewrite, migrate, or delete a file in
+your pack. If Scout vanished tomorrow you'd still have a folder of plain
+JSON.
 
-Skipping every optional piece is still a complete, successful setup —
-an empty pack is the starting line, not a failure state.
+Point that folder at a git remote you own and you get sync across machines,
+full history, and a free browse page on GitHub Pages — see
+[`docs/pages.md`](docs/pages.md). Entirely optional.
 
-## Reports
-
-Beyond the always-on manifest (the ambient layer described above, which
-works in any agent), Scout has a second, Claude-Code-only layer: gated,
-planning-moment reports. There is deliberately no "use my pack" command — reports arrive
-unbidden, at the moment they'd apply, and `/scout:survey` (below) is a
-backstop for what the ambient hook missed, not a retrieval workflow you run
-to go looking. The day that command felt necessary would mean zero-recall
-had already failed (tenet 7).
-
-- **The planning-moment hook** fires on `PreToolUse(ExitPlanMode)` (primary
-  trigger — the model has just written a full plan) and falls back to
-  `PostToolUse(TodoWrite)` for todo-driven sessions that skip plan mode. It's
-  a plain Node script (`bin/scout-hook-plan.mjs`) — cheap, no LLM call, no
-  network, and it never judges anything itself: it only points the host
-  agent at the surfacing skill with the plan text in hand.
-- **The gate** (`skills/surfacing`) does the actual judging: every candidate
-  answers three questions, in order — does this genuinely benefit the plan
-  (not a surface-level keyword match); is adopting it now meaningfully
-  cheaper than retrofitting later; was it already dismissed in a similar
-  context. A rejection at any question ends that candidate silently; it's
-  logged to a rejection ledger, never shown.
-- **Hard cap: 2 reports per planning moment.** Whatever else survives the
-  gate gets cut by leverage and ledgered, not squeezed onto the card.
-- **"Nothing surfaced" is the good, common result** — not a fallback message
-  to apologize for. A card only appears when a match earns its place; most
-  planning moments should produce silence.
-- **`/scout:survey`** runs the identical gate retroactively against a
-  project's actual history (commits, CHANGELOG, dependencies) instead of a
-  live plan — the backstop for whatever the ambient hook missed. Same cap,
-  same restraint, same ledger.
-
-**Delivery honesty (D-013):** the hook spike (`docs/research/hook-spike.md`)
-confirmed, from decompiled CLI source, that `PreToolUse(ExitPlanMode)`
-reliably carries the model's full plan text — but whether a hook's
-`additionalContext` output demonstrably reaches the model, versus being
-silently dropped, was **not** confirmed with a live run in the build
-sandbox (no authenticated `claude` session was available there). Rather than
-ship an unverified claim, the hook implements both delivery mechanisms
-behind one constant: `additionalContext` injection (the shipped default,
-pending that confirmation) and an `exit 2`/stderr block (a verified-working
-fallback — coarser, since it interrupts the tool call once instead of
-quietly informing). Run `docs/hook-selfcheck.md`'s two-minute procedure on
-your own machine to find out which one you're actually getting, and flip the
-constant in `bin/scout-hook-plan.mjs` if it turns out to be the fallback.
-
-### Prefer typing `/scout add` without the colon?
-
-A plugin can never claim the bare `/scout` command — that namespace belongs
-to *personal* skills. Scout ships a tiny, logic-free personal router
-(`templates/scout-router/`) that installs to `~/.claude/skills/scout/` and
-forwards `/scout <verb> <args>` straight into the plugin's real machinery.
-It contains no duplicated logic, so it almost never needs updating even as
-the plugin evolves underneath it. `/scout:setup` offers to install it for
-you interactively (Step 3 of that skill); see `docs/router.md` for the
-manual install steps if you'd rather do it yourself.
+Projects pick up new entries the next time you run `/scout:start` there —
+not automatically, and never silently.
 
 ## Browse your pack
 
-Once you have entries, `page/index.html` is a self-contained, zero-build
-browse page: Pack and Steps tabs, stale-age badges, and a graveyard of
-archived entries with their supersession chains (D-006 — hand-polished to
-shadcn-grade, no framework, no build step). Open it straight from disk
-(`open page/index.html`) and drag your pack folder onto it, or serve it
-over HTTP for a self-reading mode that fetches the pack directly — see
-[`page/README.md`](page/README.md) for both paths.
+[`page/index.html`](page/README.md) is one self-contained page — no build, no
+framework. Open it from disk and drag your pack folder onto it, or serve it
+over HTTP and it reads the pack directly.
 
-It's read-only by design (D-011): there's no writable connection from a
-static page back into your files. **Reactivate** on an archived card
-copies a plain-language instruction to your clipboard (`reactivate <id> in
-my scout pack`) for you to paste to your agent, which makes the actual
-edit — the same courier pattern used everywhere else a boundary gets
-crossed (see [Cold start](#cold-start), above).
+It's read-only, because a static page can't safely write to your files.
+"Reactivate" on an archived entry copies a plain instruction to your
+clipboard for you to paste to your agent, which makes the actual edit.
 
-Tier 1 (below) turns this into a free, publicly hosted browse page via
-GitHub Pages — no server, just your existing pack repo. See
-[`docs/pages.md`](docs/pages.md) for the repo layout and the two ways to
-wire it up, walked through against Scout's own seed pack.
+## Where it works
 
-## Tiers
-
-Tiers are depth, not paywalls — everything here is open source, and Tier 0
-alone is the whole product for most people.
-
-| Tier | What it adds | Requirements |
+| | Manifest | Reports |
 |---|---|---|
-| **0 — Plugin** (default) | Full Scout, as designed: local pack, ingestion, manifest, surfacing, all seven verbs. Working in under 60 seconds. | Just the plugin. Degrades gracefully outside Claude Code (see below) — nothing else required. |
-| **1 — Synced pack** | Point your pack folder at a personal git remote: cross-machine sync, history, a free Pages-hosted browse page ([`docs/pages.md`](docs/pages.md)). | A git remote you own. |
-| **2 — Remote connector** (optional) | A self-hosted MCP endpoint (e.g. a Cloudflare Worker) for claude.ai connectors and a permanent add-from-anywhere URL. Design and deploy-guide skeleton: [`docs/tier2-design.md`](docs/tier2-design.md) (document-only — D-010; build it only when you actually want it). | Self-hosting appetite. Documented, optional, never the default. |
+| Claude Code — terminal | yes | yes |
+| Claude Code — desktop app, **Code** tab | yes | yes |
+| Cursor, Codex, other agents | yes | no |
 
-## The three-plane update model
+The manifest is plain text in `CLAUDE.md`/`AGENTS.md`, so any agent picks it
+up. Reports need Claude Code's hook system, which other agents don't expose.
 
-Scout separates three things that change at different rates, so an update to
-one never touches the others:
+**On the desktop app**, install from the plugin manager UI instead of the
+`/plugin` command — the Code tab shares its config with the CLI, so hooks and
+skills work the same. (The desktop **Chat** tab is a different surface:
+plugin skills work there, hooks don't.)
 
-| Plane | Lives in | Update behavior |
-|---|---|---|
-| **Scout's code** — skills, hooks, MCP server | This plugin marketplace | **Subscribe-not-fork.** Push a fix here, every installed user has it on their next update check — no reinstall, no infrastructure. (Copy-the-files installs are a deliberate exception: they forked on purpose, and Scout never overwrites a fork.) |
-| **Your pack data** | Your own folder, optionally your own git repo | **Never touched by a Scout update, ever.** Entries carry a schema version; new Scout code reads old entries forever. This is the file-over-app promise, kept literally: nothing Scout ships can rewrite, migrate, or delete a file in your pack. |
-| **Compiled artifacts in your projects** — the manifest + standing-instructions block already written into some project's `CLAUDE.md` | That project's own `CLAUDE.md`/`AGENTS.md` | **Lazy.** A project picks up new pack entries and new Scout capabilities the next time you run `/scout:start` there — not automatically, and not silently. |
+Not currently supported: WSL sessions. For cloud sessions, add Scout to
+`enabledPlugins` in your repo's `.claude/settings.json` so it installs at
+session start.
 
-## Graceful degradation
+## Isn't this just…?
 
-The **manifest layer works in any agent** — Cursor, Codex, whatever you're
-running — because it's plain text compiled into `CLAUDE.md`/`AGENTS.md`.
-Your agent has standing awareness of your active pack on day one, everywhere,
-the same way it "knows" your dependencies exist.
+- **A memory plugin?** Those remember what you *said* — transcripts,
+  compressed and recalled. Scout remembers what you meant to *use*. No
+  database, no daemon.
+- **A knowledge base?** Those are pull-based: they work right up until the
+  step that always fails, which is remembering to go look. Scout pushes.
+  You never search your pack, because the day you need to is the day it
+  didn't work.
+- **An awesome list?** That's someone else's taste, frozen. Scout starts
+  empty and fills with yours. Two people's packs should look nothing alike.
+- **Bookmarks?** Saving was never the part that failed. Resurfacing is.
 
-The **reports layer is Claude Code-only.** Gated, planning-moment reports
-run on Claude Code's hook system, which other agents don't expose (and
-`/scout:survey`, the retroactive backstop to that layer, is a Claude Code
-plugin command). Outside Claude Code you keep full ambient awareness; you
-lose the proactive nudge at planning time. The docs say this plainly
-because a tool that quietly does less than advertised is worse than one
-that says so.
+## Good to know
 
-## File-over-app, kept literally
+There's an unrelated `scout` plugin (a web-search tool) by a different author
+in the community marketplace. Plugin names are scoped to the marketplace they
+came from, not global, so you can install both without conflict — they show
+up as `scout@scout` and `scout@shidoyu-scout`.
 
-Your pack is one JSON file per entry, in a folder you chose, readable and
-diffable with tools you already have. A Scout update is a change to *code* —
-skills, the compiler, the MCP server. It is never a migration script against
-*your* files. If Scout disappeared tomorrow, your pack would still be a
-folder of plain JSON you can read with `cat`.
+## Docs
 
-## Coexistence with the community `scout` plugin
-
-There is an unrelated `scout` plugin (a web-search tool) in the community
-marketplace, published by a different author. Plugin names in Claude Code
-are scoped to the marketplace they came from, not global, so installing both
-is safe: they show up as `scout@scout` (this project) and
-`scout@shidoyu-scout` (the community one), each with its own command
-namespace and no shared skill names to collide. This was verified empirically
-in an isolated `CLAUDE_CONFIG_DIR` — both plugins installed and enabled
-side by side with no conflict (`claude plugin list` showed both `enabled`,
-`claude plugin details` showed distinct component inventories). Observing
-the actual live `/scout:*` slash-command resolution inside an interactive
-session was **not** verified — the isolated sandbox has no authenticated
-session by design, and re-using the real login there was out of scope for a
-throwaway experiment. Since the two plugins don't share any skill name today
-(`add`/`start` vs. `fetch`/`search`/`setup`), there is nothing to actually
-disambiguate in practice.
-
-## Learn more
-
-- `docs/prd.md` — the product requirements this repo builds toward.
-- `docs/plan.md` — build plan, phases, and binding technical rules.
-- `docs/router.md` — install steps for the optional bare-`/scout` router.
-- `docs/courier-prompt.md` — the copyable chat-history prompt for cold
-  start (see [Cold start](#cold-start), above).
-- `docs/pages.md` — publishing your pack's browse page on GitHub Pages
-  (Tier 1); see [Browse your pack](#browse-your-pack), above.
-- `docs/tier2-design.md` — the self-hosted remote-connector design and
-  deploy-guide skeleton (Tier 2, document-only — D-010).
-- `docs/hook-selfcheck.md` — two-minute procedure to confirm which planning-moment
-  hook delivery mechanism (`additionalContext` vs. the `exit 2` fallback) is
-  actually reaching the model on your machine; see [Reports](#reports) above.
-- `DECISIONS.md` — the project's append-only decision log.
-- `CHANGELOG.md` — what shipped, when.
+- [`docs/prd.md`](docs/prd.md) — what this is meant to be.
+- [`docs/plan.md`](docs/plan.md) — build plan and technical rules.
+- [`docs/router.md`](docs/router.md) — installing the `/scout add` router.
+- [`docs/courier-prompt.md`](docs/courier-prompt.md) — the copyable prompt for
+  mining your own chat history, which you run yourself. Scout never reads it.
+- [`docs/pages.md`](docs/pages.md) — publishing your pack's browse page.
+- [`docs/tier2-design.md`](docs/tier2-design.md) — optional self-hosted
+  connector (design only).
+- [`DECISIONS.md`](DECISIONS.md) — why things are the way they are.
+- [`CHANGELOG.md`](CHANGELOG.md) — what shipped, when.
 
 ## Development
 
-Plain Node ≥18, zero npm dependencies for the core (the bundled MCP server is
-the one documented exception, using `@modelcontextprotocol/sdk`). No build
-step.
+Plain Node ≥18. No build step, and no npm dependencies except in the bundled
+MCP server, which uses `@modelcontextprotocol/sdk`.
 
 ```
 npm ci
@@ -275,4 +158,4 @@ node bin/scout-store.mjs validate --all --pack fixtures/seed-pack
 
 ## License
 
-MIT — see `LICENSE`.
+MIT — see [`LICENSE`](LICENSE).
