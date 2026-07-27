@@ -1,6 +1,8 @@
+"use client";
+
 import { useEffect, useLayoutEffect, useState } from "react";
 import { GitBranch } from "lucide-react";
-import { SITE } from "@/config";
+import { SITE } from "@/lib/config";
 import { cn } from "@/lib/utils";
 
 const CACHE_KEY = "scout-star-count-v1";

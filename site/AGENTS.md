@@ -1,22 +1,33 @@
+## Stack
+
+Next.js (App Router, static rendering) + Tailwind CSS v4 + shadcn/ui. Package
+manager is **pnpm**. Deployed to Vercel with Root Directory `site/`.
+
+Migrated from Astro on branch `site/next-migration`. The previous Astro build
+is preserved verbatim under `_astro-legacy/` — it is the source of truth for
+existing page copy and section content until the migration completes, and is
+excluded from TypeScript and from Next's route detection. Do not import from
+it, and do not run it.
+
 ## Development
 
-When starting the dev server, use background mode:
+Start the dev server through the preview tools (`preview_start`), never via
+Bash. Configurations live in the **repo-root** `.claude/launch.json` — note
+that `site/.claude/launch.json` is not read by that tooling.
 
 ```
-astro dev --background
+pnpm dev      # next dev, port 3000
+pnpm build    # next build
+pnpm lint     # tsc --noEmit
 ```
-
-Manage the background server with `astro dev stop`, `astro dev status`, and `astro dev logs`.
 
 ## Documentation
 
-Full documentation: https://docs.astro.build
+Full documentation: https://nextjs.org/docs
 
-Consult these guides before working on related tasks:
+Consult these before working on related tasks:
 
-- [Adding pages, dynamic routes, or middleware](https://docs.astro.build/en/guides/routing/)
-- [Working with Astro components](https://docs.astro.build/en/basics/astro-components/)
-- [Using React, Vue, Svelte, or other framework components](https://docs.astro.build/en/guides/framework-components/)
-- [Adding or managing content](https://docs.astro.build/en/guides/content-collections/)
-- [Adding styles or using Tailwind](https://docs.astro.build/en/guides/styling/)
-- [Supporting multiple languages](https://docs.astro.build/en/guides/internationalization/)
+- [App Router: pages and layouts](https://nextjs.org/docs/app/api-reference/file-conventions/layout)
+- [Server and Client Components](https://nextjs.org/docs/app/getting-started/server-and-client-components)
+- [Metadata and OG images](https://nextjs.org/docs/app/api-reference/file-conventions/metadata)
+- [Styling with Tailwind](https://nextjs.org/docs/app/guides/tailwind-css)
