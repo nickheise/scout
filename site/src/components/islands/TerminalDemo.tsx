@@ -668,7 +668,16 @@ export function TerminalDemo({ className }: TerminalDemoProps) {
           </p>
         </div>
         <div
-          className="min-h-72 overflow-x-auto p-4 font-terminal text-sm [overflow-wrap:anywhere] sm:p-5"
+          /* The reserve prevents layout shift as lines type in, so it has to
+             clear the tallest frame in the script. Measured across the full
+             loop: 276px of content at 390px wide (where the URLs wrap), but
+             only 176px from `sm` up. A flat 288px therefore left the desktop
+             frame barely half full for the whole loop — dead space in the
+             page's focal element. `sm`+ gets 224px (176px + p-5); mobile gets
+             320px — the old 288px was itself 20px short of the 276px + p-4 it
+             needed, so the frame grew mid-loop and shifted the page below it,
+             which is the exact thing the reserve exists to prevent. */
+          className="min-h-80 overflow-x-auto p-4 font-terminal text-sm [overflow-wrap:anywhere] sm:min-h-56 sm:p-5"
           style={{
             opacity: fading ? 0 : 1,
             transition: `opacity ${LOOP_FADE_MS}ms ease-out`,

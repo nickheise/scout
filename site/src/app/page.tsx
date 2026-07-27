@@ -3,6 +3,11 @@ import { CopyBlock } from "@/components/islands/CopyBlock";
 import { StarCount } from "@/components/islands/StarCount";
 import { TerminalDemo } from "@/components/islands/TerminalDemo";
 import { SITE } from "@/lib/config";
+import { Footer } from "@/components/sections/Footer";
+import { HowItWorks } from "@/components/sections/HowItWorks";
+import { Install } from "@/components/sections/Install";
+import { Philosophy } from "@/components/sections/Philosophy";
+import { TracksPrompt } from "@/components/sections/TracksPrompt";
 
 /**
  * Hero — token system + primitives (P1), islands wired to them (P2).
@@ -57,7 +62,13 @@ export default function Home() {
             </div>
           </div>
         </SectionShell>
+
+        <HowItWorks />
+        <Philosophy />
+        <TracksPrompt />
+        <Install />
       </main>
+      <Footer />
     </>
   );
 }
