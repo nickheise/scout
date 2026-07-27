@@ -8,12 +8,24 @@ import { cn } from "@/lib/utils";
 const CACHE_KEY = "scout-star-count-v1";
 const CACHE_TTL_MS = 6 * 60 * 60 * 1000; // 6h
 
+/**
+ * Below this, the count is suppressed and only the "GitHub" label renders.
+ *
+ * A star count is social proof; a *low* star count is the opposite, and "0"
+ * is the worst of all. The repo is real and public, so the fetch succeeds and
+ * honestly reports whatever it finds — the honest answer just isn't worth
+ * putting in the hero until there's something behind it. Tune freely; the
+ * suppressed state is the same no-count, no-layout-shift render used for
+ * fetch failures, so raising or lowering this is visually safe.
+ */
+const MIN_DISPLAY_STARS = 25;
+
 interface StarCache {
   count: number;
   fetchedAt: number;
 }
 
-// Astro/React SSR renders this component to static HTML at build time;
+// Next prerenders this component to static HTML at build time;
 // useLayoutEffect only actually runs in the browser during hydration, so
 // this guard just avoids the (harmless) "does nothing on the server"
 // console warning during that build-time render.
@@ -114,16 +126,20 @@ export function StarCount({ className }: { className?: string }) {
     <a
       href={SITE.githubUrl}
       className={cn(
-        "inline-flex items-center gap-1.5 rounded-sm text-sm font-medium text-ink transition-colors motion-reduce:transition-none",
-        "[@media(hover:hover)_and_(pointer:fine)]:hover:text-forest-600",
-        "outline-none focus-visible:ring-3 focus-visible:ring-ring/50",
+        "inline-flex items-center gap-1.5 rounded-sm text-sm font-medium text-tone-fg transition-colors motion-reduce:transition-none",
+        "hover:text-tone-accent",
+        "focus-ring",
         className,
       )}
     >
-      <GitBranch aria-hidden="true" className="size-[18px] shrink-0" />
+      <GitBranch
+        aria-hidden="true"
+        strokeWidth={1.75}
+        className="size-[18px] shrink-0"
+      />
       <span>GitHub</span>
-      {count !== null && (
-        <span className="tabular-nums text-ink-muted">
+      {count !== null && count >= MIN_DISPLAY_STARS && (
+        <span className="tabular-nums text-tone-fg-muted">
           {formatStarCount(count)}
         </span>
       )}

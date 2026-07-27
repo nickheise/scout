@@ -1,6 +1,7 @@
 "use client";
 
 import { useCallback, useEffect, useRef, useState } from "react";
+import { Check, Copy } from "lucide-react";
 import { cn } from "@/lib/utils";
 
 declare global {
@@ -100,13 +101,13 @@ export function CopyBlock({
     <div
       data-slot="copy-block"
       className={cn(
-        "group flex flex-col gap-3 rounded-lg border border-ink/15 bg-paper-50 p-4 sm:flex-row sm:items-center sm:justify-between sm:gap-4",
+        "group flex flex-col gap-3 rounded-lg border border-tone-border bg-tone-surface p-4 shadow-tone-card-sm sm:flex-row sm:items-center sm:justify-between sm:gap-4",
         className,
       )}
     >
       <TextTag
         className={cn(
-          "min-w-0 flex-1 font-mono text-sm text-ink",
+          "min-w-0 flex-1 font-mono text-sm text-tone-fg",
           isMultiline
             ? "whitespace-pre-wrap leading-relaxed text-left"
             : "overflow-x-auto whitespace-nowrap",
@@ -121,22 +122,22 @@ export function CopyBlock({
         onClick={handleCopy}
         aria-label={`Copy ${label} to clipboard`}
         className={cn(
-          "inline-flex shrink-0 items-center gap-2 self-start rounded-md border border-ink/15 bg-paper-100 px-3 py-1.5 text-sm font-medium text-ink",
-          "transition-colors [@media(hover:hover)_and_(pointer:fine)]:hover:bg-paper-200 motion-reduce:transition-none",
+          "inline-flex shrink-0 items-center gap-2 self-start rounded-control border border-tone-border bg-tone-surface-sunken px-3 py-1.5 text-sm font-medium text-tone-fg",
+          "transition-colors hover:bg-tone-border motion-reduce:transition-none",
           "active:scale-[0.97] motion-reduce:active:scale-100",
-          "outline-none focus-visible:border-ring focus-visible:ring-3 focus-visible:ring-ring/50",
+          "focus-ring",
           "sm:self-auto",
         )}
       >
-        <svg
-          width="16"
-          height="16"
-          aria-hidden="true"
-          focusable="false"
-          className={cn("shrink-0", copied && "text-forest-600")}
-        >
-          <use href={copied ? "#icon-check" : "#icon-copy"} />
-        </svg>
+        {copied ? (
+          <Check
+            aria-hidden="true"
+            strokeWidth={1.75}
+            className="size-4 shrink-0 text-tone-accent"
+          />
+        ) : (
+          <Copy aria-hidden="true" strokeWidth={1.75} className="size-4 shrink-0" />
+        )}
         <span>{copied ? "Copied" : "Copy"}</span>
       </button>
 

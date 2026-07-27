@@ -8,6 +8,7 @@ import {
   type MutableRefObject,
   type ReactNode,
 } from "react";
+import { MapPin, Pause, Play, Terminal } from "lucide-react";
 import { cn } from "@/lib/utils";
 
 /**
@@ -15,26 +16,30 @@ import { cn } from "@/lib/utils";
  *
  * A hand-built beat-script player: a small data array of typed-line/output/
  * wait/scene-break steps (DEMO_SCRIPT below, transcribed verbatim from
- * docs/demo-script.md) drives real DOM text inside a paper-register terminal
- * frame. No video, no canvas — every character on screen is a real text node.
+ * docs/demo-script.md) drives real DOM text inside a terminal frame styled to
+ * the new token system. No video, no canvas — every character on screen is a
+ * real text node.
  *
- * This island only ever mounts for visitors who don't prefer reduced motion —
- * Demo.astro hydrates it with `client:media="(prefers-reduced-motion:
- * no-preference)"`, so the animation's JS is never fetched or executed for
- * reduced-motion users at all. Demo.astro separately renders a fully static,
- * zero-JS two-frame fallback (real <TerminalFrame> markup) for that audience,
- * toggled purely by the `motion-reduce:` CSS variant — that CSS swap is
- * instant and needs no JS help. The one thing hydration-time gating can't
- * catch is the preference flipping *after* mount: this component still
- * carries a `prefers-reduced-motion` change listener (alongside a
- * `visibilitychange` one) purely to pause the timeline in those two cases,
- * so it never keeps ticking state behind a backgrounded tab or a
- * newly-hidden `display:none` container.
+ * In the old Astro build this island only ever mounted for visitors who
+ * don't prefer reduced motion — Demo.astro hydrated it with
+ * `client:media="(prefers-reduced-motion: no-preference)"`, and rendered a
+ * separate fully static, zero-JS two-frame fallback (real <TerminalFrame>
+ * markup) for the `reduce` audience, toggled purely by a `motion-reduce:`
+ * CSS variant. That Astro-level split does not exist in the Next.js
+ * migration — this component now always mounts, for both preferences — so
+ * it detects `prefers-reduced-motion` itself and, when it matches,
+ * statically renders the script's finished state (`computeFinalFrame`,
+ * below) instead of running the timed engine at all. The same listener also
+ * covers the preference flipping *after* mount, and (alongside a
+ * `visibilitychange` one) pauses the timeline so it never keeps ticking
+ * state behind a backgrounded tab or a newly-hidden `display:none`
+ * container.
  *
  * Motion budget: this is the page's entire animation budget (PLAN.md §3).
  * The only non-instant transition anywhere in this file is the report line's
- * 400ms opacity+transform fade — the sole use of --color-report on the site —
- * and the 400ms cross-fade the loop uses to restart. Everything else appears
+ * 400ms opacity+transform fade — the sole use of the reserved report token
+ * (var(--tone-report)) on the site — and the 400ms cross-fade the loop uses
+ * to restart. Everything else appears
  * or disappears in a single frame. Transform/opacity only, throughout.
  */
 
@@ -368,25 +373,89 @@ async function runScript(
   }
 }
 
+/**
+ * Pure, non-timed derivation of the script's finished state — every
+ * typed-line and output line fully resolved, in order, verbatim from
+ * DEMO_SCRIPT — for the `prefers-reduced-motion: reduce` audience.
+ *
+ * The old Astro build only ever mounted this component's JS for visitors
+ * without that preference (a separate zero-JS static frame handled the
+ * `reduce` case). Now that the component always mounts, `runScript`'s own
+ * pause gate (`waitUntilUnpaused`) simply blocks forever at step 0 for a
+ * reduced-motion visitor — the frame would otherwise stay empty
+ * indefinitely. This function does not touch the timeline engine above; it
+ * only computes what "the end of one pass through the script" looks like so
+ * the reduced-motion effect below can render it statically.
+ */
+function computeFinalFrame(): FrameState {
+  let title = ACT_1_TITLE;
+  let lines: RenderLine[] = [];
+  let idCounter = 0;
+  const nextId = () => `final-${idCounter++}`;
+
+  for (const step of DEMO_SCRIPT) {
+    switch (step.kind) {
+      case "typed-line": {
+        if (step.appendToLast) {
+          const idx = lines.length - 1;
+          if (idx >= 0) {
+            let base = lines[idx].text;
+            if (base && !base.endsWith(" ")) base += " ";
+            lines = lines.slice();
+            lines[idx] = { ...lines[idx], text: base + step.text, cursor: false };
+          }
+        } else {
+          lines = [
+            ...lines,
+            { id: nextId(), text: step.text, variant: step.variant, cursor: false },
+          ];
+        }
+        break;
+      }
+      case "output": {
+        lines = [
+          ...lines,
+          ...step.lines.map(({ text, variant }) => ({
+            id: nextId(),
+            text,
+            variant,
+            group: step.group,
+          })),
+        ];
+        break;
+      }
+      case "scene-break": {
+        title = step.nextTitle;
+        lines = [];
+        break;
+      }
+      case "wait":
+        break;
+    }
+  }
+
+  return { title, lines, sceneBreak: null };
+}
+
 /* ==========================================================================
  * Presentation
  * ========================================================================== */
 
 const VARIANT_CLASS: Record<LineVariant, string> = {
-  prompt: "text-ink font-medium",
-  card: "text-ink-muted",
-  success: "text-forest-600 font-medium",
-  dim: "text-ink-faint italic",
-  output: "text-ink",
+  prompt: "text-tone-fg font-medium",
+  card: "text-tone-fg-muted",
+  success: "text-tone-accent font-medium",
+  dim: "text-tone-fg-subtle italic",
+  output: "text-tone-fg",
   report: "font-medium",
-  "report-body": "text-ink pl-[2ch]",
+  "report-body": "text-tone-fg pl-[2ch]",
 };
 
 function Caret() {
   return (
     <span
       aria-hidden="true"
-      className="ml-0.5 inline-block h-[1em] w-[0.5ch] translate-y-[0.125em] animate-pulse bg-ink-muted align-text-bottom motion-reduce:animate-none"
+      className="ml-0.5 inline-block h-[1em] w-[0.5ch] translate-y-[0.125em] animate-pulse bg-tone-fg-muted align-text-bottom motion-reduce:animate-none"
     />
   );
 }
@@ -414,7 +483,7 @@ function DemoLine({ line }: { line: RenderLine }) {
   const content = (
     <>
       {line.variant === "prompt" && (
-        <span className="mr-2 select-none text-forest-600">❯</span>
+        <span className="mr-2 select-none text-tone-accent">❯</span>
       )}
       <span>{line.text}</span>
       {line.cursor && <Caret />}
@@ -431,7 +500,7 @@ function DemoLine({ line }: { line: RenderLine }) {
             ? "translate-y-0 opacity-100"
             : "translate-y-[4px] opacity-0",
         )}
-        style={{ color: "var(--color-report)" }}
+        style={{ color: "var(--tone-report)" }}
       >
         {content}
       </p>
@@ -455,7 +524,7 @@ function renderLines(lines: RenderLine[]) {
       nodes.push(
         <div
           key={`card-${group[0].id}`}
-          className="my-1 space-y-1 rounded-md border border-ink/15 bg-paper-100/70 px-3 py-2.5"
+          className="my-1 space-y-1 rounded-panel border border-tone-border bg-tone-surface-sunken px-3 py-2.5"
         >
           {group.map((l) => (
             <DemoLine key={l.id} line={l} />
@@ -472,48 +541,25 @@ function renderLines(lines: RenderLine[]) {
 
 function SceneBreakStamp({ text }: { text: string }) {
   return (
-    <div
-      className="flex min-h-32 items-center justify-center gap-2 py-6 text-center"
-      style={{ fontFamily: "var(--font-heading)" }}
-    >
-      <svg
-        width="18"
-        height="18"
+    <div className="flex min-h-32 items-center justify-center gap-2 py-6 text-center">
+      <MapPin
         aria-hidden="true"
-        focusable="false"
-        className="shrink-0 text-trail-500"
-      >
-        <use href="#icon-waypoint" />
-      </svg>
-      <span className="italic text-ink-muted">{text}</span>
+        strokeWidth={1.75}
+        className="size-[18px] shrink-0 text-tone-accent"
+      />
+      <span className="italic text-tone-fg-muted">{text}</span>
     </div>
   );
 }
 
 function PlayPauseIcon({ playing }: { playing: boolean }) {
+  const Icon = playing ? Pause : Play;
   return (
-    <svg
-      width="14"
-      height="14"
-      viewBox="0 0 24 24"
-      fill="none"
-      stroke="currentColor"
-      strokeWidth="1.75"
-      strokeLinecap="round"
-      strokeLinejoin="round"
+    <Icon
       aria-hidden="true"
-      focusable="false"
-      className="shrink-0"
-    >
-      {playing ? (
-        <>
-          <path d="M8 5v14" />
-          <path d="M16 5v14" />
-        </>
-      ) : (
-        <path d="M7 4.5v15l13-7.5-13-7.5Z" />
-      )}
-    </svg>
+      strokeWidth={1.75}
+      className="size-3.5 shrink-0"
+    />
   );
 }
 
@@ -568,19 +614,24 @@ export function TerminalDemo({ className }: TerminalDemoProps) {
       document.removeEventListener("visibilitychange", onVisibilityChange);
   }, []);
 
-  // Re-sync if the OS-level reduced-motion preference flips mid-session.
-  // Demo.astro's `motion-reduce:` CSS already swaps the visible frame
-  // instantly (a live media query, no JS needed for that part) — this only
-  // stops the now-hidden timeline from continuing to tick behind
-  // `display:none`.
+  // Re-sync if the OS-level reduced-motion preference flips mid-session, and
+  // — since this component (unlike the old Astro build) now always mounts,
+  // for both preferences — render the finished script statically the
+  // instant `reduce` is detected. `runScript`'s pause gate alone would leave
+  // the frame empty forever for that audience (see computeFinalFrame above);
+  // this is the one place that renders content outside the timed engine, and
+  // it only ever shows the script's own verbatim final state.
   useEffect(() => {
     const mql = window.matchMedia("(prefers-reduced-motion: reduce)");
-    setPrefersReducedMotion(mql.matches);
-    const onChange = (e: MediaQueryListEvent) =>
-      setPrefersReducedMotion(e.matches);
+    const apply = (matches: boolean) => {
+      setPrefersReducedMotion(matches);
+      if (matches) update(() => computeFinalFrame());
+    };
+    apply(mql.matches);
+    const onChange = (e: MediaQueryListEvent) => apply(e.matches);
     mql.addEventListener("change", onChange);
     return () => mql.removeEventListener("change", onChange);
-  }, []);
+  }, [update]);
 
   useEffect(() => {
     pausedRef.current =
@@ -604,24 +655,20 @@ export function TerminalDemo({ className }: TerminalDemoProps) {
     <div ref={containerRef} className={cn("flex flex-col gap-3", className)}>
       <div
         aria-hidden="true"
-        className="overflow-hidden rounded-xl border border-ink/15 bg-paper-50 shadow-[0_1px_2px_rgba(0,0,0,0.04),0_8px_24px_-12px_rgba(0,0,0,0.12)]"
+        className="overflow-hidden rounded-card border border-tone-border bg-tone-surface shadow-tone-card"
       >
-        <div className="flex items-center gap-2 border-b border-ink/10 bg-paper-200/70 px-4 py-2.5">
-          <svg
-            width="14"
-            height="14"
-            className="shrink-0 text-trail"
+        <div className="flex items-center gap-2 border-b border-tone-border bg-tone-surface-sunken px-4 py-2.5">
+          <Terminal
             aria-hidden="true"
-            focusable="false"
-          >
-            <use href="#icon-waypoint" />
-          </svg>
-          <p className="truncate font-mono text-xs text-ink-muted">
+            strokeWidth={1.75}
+            className="size-4 shrink-0 text-tone-accent"
+          />
+          <p className="truncate font-terminal text-xs text-tone-fg-muted">
             {state.title}
           </p>
         </div>
         <div
-          className="min-h-72 overflow-x-auto p-4 font-mono text-sm [overflow-wrap:anywhere] sm:p-5"
+          className="min-h-72 overflow-x-auto p-4 font-terminal text-sm [overflow-wrap:anywhere] sm:p-5"
           style={{
             opacity: fading ? 0 : 1,
             transition: `opacity ${LOOP_FADE_MS}ms ease-out`,
@@ -635,22 +682,28 @@ export function TerminalDemo({ className }: TerminalDemoProps) {
         </div>
       </div>
 
+      {/* Under `prefers-reduced-motion: reduce` the timeline never runs —
+          computeFinalFrame renders the script's finished state statically —
+          so a play/pause control would be an interactive affordance that
+          does nothing. Omit it rather than ship a dead button. */}
+      {!prefersReducedMotion && (
       <button
         type="button"
         onClick={() => setUserPaused((p) => !p)}
         aria-pressed={userPaused}
         aria-label={userPaused ? "Play demo animation" : "Pause demo animation"}
         className={cn(
-          "inline-flex w-fit items-center gap-2 self-start rounded-md border border-ink/15 bg-paper-100 px-3 py-1.5 text-xs font-medium text-ink-muted",
+          "inline-flex w-fit items-center gap-2 self-start rounded-control border border-tone-border bg-tone-surface px-3 py-1.5 text-xs font-medium text-tone-fg-muted",
           "transition-[background-color,color,transform] duration-150 ease-out motion-reduce:transition-none",
-          "[@media(hover:hover)_and_(pointer:fine)]:hover:bg-paper-200",
+          "hover:bg-tone-border",
           "active:scale-[0.97] motion-reduce:active:scale-100",
-          "outline-none focus-visible:border-ring focus-visible:ring-3 focus-visible:ring-ring/50",
+          "focus-ring",
         )}
       >
         <PlayPauseIcon playing={!userPaused} />
         <span>{userPaused ? "Play" : "Pause"}</span>
       </button>
+      )}
     </div>
   );
 }
