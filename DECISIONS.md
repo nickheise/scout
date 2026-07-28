@@ -341,3 +341,121 @@ t2) is a production question that only dogfooding answers — field notes
 | P-7 | Browse page stack + reactivation mechanism | PRD §5.7/§7.1 gap | Resolved → D-006, D-011 |
 | P-8 | Tier 2 remote connector scope | Scope | Resolved → D-010 |
 | P-9 | PRD prose writes space form (`/scout add`) while colon form (`/scout:add`) is the only real syntax (D-007/D-012). Marketing flagged the same drift in the site PRD. Next PRD revision: switch prose to colon form, or add a one-line "space form = concept, colon form = typed" note. Owner's call — repo docs already use colon form everywhere. | Marketing thread, 2026-07-19 | Open — non-blocking |
+
+## D-021 — The field guide: Scout carries the reference layer (2026-07-28, accepted)
+
+An operating-doctrine review (Pocock's skills checklist, OpenAI's harness
+engineering, Anthropic's Claude-5 context-engineering rules, dynamic
+workflows, the Fable field guide) converged on "thin top layer, thick
+references" and a clean division of labor:
+
+- **`~/.claude/CLAUDE.md` carries judgment** — always-on, tiny: escalation
+  rules (single agent by default; a task earns a team when parallelizable,
+  adversarial, or long-running), model tiers expressed as roles
+  (judgment / throughput / mechanical), standing biases. Lives outside
+  this repo entirely — user-level, not per-project.
+- **Scout carries references** — surfaced, gated, capped: pack entries,
+  steps, and (new, D-022) reference entries.
+
+**The term:** *the pack is what you carry; the field guide is what Scout
+hands a project* — the compiled, written-into-the-project layer (manifest +
+standing-instructions block + phase checklists + surfaced references).
+"Field guide" names that artifact precisely; it is not a catch-all for
+every new element, because catch-all terms are how sediment starts. It
+extends the existing register (scout, pack, camp, courier, field notes
+per D-018) rather than adding a new one.
+
+**Explicitly out of Scout:** doctrine text (wrong altitude — global,
+always-on judgment belongs in user-level CLAUDE.md, not a per-project
+block) and full heavyweight skills (Scout surfaces pointers and
+checklists, not skill bodies).
+
+**Verb slate: unchanged.** All of D-021–D-023 rides the existing seven
+verbs (`add, archive, list, start, explain, survey, setup`) — see D-022
+and D-023 for how. No new verb is proposed; the locked slate (PRD 0.4)
+stands.
+
+Resolves the "expand Scout vs. build a parallel system" question in favor
+of expansion: the store, compiler, gate, dismissal ledger, and
+supersession chains are exactly the machinery a reference layer needs,
+and building them twice would be waste.
+
+## D-022 — Third entry type `reference`: exemplar | rubric | gotcha (2026-07-28, accepted)
+
+A reference earns a slot only as one of three kinds (the razor):
+
+- **exemplar** — an artifact the user owns whose *shape* should be
+  reproduced (a landing page whose copy worked, a component worth building
+  again, a PRD that landed). Points at the artifact (`source`); "make it
+  like this" outperforms description.
+- **rubric** — the checklist the user would review against (what makes
+  copy good on their sites, what makes a PR mergeable). Inline markdown
+  (`body`); this is what a reviewer agent gets handed.
+- **gotcha** — something the model reliably gets wrong unprompted
+  (personal conventions that contradict defaults, hard-won project traps).
+  Inline, short.
+
+Articles, blog posts, and general best-practice guides are **distilled or
+declined at ingest** — a frontier model already contains generic best
+practice; storing an article is storing training data. This extends
+"curated small" and the not-a-bookmark-manager non-goal to the new type:
+`/scout:add` asks "would you paste this into a review as the standard?"
+and drafts a rubric line from the answer, or declines. This is the one
+place `add` gains real decision surface — it now disambiguates among
+pack / step / reference (and, within reference, the three kinds) instead
+of just pack / step. Watch this in practice: if drafting can't infer the
+kind confidently, `add` starts asking the user to categorize, which is
+the cognitive load this whole design exists to avoid.
+
+Mechanics: references ride the existing machinery unchanged — the
+surfacing gate, dismissal counters, archives, supersession, lazy
+verification (`verified` staleness matters for exemplars especially: taste
+moves). `discipline` and `work_phase` (D-023) are recorded-not-enforced,
+per the `stack` precedent — context on cards, never hard filters, keeping
+the not-a-taxonomy non-goal intact.
+
+Compile: references render into their **own field-guide section with its
+own cap**, and do not compete with the pack manifest's ~25 ambient lines.
+Cap size for the reference section remains open (strawman: ~10 lines;
+gotchas likely deserve ambient lines, exemplars/rubrics mostly surface
+through work-phase checklists instead).
+
+**Schema versioning: resolved as v1-plus-enum.** Entries stay `schema: 1`;
+the `type` enum gains `"reference"` and a third `allOf` branch, per
+`schema/RESERVED.md`'s accretion-only rules. No `schema: 2` bump — the
+tolerant reader was designed for exactly this kind of evolution, and
+existing pack/step entries are untouched.
+
+Sketch (base fields `kind`/`body`/`source`/`discipline`/`work_phase`, the
+`allOf` branch, and three worked examples) captured outside this repo
+pending build: not yet applied to `schema/entry.v1.json`.
+
+## D-023 — Work-type phases and the wrap-phase taste loop (2026-07-28, accepted)
+
+Lifecycle phases (`init`/`ongoing`/`milestone`/`wrap`) say *when in the
+project* a step runs. They cannot say *what kind of work* is happening —
+and the recurring failure this addresses is forgetting practices at
+work-type moments (planning vs. frontend build vs. review), not lifecycle
+moments.
+
+- Steps and references gain an optional `work_phase`:
+  `planning | build | review | ship`. Null means "any" (current behavior,
+  unchanged for existing entries).
+- The planning-moment hook already covers `planning`. Triggers for
+  `build`/`review`/`ship` moments are **not yet verified** — per the D-013
+  delivery-honesty precedent, no `work_phase` value ships as "surfaced
+  automatically" until its trigger is confirmed on a live session; until
+  then those values render into the field guide's phase checklists (pull
+  at `/scout:start`, ambient thereafter) rather than claiming push.
+- **The taste loop:** one shipped `wrap`-phase step reviews the session's
+  corrections ("field notes," D-018 Phase A capture) and *proposes* rubric
+  updates — additions, edits, or supersessions to `reference` entries.
+  Write-deliberate, user-ratified (tenet 7): the step is a nudge into the
+  existing `/scout:add` confirm-before-commit flow, not a new verb. This
+  is the mechanism by which taste alignment compounds across projects
+  instead of resetting.
+
+Remains open: whether `work_phase` applies to pack entries too (a UI
+library is arguably `build`-phase); the exact review surface for proposed
+rubric updates (fold into `/scout:add` drafts vs. a dedicated wrap report
+— still no new verb either way); the reference-section cap value (D-022).
