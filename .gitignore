@@ -2,3 +2,9 @@ node_modules/
 .DS_Store
 .claude/launch.json
 .foglamp/
+
+# The root package is npm (package-lock.json is the tracked lockfile here).
+# A stray pnpm-lock.yaml at the root would be a second lockfile for the same
+# dependencies, with nothing saying which one wins. Root-anchored on purpose:
+# site/ genuinely uses pnpm and its site/pnpm-lock.yaml stays tracked.
+/pnpm-lock.yaml
