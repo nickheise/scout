@@ -1,0 +1,127 @@
+{
+  "$comment": "SKETCH — discussion artifact for D-022, 2026-07-27. Not a standalone schema: this is the amendment to schema/entry.v1.json. Three edits: (1) `type` enum gains \"reference\"; (2) the base gains five nullable fields (kind, body, source, discipline, work_phase) — all default null, all must-null on pack/step entries, all registered in schema/RESERVED.md per accretion-only rules; (3) a third allOf branch, below. OPEN QUESTION (header note): entries stay `schema: 1` on the theory that the tolerant reader preserves unknown types and only strict validation flags them on old code; if that's judged too loose, reference entries carry `schema: 2` and the const moves to an enum [1,2]. Decide before build. `work_phase` also lands on step entries (D-023) — that half of the amendment is one optional field and is not repeated here.",
+
+  "properties-added-to-base": {
+    "kind": {
+      "anyOf": [{ "enum": ["exemplar", "rubric", "gotcha"] }, { "type": "null" }],
+      "default": null,
+      "description": "Reference-only. Default: null (must be null/absent on pack and step entries). The razor, as a discriminator: exemplar = an owned artifact whose shape should be reproduced; rubric = the checklist the user reviews against; gotcha = what the model gets wrong unprompted. Required on reference entries. Anything that fits none of the three is distilled or declined at ingest — there is deliberately no fourth 'article' kind."
+    },
+    "body": {
+      "type": ["string", "null"],
+      "default": null,
+      "description": "Reference-only. Inline markdown content — the rubric checklist or the gotcha text. Required on rubric and gotcha kinds; null on exemplars (their content is the artifact itself, via `source`). Kept inline rather than as a sidecar file so a reference entry remains one readable, diffable JSON file (file-over-app); if rubrics outgrow inline comfort (~40 lines?), revisit with a sidecar-.md pattern — flagged as an open question, not decided here."
+    },
+    "source": {
+      "type": ["string", "null"],
+      "default": null,
+      "description": "Reference-only. Path or URL to an artifact the user owns — a repo path, a deployed page, a file. Required on exemplar kind; optional on rubric/gotcha (a rubric may cite the exemplar it was distilled from). Unlike pack `url`, this usually points at the user's own work, so lazy verification asks 'does this still exist / is this still my taste?' rather than 'is this package alive?'."
+    },
+    "discipline": {
+      "type": ["string", "null"],
+      "default": null,
+      "description": "Reference-only in this sketch (could later apply to steps). Free string — 'engineering', 'copy', 'design', 'product' — deliberately NOT an enum: recorded at ingest, shown as context on cards and used by gate judgment, never a hard filter and never a folder. Same recorded-not-enforced posture as pack `stack` (PRD §4, not-a-taxonomy)."
+    },
+    "work_phase": {
+      "anyOf": [{ "enum": ["planning", "build", "review", "ship"] }, { "type": "null" }],
+      "default": null,
+      "description": "Reference and step entries (D-023). Which kind of work this applies to; null = any. Compile groups field-guide checklists by this field. Delivery honesty: only `planning` has a verified push trigger today (the ExitPlanMode hook); other values are pull-at-start checklist material until their triggers are confirmed live."
+    }
+  },
+
+  "allOf-branch-added": {
+    "if": {
+      "required": ["type"],
+      "properties": { "type": { "const": "reference" } }
+    },
+    "then": {
+      "required": ["kind", "surfaces_when"],
+      "properties": {
+        "kind": { "enum": ["exemplar", "rubric", "gotcha"] },
+        "surfaces_when": {
+          "type": "array",
+          "minItems": 1,
+          "$comment": "Reused from pack entries verbatim: the gate matches on it, the dismissal ledger counts against it, supersession chains work unchanged. This reuse is the whole argument for expanding Scout rather than building a parallel system."
+        },
+        "ambient_line": {
+          "type": ["string", "null"],
+          "$comment": "OPTIONAL on references (required on pack entries). References compile into their own field-guide section with its own cap and never compete for the pack manifest's ~25 lines. Strawman: gotchas usually want an ambient_line (always-relevant warnings); exemplars and rubrics usually surface via work_phase checklists and leave this null. Cap size for the reference section: open (strawman ~10)."
+        },
+        "body": { "$comment": "required when kind is rubric or gotcha — enforced in a nested if/then on kind, elided in this sketch" },
+        "source": { "$comment": "required when kind is exemplar — same nested enforcement, elided" },
+
+        "url": { "type": "null" },
+        "repo": { "type": "null" },
+        "stack": { "type": "null" },
+        "install": { "type": "null" },
+        "summary": { "type": "null" },
+        "instruction": { "type": "null" },
+        "phase": { "type": "null" },
+        "automation": { "type": "null" },
+        "produces": { "type": "null" }
+      }
+    }
+  },
+
+  "example-entries": [
+    {
+      "schema": 1,
+      "id": "landing-copy-rubric",
+      "type": "reference",
+      "kind": "rubric",
+      "title": "Landing-page copy rubric",
+      "status": "active",
+      "added": "2026-07-27",
+      "verified": "2026-07-27",
+      "dismissals": 0,
+      "discipline": "copy",
+      "work_phase": "review",
+      "surfaces_when": [
+        "writing or reviewing marketing/landing-page copy",
+        "a reviewer agent is being briefed on website copy"
+      ],
+      "ambient_line": null,
+      "body": "- Headline states the outcome, not the feature\n- One idea per section; cut the second clause\n- CTA verbs are specific ('Start the scan'), never 'Learn more'\n- Read it aloud: anything you wouldn't say, delete",
+      "source": null,
+      "notes": "Distilled from the two pages I actually liked; supersedes nothing yet."
+    },
+    {
+      "schema": 1,
+      "id": "soti-drop-page-exemplar",
+      "type": "reference",
+      "kind": "exemplar",
+      "title": "Drop landing page — copy + layout shape",
+      "status": "active",
+      "added": "2026-07-27",
+      "verified": "2026-07-27",
+      "dismissals": 0,
+      "discipline": "copy",
+      "work_phase": "build",
+      "surfaces_when": [
+        "building a marketing or landing page for a developer-facing tool"
+      ],
+      "ambient_line": null,
+      "body": null,
+      "source": "https://drop.soti.net/example — or a repo path",
+      "notes": "The shape I want reproduced: short hero, one screenshot, three-beat feature rhythm."
+    },
+    {
+      "schema": 1,
+      "id": "no-barrel-files",
+      "type": "reference",
+      "kind": "gotcha",
+      "title": "No barrel files",
+      "status": "active",
+      "added": "2026-07-27",
+      "verified": "2026-07-27",
+      "dismissals": 0,
+      "discipline": "engineering",
+      "work_phase": null,
+      "surfaces_when": ["creating index.ts re-export files", "structuring a new TS package"],
+      "ambient_line": "Never add barrel files (index.ts re-exports) — direct imports only.",
+      "body": "Models default to barrel files; I never want them. Direct imports only, even when it means longer import paths.",
+      "source": null,
+      "notes": "The kind of thing I correct every single project — exactly why gotchas exist."
+    }
+  ]
+}

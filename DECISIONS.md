@@ -427,8 +427,9 @@ tolerant reader was designed for exactly this kind of evolution, and
 existing pack/step entries are untouched.
 
 Sketch (base fields `kind`/`body`/`source`/`discipline`/`work_phase`, the
-`allOf` branch, and three worked examples) captured outside this repo
-pending build: not yet applied to `schema/entry.v1.json`.
+`allOf` branch, and three worked examples) lives at
+`docs/research/reference-entry-schema-sketch.json`: not yet applied to
+`schema/entry.v1.json`.
 
 ## D-023 — Work-type phases and the wrap-phase taste loop (2026-07-28, accepted)
 
@@ -459,3 +460,50 @@ Remains open: whether `work_phase` applies to pack entries too (a UI
 library is arguably `build`-phase); the exact review surface for proposed
 rubric updates (fold into `/scout:add` drafts vs. a dedicated wrap report
 — still no new verb either way); the reference-section cap value (D-022).
+
+## D-024 — Marketplace renamed to `nickheise`; MCP server renamed to `store` (2026-07-28, accepted)
+
+Two naming fixes, raised by Nick against the ecosystem's own conventions
+rather than a functional problem — both installs and namespaces already
+worked, they just didn't read as deliberate.
+
+1. **Marketplace entry `name`: `scout` → `nickheise`** (`.claude-plugin/marketplace.json`).
+   D-007 named the repo its own single-plugin marketplace (the
+   mattpocock/skills pattern); D-016 separately locked the *plugin* entry
+   name to `scout` so the command surface never splits across listings.
+   Neither decision required the *marketplace* name to also be `scout` —
+   that was an unexamined default, and it produced the `scout@scout`
+   stutter (README already carried an inline "not a typo" apology for it)
+   plus a real risk: a marketplace name is globally registered per user
+   ("adding a second marketplace with the same name replaces the first"
+   — Claude Code plugin-marketplace docs), and `scout` is exactly the kind
+   of generic word a user might later register under a different source.
+   Checked against the ecosystem: `mattpocock/skills` names its
+   marketplace `mattpocock` (plugin `mattpocock-skills`) —
+   marketplace-named-for-owner, plugin-named-for-product is the
+   documented pattern, not an invented one. Install is now:
+   ```
+   /plugin marketplace add nickheise/scout
+   /plugin install scout@nickheise
+   ```
+   Commands are unaffected — `/scout:*` is governed by the plugin entry
+   name (D-016), not the marketplace name. Updated: `marketplace.json`,
+   README (install block + coexistence section), `docs/router.md`,
+   `templates/scout-router/SKILL.md`, `site/src/lib/config.ts`,
+   `site/DECISIONS.md` D-015's historical note left as-is (it recorded
+   what was true then).
+2. **MCP server `name`: `scout` → `store`.** The plugin-namespaced tool
+   surface was resolving to `scout:scout` (visible as
+   `mcp__plugin_scout_scout__scout_*` in-session) — three repetitions of
+   one word for what D-014/tenet-7 already established is pure machinery
+   (seven CRUD/compile tools + compile, no search surface). D-014's own
+   rule — "machinery keeps literal names" — argues for a name that
+   describes the machinery, not one that repeats the brand a third time.
+   `store` names what the server actually is: the pack's read/write
+   interface. Updated: `.mcp.json`, `bin/scout-mcp.mjs` (`serverInfo.name`),
+   `test/mcp.test.mjs` (handshake assertion). No tool names changed
+   (`scout_list_entries` etc. stay as-is — those are the tools, not the
+   server).
+
+Both are pure renames: no schema, verb, or command-surface change.
+241/241 tests green after the rename.
