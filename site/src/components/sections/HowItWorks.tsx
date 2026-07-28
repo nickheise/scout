@@ -47,7 +47,7 @@ const STEPS: { icon: typeof Backpack; title: string; body: ReactNode }[] = [
     body: (
       <>
         While you build, matches that survive Scout&rsquo;s gate surface as
-        one-line reports. Ignore them freely — Scout learns from that too.
+        compact reports. Ignore them freely — Scout learns from that too.
       </>
     ),
   },
