@@ -19,10 +19,10 @@ export interface CopyBlockProps {
   text: string;
   /** Human-readable label for the a11y string: "Copy {label} to clipboard". */
   label: string;
-  /** Long-form content (e.g. the tracks prompt) wraps in a <pre>; a single
+  /** Long-form content (e.g. the courier prompt) wraps in a <pre>; a single
    * command renders in an inline, horizontally-scrollable <code>. */
   multiline?: boolean;
-  /** GoatCounter custom-event name (e.g. "install-copy", "tracks-copy"). When
+  /** GoatCounter custom-event name (e.g. "install-copy", "courier-copy"). When
    * unset, or when window.goatcounter isn't present, this is a no-op. */
   goatcounterEvent?: string;
   className?: string;
@@ -30,9 +30,9 @@ export interface CopyBlockProps {
 
 /**
  * CopyBlock — the site's copy-button pattern (PLAN.md §1, PRD Beat 1/4.5).
- * Used for both the install one-liner and the tracks prompt; the two blocks
- * are a deliberate pair (copy-deck.md Beat 4.5) so they share this exact
- * component and styling.
+ * Used for both the install one-liner and the courier prompt; the two
+ * blocks are a deliberate pair (copy-deck.md Beat 4.5) so they share this
+ * exact component and styling.
  *
  * Native <button>, navigator.clipboard.writeText, icon+label swap to
  * "Copied" that reverts after ~2s, aria-live announcement for screen

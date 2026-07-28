@@ -43,7 +43,7 @@ clean; nothing here duplicates anything the plugin already does).
    the command won't resolve. Say plainly that the Scout plugin doesn't
    appear to be installed and point to
    `/plugin marketplace add nickheise/scout` then
-   `/plugin install scout@scout` — don't try to fake the verb's behavior
+   `/plugin install scout@nickheise` — don't try to fake the verb's behavior
    yourself.
 
 ## Step 1 — Parse

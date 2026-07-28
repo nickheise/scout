@@ -3,21 +3,29 @@ import { CopyBlock } from "@/components/islands/CopyBlock";
 import { StarCount } from "@/components/islands/StarCount";
 import { TerminalDemo } from "@/components/islands/TerminalDemo";
 import { SITE } from "@/lib/config";
+import { CourierPrompt } from "@/components/sections/CourierPrompt";
+import { FieldGuide } from "@/components/sections/FieldGuide";
 import { Footer } from "@/components/sections/Footer";
 import { HowItWorks } from "@/components/sections/HowItWorks";
 import { Install } from "@/components/sections/Install";
 import { Philosophy } from "@/components/sections/Philosophy";
-import { TracksPrompt } from "@/components/sections/TracksPrompt";
+import { TasteLoop } from "@/components/sections/TasteLoop";
 
 /**
  * Hero — token system + primitives (P1), islands wired to them (P2).
  *
- * Copy is the existing Astro hero copy, verbatim (P4 owns copy). The mockup
- * slot holds the real TerminalDemo island (P2). The CTA restores the
- * original hero composition (_astro-legacy/src/sections/Hero.astro): the
- * install one-liner rendered in a CopyBlock IS the primary CTA, with the
- * GitHub link + star count (StarCount) as the secondary action — P1's
- * generic "Install Scout" button was a regression from that pattern.
+ * Copy widened from the original Astro hero (libraries-only) per Nick's
+ * 2026-07-28 positioning call: the memory-category niche (site
+ * docs/scout-positioning.md) stays put, but the object of memory widens
+ * from "libraries" to "what works" — covering both pack entries and the
+ * step/ritual half of the schema (previously undersold; see value theme 3,
+ * scout-positioning.md, which had been deliberately kept to one quiet
+ * sentence in v1 — that constraint is lifted here). The mockup slot holds
+ * the real TerminalDemo island (P2). The CTA restores the original hero
+ * composition (_astro-legacy/src/sections/Hero.astro): the install
+ * one-liner rendered in a CopyBlock IS the primary CTA, with the GitHub
+ * link + star count (StarCount) as the secondary action — P1's generic
+ * "Install Scout" button was a regression from that pattern.
  */
 
 export default function Home() {
@@ -37,12 +45,14 @@ export default function Home() {
                 id="hero-title"
                 className="text-4xl font-semibold tracking-[-0.025em] text-balance text-tone-fg sm:text-display-sm lg:text-display"
               >
-                You keep finding great libraries. Then you forget they exist.
+                You keep finding what works. Then every new project starts
+                from scratch.
               </h1>
 
               <p className="max-w-xl text-lg text-pretty text-tone-fg-muted sm:text-xl">
-                Scout is a pack your coding agent carries. Drop links in —
-                Scout hands them back at the exact moment they apply.
+                Scout is a pack your coding agent carries — what to reach
+                for, how you work, what good looks like. Pack it once; Scout
+                hands it back at the exact moment it applies.
               </p>
 
               <CtaRow fine="Free and open source. No server, no account, no API key.">
@@ -63,9 +73,14 @@ export default function Home() {
           </div>
         </SectionShell>
 
+        {/* Band rhythm (BUILD-CONTRACT §1): tinted -> default -> sunken ->
+            default -> dark -> tinted -> default -> sunken. No two adjacent
+            bands repeat, and Philosophy stays the page's only dark chapter. */}
         <HowItWorks />
+        <FieldGuide />
+        <TasteLoop />
         <Philosophy />
-        <TracksPrompt />
+        <CourierPrompt />
         <Install />
       </main>
       <Footer />

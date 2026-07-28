@@ -27,8 +27,13 @@ export interface SiteConfig {
   starFallback: number | null;
   /** Hero headline variant (D-006). "A" is the default per copy-deck.md. */
   heroVariant: HeroVariant;
-  /** Beat 4.5 tracks prompt text — owned by Scout core (D-010). */
-  tracksPrompt: string;
+  /**
+   * Beat 4.5 courier-prompt text. Owned by Scout core (D-010) and mirrored
+   * here from `docs/courier-prompt.md` — that file is the source of truth.
+   * "Courier prompt" is the only name for this artifact; the site previously
+   * minted a competing "tracks prompt", now retired.
+   */
+  courierPrompt: string;
   /** <title> — placeholder pending D-004 name swap + copywriting pass. */
   siteTitle: string;
   /**
@@ -60,13 +65,37 @@ export const SITE: SiteConfig = {
   // `claude plugin validate --strict`). LAUNCH GATE: repo is not public yet —
   // these links/commands 404 until engineering pings that it's live.
   installCommand:
-    "/plugin marketplace add nickheise/scout\n/plugin install scout@scout",
+    "/plugin marketplace add nickheise/scout\n/plugin install scout@nickheise",
   starFallback: null,
   heroVariant: "A",
-  tracksPrompt:
-    "[Tracks prompt — supplied by Scout core before v1 launch]",
-  siteTitle: "Scout — the pack your coding agent carries",
+  // Verbatim from Scout core's `docs/courier-prompt.md` (D-010 resolved:
+  // shipped in Phase 4). Keep byte-identical to that file on every edit.
+  courierPrompt: `Look back across my conversation history on this account and find tools,
+libraries, frameworks, CLI utilities, or working practices that come up
+repeatedly — things I've reached for, recommended, or spoken favorably
+about in more than one separate conversation.
+
+Strict scope — follow exactly:
+- Only name the tool/library/practice itself and, in one clause, what it
+  is or does.
+- Do not summarize, quote, or describe the subject matter, project, or
+  content of any conversation.
+- Do not comment on my working style, personality, skill level, or habits
+  as a person — this is an inventory of tooling, not an assessment of me.
+- Exclude anything that appears in only a single conversation; I only want
+  things that recur.
+- Exclude anything that looks confidential, proprietary, or tied to a
+  specific employer or client's internal systems.
+
+Output format:
+- One line per candidate, ranked by how often it recurs, most frequent
+  first.
+- Each line: \`<name> — <what it is, one clause> (~N conversations)\`
+- No more than 7 lines total.
+- If nothing clearly recurs, say so plainly in one sentence instead of
+  padding the list with thin candidates.`,
+  siteTitle: "Scout — memory for how you build, not what you said",
   siteDescription:
-    "Memory for your coding agent's taste. Save a link once — Scout hands it to your agent at the exact moment it applies. No server, no account, no API key. Free and open source.",
+    "Memory for your coding agent's taste — the libraries you meant to use and the way you meant to work, resurfaced at the exact moment they apply. No server, no account, no API key. Free and open source.",
   goatcounter: null,
 };

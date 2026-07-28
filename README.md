@@ -41,14 +41,13 @@ existing things:
 
 ```
 /plugin marketplace add nickheise/scout
-/plugin install scout@scout
+/plugin install scout@nickheise
 ```
 
 That's it — zero configuration, zero API keys. Scout ships empty; your first
-`/scout:add` starts the pack. (`scout@scout` is not a typo: the plugin is
-named `scout` and this repo is its own marketplace, also named `scout` — the
-part before `@` is the plugin, the part after is the marketplace it came
-from.)
+`/scout:add` starts the pack. (First line is the repo the catalog lives in;
+second is `plugin@marketplace` — the plugin is `scout`, the marketplace it
+came from is `nickheise`.)
 
 ## The seven verbs
 
@@ -231,7 +230,7 @@ folder of plain JSON you can read with `cat`.
 There is an unrelated `scout` plugin (a web-search tool) in the community
 marketplace, published by a different author. Plugin names in Claude Code
 are scoped to the marketplace they came from, not global, so installing both
-is safe: they show up as `scout@scout` (this project) and
+is safe: they show up as `scout@nickheise` (this project) and
 `scout@shidoyu-scout` (the community one), each with its own command
 namespace and no shared skill names to collide. This was verified empirically
 in an isolated `CLAUDE_CONFIG_DIR` — both plugins installed and enabled

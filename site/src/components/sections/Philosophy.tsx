@@ -61,8 +61,9 @@ export function Philosophy() {
         </div>
 
         <p className="mt-12 text-xs text-tone-fg-muted">
-          Local-first. No telemetry. Ships empty — your pack is yours from
-          entry one. MIT licensed.
+          Local-first. No telemetry — including field notes, which stay on
+          your machine. Ships empty: your pack is yours from entry one. MIT
+          licensed.
         </p>
 
         <blockquote className="mt-8 border-l-2 border-tone-accent py-2 pl-4 italic text-tone-fg">
@@ -81,8 +82,8 @@ export function Philosophy() {
             Stated preferences — what you&rsquo;d answer in an onboarding
             interview — are unreliable. Revealed preferences — what your
             repos show you did, repeatedly — are the ground truth. Scout
-            reads tracks, not answers. That&rsquo;s why there&rsquo;s no
-            setup questionnaire.
+            reads your history, not your answers. That&rsquo;s why
+            there&rsquo;s no setup questionnaire.
           </p>
         </blockquote>
       </div>

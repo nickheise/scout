@@ -84,5 +84,116 @@ One entry per decision. Status: **Pending** (blocks or shapes work), **Decided**
 **Decision:** `docs/visual-language.md` is the reference for Scout's visual system — iconography families with glyph↔concept mappings (blaze↔reports/signal color, tracks↔revealed preferences, waypoint↔markers, pack↔category), palette semantics, type recap, reference sites, motion rules. Includes a decision-weight **avoid list**: fleur-de-lis/trefoil (trademarked org emblems), binoculars/spyglass/magnifier (surveillance register — fights zero-recall and the courier story), camo/tactical (military register, declined with Recon), merit-badge framing, mascots.
 **Open polish item:** sprite additions (blaze, tracks, cairn) and the padlock-reading pack glyph fix — schedule with the v1 polish pass.
 
+## D-020 · Positioning widened to libraries+practices; tracks retired; courier-prompt naming unified; roadmap beat added — **Decided** (2026-07-28)
+
+Four related fixes from the same discussion with Nick, landed together
+against the current Next.js build (`site/next-migration` branch).
+
+**1. Courier-prompt naming unified.** Scout core has always called this
+artifact **the courier prompt** (`docs/courier-prompt.md`, core PRD §7.3).
+This site had independently minted a second name, "the tracks prompt"
+(section id, eyebrow, CopyBlock label, GoatCounter event, config key) —
+two names for one artifact, both live in current docs. `TracksPrompt.tsx`
+→ `CourierPrompt.tsx`; `SITE.tracksPrompt` → `SITE.courierPrompt`,
+mirrored byte-for-byte from core's file (that file is the source of
+truth; keep them in sync on any future edit there). The placeholder text
+("[Tracks prompt — supplied by Scout core before v1 launch]") is gone —
+D-010's block condition (core ships it) was satisfied back in core's
+Phase 4; the site just hadn't picked it up.
+
+**2. "Tracks" retired from user-facing copy, kept where it's a line, not
+a label.** Scout core's D-014 retired `tracks` as a verb but explicitly
+kept it alive as a copy concept ("Scout reads tracks, not answers"). On
+review, the distinction that matters for *this* site is narrower: the
+sentence earns its place (an antithesis explaining why there's no setup
+questionnaire), but the section eyebrow "Tracks" did not — a label the
+reader has to decode before "Meet your taste" (which already says the
+thing) is exactly where brand vocabulary costs recall instead of being
+free, the one case the register doctrine (PRD §7.1) warns against. Fix:
+Philosophy's closing line now reads "Scout reads your history, not your
+answers" (same antithesis, no retired word); the eyebrow is now
+functional ("Before you install") rather than a lexicon label.
+
+**3. Positioning widened: libraries → libraries+practices, memory
+category unchanged.** `docs/scout-positioning.md`'s value theme 3 ("every
+project starts like your best project") was deliberately kept to one
+quiet sentence in v1 "to protect theme 1's clarity" — a call made
+2026-07-19, before Scout core's step/ritual half of the schema had real
+weight behind it (path-b-step.md, phase enum, `/scout:start` scaffolding
+all exist now). Nick's call: lift that constraint. The **category anchor
+stays exactly where D-018 put it** (memory for coding agents,
+taste-not-transcripts) — only the *object* of memory widens, from
+"libraries" to "what works," which is what the positioning canvas's
+one-line description already said ("the libraries, tools, and practices
+you meant to use") without the site ever executing the "practices" half.
+Applied: hero headline "You keep finding what works. Then every new
+project starts from scratch." (was libraries-only); hero subhead now
+names both halves explicitly; `siteTitle`/`siteDescription` reworded to
+match; HowItWorks' "Pack it" step now names both `/scout:add` paths (URL
+→ pack entry, plain text → step) instead of only the URL path; the
+trailing ritual line — previously one muted footnote sentence below the
+step grid — promoted to a labeled sub-block (icon + heading, same visual
+register as a Philosophy tenet) so it reads as a real beat rather than an
+afterthought. No new section for this one — it widens two existing beats.
+**Revisit trigger unchanged from D-018:** re-run after the first
+10–20 ecstatic users; watch specifically whether they turn out pack-led
+or steps-led, since that could flip the value-theme order this decision
+just set.
+
+**4. The site is written to the intended feature set, in present tense.**
+Nick's call, and it supersedes both the earlier "shipped features only"
+default *and* the first attempt at it. A "Designed, not shipped" Roadmap
+section was built first and rejected on review: quarantining the new
+capabilities into a labeled future-tense appendix is not integration, and
+it buries the very features that carry the widened positioning. The site
+may now run ahead of the plugin; **Nick holds the production gate and
+will not deploy until core has caught up.** Two new first-class sections
+replace the Roadmap:
+
+- **`FieldGuide.tsx`** — the D-021 distinction as a full beat ("The pack
+  goes in. The field guide comes out."). Three cards for the three entry
+  types — Links (`pack`), Practices (`step`), Standards (`reference`,
+  naming the D-022 exemplar/rubric/gotcha razor inside the card) — then
+  the compiled output: manifest, standing instructions, phase checklists.
+  Reference entries are presented as peers of the other two, not as a
+  preview.
+- **`TasteLoop.tsx`** — field notes as a *user-facing* feature and the
+  page's compounding argument ("It gets more like you, not less."). This
+  is the D-023 taste loop: corrections captured during a session become
+  proposed rubric updates at wrap, ratified through the normal
+  confirm-before-commit gate. Copy is written so it can never read as
+  Scout editing standards autonomously (tenet 7, write-deliberate).
+
+**Lexicon delineation, now executed on the site rather than only recorded.**
+Both terms are live user-facing nouns, in exactly one sense each:
+*field notes* = what Scout writes when a run deviates or the user
+corrects it — local-only, one per run, stored outside the pack dir so a
+Tier 1 synced pack can never carry it to a remote (D-018); *the field
+guide* = the compiled layer a project receives (D-021). The two are
+connected by the taste loop, which is the reason field notes are worth
+surfacing to users at all instead of staying maintainer-only. Philosophy's
+fine print now says "No telemetry — including field notes, which stay on
+your machine," so the new feature strengthens the trust claim instead of
+quietly complicating it.
+
+**Deliberately dropped from the site:** core PRD §11's two Parked ideas
+(expedition patches; supersession-chains-as-shared-pack-centerpiece).
+They were in the rejected Roadmap section; on the integration pass
+neither earned first-class treatment — patches are a collectible with no
+bearing on the core argument, and the supersession page is about a
+sharing surface that doesn't exist yet. Revisit if either gets built.
+
+**Sync obligation:** `FieldGuide.tsx` and `TasteLoop.tsx` mirror core
+DECISIONS.md D-021–D-023 by hand (no shared source file), and they
+describe behavior the plugin does not yet implement. Re-check both in the
+same pass as any core-side change to the reference layer, `work_phase`,
+or the wrap-phase taste step — and before the production deploy.
+
+**Also fixed in the same pass (synced from core D-024):** the install
+command mirrored in `SITE.installCommand` updated from
+`/plugin install scout@scout` to `/plugin install scout@nickheise` —
+core renamed its marketplace entry, not the plugin; `/scout:*` commands
+are unaffected.
+
 ## D-013 · Repo placement — **Decided** (2026-07-18)
 **Decision:** Build standalone in `scout-marketing`, structured for a clean lift into the Scout monorepo `/site` (PRD §6). Site-specific paths/config kept relative and self-contained. **Standing reminder: flag the lift to Nick once the site reaches a stable point (v0 gate or v1 pre-launch).**
