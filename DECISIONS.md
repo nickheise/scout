@@ -458,9 +458,21 @@ Three things worth recording beyond the one-line fix.
    caught it. **Consequence: `validate` is necessary but not sufficient.
    Release checks must include a real install into an isolated
    `CLAUDE_CONFIG_DIR` and an assertion on `plugin list` status** — the
-   check that would have caught this. Worth automating in
-   `test/packaging.test.mjs` when the CI runner has a `claude` binary
-   available.
+   check that would have caught this.
+
+   **Landed the same day.** `test/packaging.test.mjs` now carries three
+   guards, and all three were verified by reintroducing the bug and
+   confirming they fail: (i) a static assertion that `plugin.hooks` never
+   names `hooks/hooks.json` — no CLI needed, so it runs on every CI run
+   everywhere; (ii) an existence/shape check on the now-unreferenced
+   `hooks/hooks.json` itself, which nothing else guarded once the manifest
+   key was removed; (iii) a real marketplace install into a throwaway
+   `CLAUDE_CONFIG_DIR` asserting `plugin list` reports the plugin enabled
+   and `plugin details` shows all 8 skills and both hooks — self-skipping
+   when the `claude` binary is absent, so it's a local/dev gate rather than
+   a required CI signal. Note the *previous* version of the hooks test
+   asserted the opposite invariant (that the referenced file exists), which
+   is precisely why it stayed green through the outage.
 2. **Version bumps are the delivery mechanism, not bookkeeping.** Because
    `plugin.json` sets an explicit `version`, installed users only receive
    updates when it changes. A fix committed without a bump reaches nobody

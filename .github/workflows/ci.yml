@@ -44,6 +44,16 @@ jobs:
       # test+validate signal above — hence continue-on-error. Treat any
       # failure surfaced here as informational until Anthropic documents an
       # official CI-friendly install path for `claude plugin validate`.
+      #
+      # IMPORTANT (D-023): a green `validate` does NOT mean the plugin loads.
+      # It passed throughout the v0.4.0 outage, where a duplicate hooks
+      # declaration made Claude Code reject the entire plugin — because with
+      # both manifests present it validates only the marketplace manifest,
+      # and duplicate-hooks detection happens at load time, not validate
+      # time. The real gate is the packaging suite above: a static assertion
+      # that runs everywhere, plus a full marketplace install asserting
+      # `plugin list` reports the plugin enabled (that one self-skips here,
+      # since it needs the CLI).
       - name: Validate plugin manifest (best-effort, requires claude CLI)
         continue-on-error: true
         run: |
