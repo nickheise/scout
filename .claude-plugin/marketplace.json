@@ -10,7 +10,7 @@
     {
       "name": "scout",
       "source": "./",
-      "version": "0.4.0",
+      "version": "0.4.1",
       "description": "Memory for your coding agent's taste, not its transcripts. Save a link once — it comes back exactly when a project needs it. Local-first, zero keys, ships empty."
     }
   ]

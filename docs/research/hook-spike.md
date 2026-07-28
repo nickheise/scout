@@ -124,41 +124,46 @@ that no live JSON was captured; the code path is unambiguous.
 
 ## Q2 — Does `additionalContext` demonstrably re-enter the model's context?
 
-**OPEN — could not be behaviorally confirmed in this sandbox.** No live
-model turn could be produced (see auth note above), so no end-to-end
-"hook said X, model then talked about X" observation was possible here.
+**CLOSED — confirmed live, 2026-07-26, against CLI 2.1.220, in a
+properly-authenticated sandbox (`claude auth status` → `loggedIn: true`).**
+See `docs/hook-selfcheck.md`'s "Recording the result" log for the full
+method and environment note. Summary:
 
-What *was* established:
+- **`PreToolUse` → `additionalContext` reaches the model: confirmed.** A
+  scratch project wired a real `PreToolUse` command hook (matcher `Bash`,
+  since `ExitPlanMode` itself turned out not to be invokable in this
+  sandbox's headless `-p` mode — see caveat below) emitting
+  `{"hookSpecificOutput":{"hookEventName":"PreToolUse","additionalContext":"SELFCHECK-CODEWORD-NARWHAL-3302..."}}`.
+  `claude -p` was asked to run a trivial Bash command and immediately report
+  anything injected around that tool call. The model's response quoted the
+  codeword verbatim, attributing it to a `PreToolUse:Bash hook additional
+  context` system-reminder — i.e. it saw the hook's own event/matcher
+  label, not just the string, confirming this is the real platform
+  mechanism and not a hallucination.
+- **The general mechanism (any event) also independently confirmed** via
+  the same method on `UserPromptSubmit` (no tool call needed at all —
+  fires on every turn), same result: codeword quoted verbatim, attributed
+  correctly to a hook-injected system-reminder.
+- **Caveat — not the literal `ExitPlanMode` matcher.** This sandbox's
+  headless `claude -p` does not expose `ExitPlanMode` as a callable tool at
+  all (confirmed twice: with `--permission-mode plan`, the tool call itself
+  errored `"ExitPlanMode exists but is not enabled in this context"`;
+  without that flag, the tool was simply absent from the model's tool
+  list). So the live test used `PreToolUse` matched on `Bash` instead of
+  `ExitPlanMode` — same event type, same delivery code path, different
+  matcher. Given the matcher only gates *which* tool call triggers the
+  hook (a pre-execution filter) and has no bearing on the *delivery*
+  contract that runs afterward — the same `hookSpecificOutput.additionalContext`
+  merge Q1/Q3 already showed is generic across events — this is
+  considered sufficient confirmation for Scout's actual hook, not a
+  partial result. A from-a-real-interactive-terminal test with genuine
+  `ExitPlanMode` (per the original method below) would close the very last
+  sliver of residual doubt but is not expected to change the answer.
 
-- The hook output contract accepts it and the CLI's own docstrings describe
-  it as "Context injected back to model" (verified string in the binary,
-  matches public docs).
-- Decompiled merge code for hook results (found for the `SessionStart`
-  aggregation path) explicitly collects multiple hooks'
-  `additionalContext`/`additionalContexts` into an array that is then
-  spliced into the session's message/attachment list:
-  ```js
-  if (p.additionalContexts && p.additionalContexts.length > 0)
-    a.push(...p.additionalContexts);
-  ```
-  This confirms the *mechanism* exists and is wired up generically across
-  hook events (not just cosmetically documented), but I did not trace the
-  `PreToolUse`-specific variant of this merge to the same depth, and I have
-  zero live evidence the resulting text lands somewhere the model actually
-  reads (vs., say, being attached to a transcript record that's UI-only).
-- A syntactically-valid `{"hookSpecificOutput":{"hookEventName":...,
-  "additionalContext":"..."}}` payload from our test hook produced no
-  "unrecognized keys" warning on stderr (the CLI does emit such warnings for
-  malformed hook output elsewhere in the binary), which is weak positive
-  evidence the shape is accepted — but weak is all it is.
-
-**Recommendation:** re-run this specific question the moment a
-properly-authenticated headless environment is available (a real user
-machine or CI runner with `ANTHROPIC_API_KEY`/logged-in `claude`), using
-exactly the harness built here (`hook-spike/` scratch dir, `--inject` flag
-on `log-hook.mjs`) plus a prompt that asks the model to name the injected
-codeword. Do not ship Phase 3 wording that assumes silent success against
-this specific mechanic without that confirmation — see go/no-go below.
+**Consequence for D-013:** `DELIVERY = 'context'` (the shipped default in
+`bin/scout-hook-plan.mjs`) is confirmed correct. No code change needed —
+the constant already pointed at the now-verified-working mechanism. See
+DECISIONS.md D-021.
 
 ---
 
@@ -278,9 +283,10 @@ two plugins both hooking the same event where one is disabled.
 ## Go/no-go recommendation for the Phase 3 hook shape
 
 **Go, with PreToolUse(ExitPlanMode) as primary and PostToolUse(TodoWrite)
-as the documented fallback — as plan §3/PRD already assume — but do not
-depend on `additionalContext` alone for the primary payload delivery until
-Q2 is closed with a live test.**
+as the documented fallback — as plan §3/PRD already assume. Q2 is now
+closed (2026-07-26, see above): `additionalContext` delivery is confirmed
+live, so the primary payload delivery no longer rests on an unverified
+mechanism.**
 
 Reasoning:
 
@@ -292,22 +298,13 @@ Reasoning:
    replacement payload, cheap, fires more often than plan-mode does for
    users who skip plan mode and go straight to a todo-driven session. Worth
    keeping as the secondary trigger per plan §3/§1.14 exactly as scoped.
-3. **The one real risk is Q2**, and it's not small: if `additionalContext`
-   turns out to be silently dropped or only partially honored (e.g. only on
-   `UserPromptSubmit`, not `PreToolUse`), the hook's "point, don't judge"
-   design (plan §3) still works structurally (the host agent is supposed to
-   read the pointer and go look), but the *zero-marginal-cost* framing
-   depends on the model actually seeing the pointer without Scout resorting
-   to a stderr-block/exit-2 workaround (which changes UX — it interrupts
-   rather than informs). **Recommendation: before writing
-   `scout-hook-plan.mjs` for real (task 3.1), spend 15 minutes on a
-   properly-authenticated machine confirming Q2** with the exact harness
-   left in `hook-spike/` (`--inject` flag, ask the model to repeat the
-   codeword). If it fails, fall back to `PreToolUse` `exit code 2` +
-   `stderr` (documented as always surfaced to the model as feedback, per
-   the platform brief) for the pointer instead of `additionalContext` — it
-   is coarser (blocks the tool call once) but is not resting on an
-   unverified mechanism.
+3. **Q2 was the one real risk, and is now closed** (2026-07-26, see the Q2
+   section above): `additionalContext` on `PreToolUse` is confirmed live to
+   reach the model, so the *zero-marginal-cost* framing — the model reading
+   the pointer without Scout resorting to a stderr-block/exit-2 workaround —
+   holds. The `block` delivery path stays in the code as a documented,
+   verified-working fallback (D-013) in case a future CLI version changes
+   this behavior, not because today's default is in doubt.
 4. **UserPromptSubmit** remains a fine *tertiary* channel (fires every
    turn, so cheapest to reach but noisiest / least "planning-moment"
    specific) — not recommended as primary, consistent with the platform

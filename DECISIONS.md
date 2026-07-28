@@ -341,3 +341,160 @@ t2) is a production question that only dogfooding answers — field notes
 | P-7 | Browse page stack + reactivation mechanism | PRD §5.7/§7.1 gap | Resolved → D-006, D-011 |
 | P-8 | Tier 2 remote connector scope | Scope | Resolved → D-010 |
 | P-9 | PRD prose writes space form (`/scout add`) while colon form (`/scout:add`) is the only real syntax (D-007/D-012). Marketing flagged the same drift in the site PRD. Next PRD revision: switch prose to colon form, or add a one-line "space form = concept, colon form = typed" note. Owner's call — repo docs already use colon form everywhere. | Marketing thread, 2026-07-19 | Open — non-blocking |
+
+---
+
+## D-021 — D-013's Q2 closed: `additionalContext` delivery confirmed live (2026-07-26, accepted)
+
+The one open verification gap in D-013 — whether a hook's
+`hookSpecificOutput.additionalContext` demonstrably reaches the model,
+versus being silently dropped — is now closed. Tested live (not
+decompiled-source inference) against CLI 2.1.220 in a properly-authenticated
+sandbox, using the codeword method `docs/hook-selfcheck.md` prescribes: a
+scratch `PreToolUse` hook (matcher `Bash`, since this sandbox's headless
+`claude -p` doesn't expose `ExitPlanMode` as a callable tool — see the
+method note in `hook-selfcheck.md`) and, independently, a `UserPromptSubmit`
+hook, each injected a nonce codeword. Both times the model quoted the
+codeword verbatim and correctly attributed it to a hook-originated
+system-reminder — not a guess, a genuine report of injected content. Full
+trace in `docs/research/hook-spike.md` Q2 (updated) and
+`docs/hook-selfcheck.md`'s log.
+
+**Consequence:** `DELIVERY = 'context'` in `bin/scout-hook-plan.mjs` — the
+shipped default — is confirmed correct. No code change: D-013 already put
+the constant on the right value, this only removes the uncertainty around
+it. The `block` fallback stays in the code as a documented, verified-working
+safety net (D-013's own reasoning: "no rework either way" if the CLI's hook
+plumbing ever changes), not because today's default is in question.
+
+## D-022 — Architecture review follow-ups: sequencing, platform scope, and one deferred question (2026-07-26, accepted)
+
+Prompted by a staff-engineer-style review of Scout's architecture against
+Anthropic's "dynamic workflows" post (multi-agent JS-orchestrated
+subagent harnesses for classify-and-act / fan-out-synthesize / adversarial
+verification / tournament / loop-until-done patterns). Full proposal set
+lives in that review's transcript; this entry records the decisions made
+against it, owner-confirmed 2026-07-26.
+
+**Sequencing:** eval-workflows-for-Scout's-own-skill-testing (formalizing
+the D-020 scenario-agent method — parallel scripted runs against
+`surfacing`, graded against a rubric) runs **first**, ahead of any
+workflow-based rebuild of the history scan or `/scout:survey`. This
+resolves the tension with D-017's audit → checklist → restructure
+ordering by generating the dogfooding evidence that ordering was already
+waiting on, rather than picking a side.
+
+**Cost posture (owner-stated, binding on future proposals):** Scout's
+primary audience is developers on personal projects, not teams needing
+high-performance/high-complexity orchestration. The owner has a strong
+bias toward token/context efficiency and speed over capability breadth —
+"if it's slow or costly relative to what they get back, people simply
+won't use it." Concretely: workflow-based restructurings of the history
+scan and `/scout:survey` (proposed during the review) are **downgraded
+from default behavior to a conditionally-offered mode** (e.g., triggered
+only past some corpus-size threshold), not something every user pays for
+on every run — the same "does it really need more compute?" gate the
+source post itself applies. This is the standing test for any future
+workflows proposal in this repo: default paths stay cheap; workflow
+machinery is opt-in or threshold-gated, never a tax on the common case.
+
+**Platform scope — resolved, not actually in tension.** The owner
+originally worried that going deeper on Claude-Code-specific machinery
+(workflows) versus staying broadly cross-platform (Codex, Cursor) was a
+real tradeoff requiring a choice. On inspection it isn't: Scout's three-
+plane split (README "Graceful degradation") already makes the ambient
+manifest layer the only cross-platform surface, and it's plain text with
+no hook or workflow involvement at all. Workflows would only ever be
+applied inside skills that are already Claude-Code-only today (`/scout:
+survey`, the history scan) — those verbs never ran on Codex/Cursor to
+begin with, so adopting workflows inside them costs the cross-platform
+story nothing. No decision to make here beyond noting it: depth on T3
+Claude-Code verbs and breadth on the ambient layer are independent axes,
+not opposing ends of one dial.
+
+**Pack-maintenance (mining ledger/dismissal/staleness data to keep the
+pack honest over time) — assessed, not built, not scheduled.** This
+capability is real and eventually wanted (the README's own "kept honest by
+archives and supersession" claim implies something has to do that
+keeping-honest work eventually) but its value is gated by *usage
+maturity*, not by whether dynamic workflows exist as a mechanism: a
+fresh install's ledger is empty, so there's nothing yet to mine. This is
+the same phased posture as D-018 (field notes Phase A before a Phase B
+share surface) — build it once real ledger/dismissal history has
+accumulated across dogfooding, not now. It also collides with D-014's
+locked seven-verb slate (it's neither `survey` nor `setup`'s job as
+currently scoped) — reopening that slate is a separate decision, not
+implied by this one. No verb added, no code written.
+
+**Deferred to a later review — noted, not resolved (see also D-023):** whether the
+"dynamic workflows" era normalizes practices Scout's own tenets currently
+reject (the source post's own example — mining recent chat sessions for
+corrections — is precisely what `setup` Hard Rule 3 forbids; Scout's
+courier pattern exists to keep that boundary user-carried, not
+agent-crossed). No tenet changes now. Revisit once real-world workflow
+practice has matured enough to judge whether that tension is worth
+reopening, not on a fixed date.
+
+---
+
+## D-023 — Install was broken by a redundant manifest hooks key; verify installs empirically (2026-07-26, accepted)
+
+A user install of v0.4.0 failed outright: `Duplicate hooks file detected:
+./hooks/hooks.json resolves to already-loaded file`. Root cause:
+`.claude-plugin/plugin.json` declared `"hooks": "./hooks/hooks.json"` while
+Claude Code already auto-loads that conventional path, so the manifest key
+registered it twice. Per the plugins reference, `manifest.hooks` exists only
+to point at *additional* hook files beyond the standard one.
+
+Three things worth recording beyond the one-line fix.
+
+1. **The failure was total, and silent to our own CI.** `claude plugin list`
+   reported `Status: × failed to load` — not a degraded hooks layer but the
+   entire plugin unavailable, every verb and the MCP server included. Yet
+   `claude plugin validate --strict .` passed green, because with both
+   manifests present it validates only the *marketplace* manifest, and
+   because duplicate-hooks detection happens at load time, not validate
+   time. Our packaging test and CI both relied on `validate`, so nothing
+   caught it. **Consequence: `validate` is necessary but not sufficient.
+   Release checks must include a real install into an isolated
+   `CLAUDE_CONFIG_DIR` and an assertion on `plugin list` status** — the
+   check that would have caught this.
+
+   **Landed the same day.** `test/packaging.test.mjs` now carries three
+   guards, and all three were verified by reintroducing the bug and
+   confirming they fail: (i) a static assertion that `plugin.hooks` never
+   names `hooks/hooks.json` — no CLI needed, so it runs on every CI run
+   everywhere; (ii) an existence/shape check on the now-unreferenced
+   `hooks/hooks.json` itself, which nothing else guarded once the manifest
+   key was removed; (iii) a real marketplace install into a throwaway
+   `CLAUDE_CONFIG_DIR` asserting `plugin list` reports the plugin enabled
+   and `plugin details` shows all 8 skills and both hooks — self-skipping
+   when the `claude` binary is absent, so it's a local/dev gate rather than
+   a required CI signal. Note the *previous* version of the hooks test
+   asserted the opposite invariant (that the referenced file exists), which
+   is precisely why it stayed green through the outage.
+2. **Version bumps are the delivery mechanism, not bookkeeping.** Because
+   `plugin.json` sets an explicit `version`, installed users only receive
+   updates when it changes. A fix committed without a bump reaches nobody
+   on the subscribe-not-fork path. Bumped 0.4.0 → 0.4.1 in both
+   `plugin.json` and `marketplace.json`.
+3. **Surface support, now documented rather than assumed.** Checked against
+   the platform docs while answering a related user question: plugins —
+   including hooks — do work in the Claude Desktop app's **Code** tab,
+   which shares configuration files with the CLI, installed through the
+   plugin manager UI rather than `/plugin`. The desktop **Chat** tab is a
+   different surface: plugin *skills* run there, hooks and subagents do
+   not. Plugins are unavailable in WSL sessions, and cloud sessions need
+   the plugin declared in `.claude/settings.json` `enabledPlugins`. The
+   README's "Where it works" table now states this; previously the docs
+   said only "Claude Code" and left users to guess whether the desktop app
+   counted.
+
+Incidental finding, recorded because it bears on D-017's cost model:
+`claude plugin details` reports Scout's always-on cost as ~1,116 tokens,
+which contradicts the token audit's ~195. The audit is right and the CLI's
+projection is a naive sum that ignores `disable-model-invocation: true` —
+verified by asking a live model in an isolated install to name every
+`scout` skill it could see, which returned `scout:surfacing` alone. No
+action needed; noted so the discrepancy isn't re-litigated from the CLI's
+number later.

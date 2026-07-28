@@ -129,3 +129,25 @@ project's evidence trail. This doc intentionally doesn't hardcode "as of
 version X, context works" — that claim decays the moment Anthropic changes
 hook plumbing, and a stale confident claim here is worse than an honest "run
 the check yourself."
+
+### Log
+
+**2026-07-26 — CLOSED, CLI 2.1.220, sandboxed CCR environment
+(`claude auth status` → `loggedIn: true`).** `additionalContext` delivery
+confirmed live via `PreToolUse` (matcher `Bash`) and independently via
+`UserPromptSubmit` — both times the model quoted the injected codeword
+verbatim and correctly attributed it to a hook system-reminder. Full
+result recorded in `docs/research/hook-spike.md` Q2 and DECISIONS.md D-021.
+
+**Method deviation worth knowing about:** this environment's headless
+`claude -p` does not expose `ExitPlanMode` as a callable tool at all — with
+`--permission-mode plan`, the model's own `ExitPlanMode` call errored
+`"exists but is not enabled in this context"`; without that flag, the tool
+was simply absent from its tool list. If you hit the same wall on your own
+machine, don't conclude delivery is broken — substitute a `PreToolUse` hook
+matched on a tool that *is* available in `-p` mode (e.g. `matcher: "Bash"`)
+and ask the model to report what it saw right after that tool call. The
+delivery contract runs after the matcher filter, so it's the same code path
+Scout's real hook uses; only the triggering tool differs. A genuine
+interactive-terminal run with real `ExitPlanMode` (the method above) is
+still the more literal test if you have one available.
