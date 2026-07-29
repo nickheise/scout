@@ -1,74 +1,122 @@
 # Visual Language Reference — Scout
 
-**Status:** Adopted 2026-07-20 (D-019). Merged from the July 2026 design research (stack + demo-craft agent reports) and the iconography survey. This is the reference for anyone drawing, extending, or reviewing Scout's visual system — site, OG assets, future patches, README art. Voice/copy register lives in `copy-deck.md` ("plain in, brand out" doctrine); this doc covers what things *look* like.
+**Status:** Rewritten 2026-07-29 (D-021) after the Astro → Next.js migration
+and the adoption of `landing-page-kit`, a design system distilled from a
+Playwright capture of three reference product pages. This supersedes the
+2026-07-20 version of this document in full — that version described the
+"expedition field guide" register (paper/cream, topo texture, a bespoke
+icon sprite with historical glyph mappings), which D-021 retired. Voice/copy
+register is unaffected and still lives in `copy-deck.md` ("plain in, brand
+out" doctrine); this doc covers what things *look* like.
+
+**Division of labor with `BUILD-CONTRACT.md`:** that file is the technical
+contract — exact token names, component APIs, the old→new migration map.
+This file is the register — what the system is *for* and why, at a level
+a copywriter or a reviewer needs without reading component source.
 
 ---
 
 ## 1. Register
 
-Expedition field guide. Warm, analog, paper-first — deliberately against the dark-terminal default of dev tools (differentiation through warmth, PRD §5). Plainspoken and dry, never twee, never military/tactical. The visual system should feel like a well-used field notebook, not a command center.
+Plain, modern, neutral — a kit designed to carry any product's brand
+expression on a shared structural system (spacing, radius, shadow recipe,
+section anatomy, motion technique), with color as the one theming axis.
+Scout's expression of it: forest green as the single accent on a
+white/grey/near-black ground. Confident and understated, not warm and
+analog — the field-guide identity (paper, ink, topo lines, a bespoke
+trail-sign icon language) was a deliberate choice in its time (D-019) and
+is not what this site is now; don't reach for it by habit.
 
 ## 2. Palette semantics
 
-- **Paper/cream base + ink** — the ground. Warm near-black text on warm paper.
-- **Forest** — structural accent: headings, primary glyphs, wordmark.
-- **Trail-marker (ochre/orange)** — secondary accent, used sparingly.
-- **`--color-report` (reserved)** — exclusively the surfaced-report moment, nowhere else, ever. The conceptual anchor: a **trail blaze** — in the woods, one painted color means "follow this." The visual system teaches "this color = Scout found something" the same way. Token discipline is review-enforced.
+- **Neutral base** — white, `gray-50`/`gray-100` for tinted and sunken
+  section bands, `rgb(10,10,10)`-class near-black (never pure `#000`) for
+  the one dark chapter (Philosophy). No cream, no warm ink.
+- **Forest** — the single accent. Headings emphasis, primary actions,
+  links, the wordmark glyph. The ramp is tuned for contrast against this
+  palette specifically — `forest-400` was darkened from the pre-migration
+  value after it failed AA on both the white and near-black backgrounds;
+  `forest-200`/`forest-300` exist only for use on the dark band. There is
+  no second accent color (the old ochre "trail-marker" is retired).
+- **`--color-report` (reserved)** — exclusively the demo's surfaced-report
+  moment, nowhere else, ever. One high-contrast signal color teaches "this
+  = Scout found something." Token discipline is review-enforced and
+  predates this rewrite — it is the one piece of the old system that
+  carried forward unchanged in purpose. It has a same-hue-family
+  companion, `--color-report-on-dark`, for use inside the dark band, where
+  the base value alone fails AA for body-sized text.
 
-## 3. Type (D-012)
+## 3. Type (D-021, supersedes D-012)
 
-shadcn Typeset for rhythm; fonts through its variables: **Fraunces** (display — lexicon nouns, headings), **General Sans** (body/UI), **iA Writer Mono** (inside terminal frames only — deliberately not JetBrains/SF Mono). Optional stamp-accent face parked: National Park Typeface (wordmark/waypoint labels only, never running text). All free/open licenses, self-hosted, subsetted, variable.
+System font stack for everything — `ui-sans-serif, system-ui, sans-serif`
+— zero webfonts for body, UI, or headings. One deliberate exception: **iA
+Writer Mono**, scoped to terminal frames only. It survives specifically
+*because* it isn't SF Mono or JetBrains — the demo is the page's most
+visible element (hoisted into the hero), and a generic system monospace
+there would read as default-dev-tool in exactly the way this typeface
+choice was originally meant to avoid. It's preloaded, since the demo is
+now LCP-adjacent. Fraunces and General Sans are deleted — do not
+reintroduce a display or body webfont without a new decision entry.
 
 ## 4. Iconography
 
-Monoline stroke system: 24px grid, 1.75px stroke, `stroke: currentColor`, Lucide-convention geometry, shipped as one inline SVG sprite (`Icon.astro`).
+Lucide (`lucide-react`), used directly as components — no more bespoke
+SVG sprite, no shared stroke-grid file to maintain. Follow Lucide's own
+conventions (its default stroke width, `currentColor`) rather than
+re-deriving a custom one. Every icon-only control needs an `aria-label`;
+every decorative icon needs `aria-hidden="true"` — this rule is unchanged
+from before and is enforced in `BUILD-CONTRACT.md`.
 
-### The four families and what they mean
+The old sprite's glyph↔concept mapping table (blaze = reports, tracks =
+revealed preferences, waypoint = markers, pack = the category, stamp =
+philosophy tenets) is **retired along with the sprite**, not preserved as
+guidance — Lucide's library doesn't carry equivalents for most of it, and
+re-deriving a parallel mapping onto a different icon set would be design
+debt, not continuity. If a future decision wants that kind of deliberate
+glyph vocabulary back, it should be a fresh exercise against Lucide's
+actual catalog, not a retrofit of the old table.
 
-**Wayfinding & trail signs** — *a mark left by someone who went ahead, for someone who follows.* The richest family for Scout: this is literally what a report is. Glyphs: blaze (paint marks on trees), cairn, waypoint marker, compass, north point, pebble/twig trail signs (Baden-Powell's actual sign language — "turn left," "gone home" — historical depth for the reports concept).
+The old avoid-list items were about the *field-guide* metaphor
+specifically (fleur-de-lis, tactical/camo, merit-badge framing) and don't
+transfer as written — the current system has no metaphor-driven icon
+family to police in the same way. The one item worth restating because
+it's about the *product*, not the old aesthetic: **no
+binoculars/spyglass/magnifying-glass iconography anywhere**, ever — it
+says "watching/searching," which fights zero-recall (nobody searches) and
+the privacy story (Scout never looks).
 
-**Cartography** — *terrain that's been surveyed.* Contour lines (already the section texture), dashed routes, folded maps, grid crosshairs, marker pins. Good for structure, dividers, the manifest (a packing list is a map legend). Note the verb alignment: `/scout:survey` is a cartographer's word.
+## 5. Reference sites
 
-**Kit & camp** — *what you carry.* Pack (the category noun — anchors the family), tent, campfire, lantern, canteen, rope knots. Use sparingly as texture; too much gear tips "field guide" into "REI catalog."
-
-**Field marks & insignia** — *evidence and honors.* Tracks/footprints, pine, ridgeline, compass star, stamp/perforated-badge frame, chevron, woven-patch borders.
-
-### Glyph ↔ product-concept mappings (use these deliberately)
-
-| Glyph | Concept | Why |
-|---|---|---|
-| Blaze | Reports / the signal color | A blaze is a color that means "follow this" |
-| Tracks | Revealed preferences / the setup scan | "Scout reads tracks, not answers" — the glyph does the copy's work |
-| Waypoint marker | Markers (voice vocabulary: what the scan proposes) | Same word, same object |
-| Pack | The category itself | The one-sentence definition |
-| Contours | Surveyed terrain / manifest | Compact map of what's known |
-| Stamp frame | Philosophy tenets; future expedition patches | Insignia without merit-badge framing |
-
-### Avoid list (decision-weight, D-019)
-
-- **Fleur-de-lis / trefoil** — trademarked WOSM/BSA/Girl Guides emblems; reads as the organization, not the metaphor. Never.
-- **Binoculars, spyglass, magnifying glass** — say *watching/searching*; fight zero-recall (nobody searches) and the courier privacy story (Scout never looks). Same failure as the rejected "heyscout"/"recon" directions.
-- **Camo, dog tags, tactical anything** — military scout register, declined with the Recon rename.
-- **Merit-badge framing** — expedition patches, never merit badges; curation, not accumulation (PRD §7).
-- **Mascot/character** — parked per PRD §5; hard to un-ship.
-
-### Sprite inventory
-
-Current: pack, waypoint, compass, contour, stamp, arrow, blaze, tracks, cairn.
-Pack glyph redrawn: the shoulder strap is now two separate curves instead of one arc bridging the body (that bridge plus the rounded rect read as a padlock shackle at small sizes), and the inner detail resolved into a proper front-pocket rect. Applied: tracks sits beside the stated/revealed-preferences blockquote in `Philosophy.astro` (D-019 glyph map: tracks = revealed preferences). The HowItWorks "Pack it" step keeps the pack glyph rather than swapping to blaze — pack maps to "the category itself," which is what that step is; blaze is reserved for reports.
-
-## 5. Reference sites (from the demo-craft research, July 2026)
-
-- **Charm (charm.land)** — the proof a CLI brand can escape the terminal cliché with character and warmth. Closest spiritual reference.
-- **Bun / uv (astral.sh)** — the install-command-as-CTA pattern, done straight.
+- **Bun / uv (astral.sh)** — the install-command-as-CTA pattern. More
+  load-bearing now than before: the hero's primary CTA is literally the
+  install one-liner in a copy-to-clipboard block, not a generic button.
 - **Linear** — motion-restraint discipline; screenshots over video.
-- **Craft-style editorial/paper sites** — the warm paper register reading as premium.
-- **Warp** — the deliberate anti-reference: dark IDE aesthetic, enterprise logo wall (though its screenshots-over-video restraint is instructive).
+- **The three `landing-page-kit` reference captures** — composition,
+  density, and section rhythm (bento grids, alternating rows, the
+  eyebrow→h2 pattern). Reference for structure, never for brand
+  expression — see `BUILD-CONTRACT.md`'s divergence notes for what was
+  deliberately not reproduced (their indigo accent, their dark-mode
+  toggle, their mockup-centered hero anatomy).
 
-## 6. Motion rules (Emil Kowalski / Rauno Freiberg school, distilled)
+## 6. Motion rules (unchanged in substance)
 
-- The Beat 2 demo is the page's entire animation budget. Everything else: static, or an instant fade.
-- Animate `transform`/`opacity` only; 150–300 ms, `ease-out`; interruptible.
-- `prefers-reduced-motion` honored everywhere — the demo renders final frames statically.
-- At most one stroke-draw moment (`stroke-dashoffset`) sitewide, if any; never across a whole icon set.
-- Restraint elsewhere is what makes the one animated thing read as intentional.
+- The demo is still the page's entire animation budget — everything else
+  is static or an instant fade. It moved into the hero, it did not grow a
+  peer.
+- Animate `transform`/`opacity` only; 150–300 ms, `ease-out`;
+  interruptible.
+- `prefers-reduced-motion` is honored everywhere. Note for anyone editing
+  the demo island: in the outgoing Astro build this was enforced by never
+  *hydrating* the demo's JS for reduced-motion visitors (a separate static
+  fallback rendered instead); Next has no equivalent split, so the island
+  now detects the preference itself at runtime and renders the script's
+  finished state directly. Don't assume hydration-time gating still does
+  this work — it doesn't, on this stack.
+- Tailwind v4 compiles every `hover:` utility inside `@media (hover: hover)`
+  automatically — don't hand-roll a `(hover: hover) and (pointer: fine)`
+  guard the way the pre-migration components did. Only transform-based
+  hover lift needs an explicit guard (the `hover-lift` utility in
+  `globals.css`), because a bare `:hover` transform can leave a visibly
+  "stuck" lifted state on a touch tap.
+- Restraint elsewhere is what makes the one animated thing read as
+  intentional.
