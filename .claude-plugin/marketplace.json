@@ -1,10 +1,10 @@
 {
-  "name": "scout",
+  "name": "nickheise",
   "owner": {
     "name": "Nick Heise"
   },
   "metadata": {
-    "description": "Scout's own marketplace: a curated cross-project pack and compiled ambient manifest for Claude Code, distributed subscribe-not-fork from this single repo."
+    "description": "Nick Heise's Claude Code marketplace. Currently carries Scout: a curated cross-project pack and compiled ambient manifest, distributed subscribe-not-fork from this repo."
   },
   "plugins": [
     {

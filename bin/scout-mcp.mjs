@@ -205,7 +205,7 @@ const HANDLERS = {
 
 export function createServer() {
   const server = new Server(
-    { name: 'scout', version: '0.1.0' },
+    { name: 'store', version: '0.1.0' },
     { capabilities: { tools: {} } }
   );
 

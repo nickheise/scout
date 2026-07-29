@@ -58,11 +58,12 @@ Parallel build agents run in isolated worktrees where they touch shared files. *
 
 `/patch` route: client-side decode + render, one generic OG image (per-code OG cards require an edge function — deferred decision, documented in D-008). No community-pack directory hosting, ever — link only if one emerges.
 
-## 7. Open items (updated 2026-07-19 — build complete through v0 gate)
+## 7. Open items (updated 2026-07-28 — Next.js/landing-page-kit migration, P5 gate)
 
 1. **Domain** (D-004/D-015, deferred by Nick): `scoutpack.dev` recommendation stands; swap is one config edit + OG re-render.
-2. **Content owed:** tracks prompt (Scout core, D-010) · Nick's nine-entry example pack (footer gallery) · GoatCounter site code (Nick, one config field).
-3. **Launch gates:** scout repo must be public (all links/commands 404 until then) · `/scout:setup` ships with Scout Phase 4 while Beat 4.5 references it.
+2. **Content owed:** Nick's nine-entry example pack (footer gallery) · GoatCounter site code (Nick, one config field).
+3. **Launch gates:** scout repo must be public (all links/commands 404 until then).
 4. **Pre-launch validation:** barbecue test (hero A vs C per positioning canvas; retire B) · OG unfurl check in real clients post-deploy · demo reconciliation against real CLI captures (requested from engineering).
-5. **v1 copywriting polish pass:** demo narration in the "plain in, brand out" voice · router callout copy shipped, review in pass · launch post draft exists (`docs/launch-post.md`).
-6. **Ship:** Vercel deploy + monorepo `/site` lift (coordinate with engineering; remind Nick — standing request).
+5. **Favicon refresh (pending, blocks production):** `public/favicon.ico`/`favicon.svg` still carry the pre-migration waypoint glyph — filled shape, forest fill color — from the retired field-guide sprite system (superseded by Lucide, see D-019 supersession). It does not match the current kit-based visual language (stroked Lucide icon language, e.g. the `Compass` mark used in `GlassNav` and the OG card). Needs new artwork before this ships to production. Not addressed as part of the P5 platform-plumbing pass (site commit `1f85012`) — flagged there, not fixed, since it's art direction, not plumbing.
+6. **v1 copywriting polish pass:** demo narration in the "plain in, brand out" voice · router callout copy shipped, review in pass · launch post draft exists (`docs/launch-post.md`).
+7. **Ship:** Vercel deploy + monorepo `/site` lift (coordinate with engineering; remind Nick — standing request).

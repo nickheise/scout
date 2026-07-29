@@ -125,7 +125,7 @@ test('scout-mcp: initialize handshake reports server name and version', async ()
   const client = new McpClient(SEED_PACK);
   try {
     const res = await client.initialize();
-    assert.equal(res.result.serverInfo.name, 'scout');
+    assert.equal(res.result.serverInfo.name, 'store');
     assert.equal(res.result.serverInfo.version, '0.1.0');
   } finally {
     client.close();

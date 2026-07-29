@@ -33,7 +33,7 @@ stale.
    nothing to forward to otherwise):
    ```
    /plugin marketplace add nickheise/scout
-   /plugin install scout@scout
+   /plugin install scout@nickheise
    ```
 2. Copy the template directory from this repo into your personal skills
    folder:

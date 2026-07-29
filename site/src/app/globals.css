@@ -1,0 +1,492 @@
+@import "tailwindcss";
+@import "tw-animate-css";
+
+/* ==========================================================================
+ * Scout — design tokens (Tailwind v4, CSS-first).
+ *
+ * Source: the landing-page-kit captured design system (DESIGN.md /
+ * SECTIONS.md / tailwind-theme.js), translated from the kit's Tailwind v3
+ * `theme.extend` JS config into v4 `@theme` custom properties. See
+ * docs/BUILD-CONTRACT.md for the full vocabulary, the primitive APIs, and
+ * the old-Scout -> new-Scout token migration map.
+ *
+ * Locked decisions encoded here (do not revisit without the user):
+ *   - Full kit register. The warm paper/cream ground + topographic texture
+ *     of the previous Scout system (D-019) are retired.
+ *   - Single accent: forest green, on a neutral grey/white base.
+ *   - LIGHT THEME ONLY. There is no `.dark` token set and no toggle. The
+ *     near-black appears only as a full-bleed *section band* background
+ *     (a compositional device for chapter rhythm), driven by SectionShell's
+ *     `tone="dark"`.
+ *   - System font stack for all sans/UI text. Fraunces and General Sans are
+ *     deleted.
+ *   - One webfont: iA Writer Mono, scoped to terminal frames only
+ *     (`font-terminal`). `font-mono` is a system stack on purpose so
+ *     incidental mono usage can never pull the webfont.
+ *   - `--color-report` is RESERVED for the TerminalDemo report card.
+ * ========================================================================== */
+
+/* --------------------------------------------------------------------------
+ * Fonts
+ *
+ * iA Writer Mono is now above the fold (the hero carries the terminal
+ * frame), so it is LCP-critical and preloaded from app/layout.tsx. The
+ * metric-matched Courier New fallback below is carried across verbatim from
+ * the outgoing Astro global.css — those overrides were derived from the real
+ * font's metrics (upm 1000, ascent 780, descent -220, lineGap 300,
+ * xHeight 516) against Courier New's (upm 2048, xHeight 848) and keep CLS
+ * near zero while the real face loads.
+ * -------------------------------------------------------------------------- */
+
+@font-face {
+  font-family: "iA Writer Mono Variable";
+  src:
+    url("/fonts/ia-writer-mono/iAWriterMonoV-latin.woff2")
+      format("woff2-variations"),
+    url("/fonts/ia-writer-mono/iAWriterMonoV-latin.woff2") format("woff2");
+  font-weight: 400 700;
+  font-style: normal;
+  font-display: swap;
+  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+2000-206F,
+    U+2074, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
+}
+
+@font-face {
+  font-family: "iA Writer Mono Fallback";
+  src: local("Courier New");
+  ascent-override: 62.59%;
+  descent-override: 17.65%;
+  line-gap-override: 24.07%;
+  size-adjust: 124.62%;
+}
+
+/* --------------------------------------------------------------------------
+ * @theme — the token vocabulary Tailwind generates utilities from.
+ * -------------------------------------------------------------------------- */
+
+@theme {
+  /* --- Type families -----------------------------------------------------
+   * Sans is the kit's system stack (SF Pro on Apple, Segoe on Windows,
+   * Roboto on Android) — zero webfont cost.
+   * `--font-terminal` is the ONLY webfont on the site. `--font-mono` is
+   * deliberately a *system* mono stack so `font-mono` never loads it. */
+  --font-sans:
+    ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto,
+    "Helvetica Neue", Arial, "Noto Sans", sans-serif, "Apple Color Emoji",
+    "Segoe UI Emoji";
+  --font-mono:
+    ui-monospace, SFMono-Regular, "SF Mono", Menlo, Consolas,
+    "Liberation Mono", monospace;
+  --font-terminal:
+    "iA Writer Mono Variable", "iA Writer Mono Fallback", ui-monospace,
+    SFMono-Regular, "Courier New", monospace;
+
+  /* --- Display type ------------------------------------------------------
+   * The kit's 12/14/16/18/20/24/48/96 size scale is already Tailwind's
+   * default (text-xs … text-2xl, text-5xl, text-8xl) with the kit's
+   * 1.33–1.5 line-height ratios baked in — so it is NOT redefined here.
+   * These four add the display sizes with the kit's rule: tight tracking
+   * only at large sizes, near-zero everywhere else. */
+  --text-display-sm: 2.25rem; /* 36px */
+  --text-display-sm--line-height: 1.1;
+  --text-display-sm--letter-spacing: -0.02em;
+  --text-display-sm--font-weight: 600;
+
+  --text-display: 3rem; /* 48px — the kit's display step */
+  --text-display--line-height: 1.05;
+  --text-display--letter-spacing: -0.025em;
+  --text-display--font-weight: 600;
+
+  --text-display-lg: 4rem; /* 64px */
+  --text-display-lg--line-height: 1.03;
+  --text-display-lg--letter-spacing: -0.03em;
+  --text-display-lg--font-weight: 600;
+
+  --text-display-xl: 6rem; /* 96px — the kit's hero-numeral jump */
+  --text-display-xl--line-height: 1;
+  --text-display-xl--letter-spacing: -0.035em;
+  --text-display-xl--font-weight: 700;
+
+  /* --- Layout ------------------------------------------------------------
+   * Kit: 1200px content column. Spacing is NOT redefined: Tailwind v4's
+   * native `--spacing: 0.25rem` scale already produces every value in the
+   * kit's 4px-based scale (p-6 = 24px, p-16 = 64px, p-24 = 96px, …). */
+  --container-page: 1200px;
+
+  /* --- Radius ------------------------------------------------------------
+   * Kit rule of thumb: large surface 24px, pill full, small control <= 10px. */
+  --radius: 12px; /* shadcn base */
+  --radius-xs: 4px;
+  --radius-sm: 6px;
+  --radius-md: 8px;
+  --radius-lg: 12px;
+  --radius-xl: 16px;
+  --radius-2xl: 20px;
+  --radius-3xl: 24px;
+  --radius-4xl: 32px;
+  --radius-control: 10px; /* chips, inputs, badges */
+  --radius-panel: 16px; /* secondary cards */
+  --radius-card: 24px; /* the dominant card radius */
+  --radius-pill: 9999px;
+
+  /* --- Elevation ---------------------------------------------------------
+   * ONE shared 3-layer recipe (hairline inset border + 2 ambient layers),
+   * per the kit's explicit reproduction rule. Do not write per-component
+   * shadows. `--shadow-glow` takes the accent through `--glow-color`.
+   * The `-dark` variants swap the hairline to a light inset so cards keep a
+   * visible edge inside a dark band. */
+  --shadow-card:
+    inset 0 0 0 1px rgba(0, 0, 0, 0.05), 0 20px 25px -5px rgba(0, 0, 0, 0.05),
+    0 8px 10px -6px rgba(0, 0, 0, 0.05);
+  --shadow-card-sm:
+    inset 0 0 0 1px rgba(0, 0, 0, 0.05), 0 1px 3px 0 rgba(0, 0, 0, 0.05),
+    0 1px 2px -1px rgba(0, 0, 0, 0.05);
+  --shadow-card-lg:
+    inset 0 0 0 1px rgba(0, 0, 0, 0.05), 0 25px 50px -12px rgba(0, 0, 0, 0.12),
+    0 8px 10px -6px rgba(0, 0, 0, 0.05);
+  --shadow-glow:
+    inset 0 0 0 1px rgba(0, 0, 0, 0.05), 0 20px 25px -5px rgba(0, 0, 0, 0.05),
+    0 25px 50px -12px var(--glow-color);
+  --shadow-card-dark:
+    inset 0 0 0 1px rgba(255, 255, 255, 0.08),
+    0 20px 25px -5px rgba(0, 0, 0, 0.4), 0 8px 10px -6px rgba(0, 0, 0, 0.3);
+  --shadow-card-sm-dark:
+    inset 0 0 0 1px rgba(255, 255, 255, 0.08),
+    0 1px 3px 0 rgba(0, 0, 0, 0.35), 0 1px 2px -1px rgba(0, 0, 0, 0.3);
+
+  /* --- Glass -------------------------------------------------------------
+   * `backdrop-blur-glass` on the sticky nav; `-sm` is the lighter variant. */
+  --blur-glass: 24px;
+  --blur-glass-sm: 16px;
+
+  /* --- Motion ------------------------------------------------------------
+   * 150ms default (already Tailwind's default, stated for the record), up to
+   * 300–500ms for larger reveals. Tailwind's default `ease` curves only —
+   * motion restraint, not motion-as-brand. */
+  --default-transition-duration: 150ms;
+
+  --animate-marquee-left: marquee-left 30s linear infinite;
+  --animate-marquee-right: marquee-right 30s linear infinite;
+  --animate-shimmer: shimmer 2s ease infinite;
+
+  @keyframes marquee-left {
+    0% {
+      transform: translateX(0);
+    }
+    100% {
+      transform: translateX(-50%);
+    }
+  }
+  @keyframes marquee-right {
+    0% {
+      transform: translateX(-50%);
+    }
+    100% {
+      transform: translateX(0);
+    }
+  }
+  @keyframes shimmer {
+    0% {
+      transform: translateX(-100%);
+    }
+    100% {
+      transform: translateX(100%);
+    }
+  }
+
+  /* --- Neutral base ------------------------------------------------------
+   * The kit's measured neutrals (rgb 249,250,251 / 229,231,235 /
+   * 156,163,175) are exactly Tailwind's default `gray-*` ramp, so
+   * `gray-50 … gray-900` IS the kit's neutral base — use it directly. The
+   * semantic aliases below name the contrast-audited roles.
+   *
+   * CONTRAST NOTE: gray-400 (the kit's stated "muted text") measures 2.54:1
+   * on white and FAILS AA. It is a decorative/on-dark value only. Use
+   * `fg-muted` / `fg-subtle` for muted text on light. */
+  --color-canvas: #ffffff; /* default band */
+  --color-canvas-tinted: rgb(249 250 251); /* gray-50 — tinted band */
+  --color-canvas-sunken: rgb(243 244 246); /* gray-100 — deeper tint */
+  --color-ink: rgb(10 10 10); /* near-black dark band (never #000) */
+  --color-ink-raised: rgb(24 24 27); /* surfaces sitting on a dark band */
+
+  --color-fg: rgb(10 10 10); /* headings + body — 19.80:1 on white */
+  --color-fg-muted: rgb(75 85 99); /* secondary body — 6.87:1+ on all light */
+  --color-fg-subtle: rgb(94 103 117); /* fine print — 5.20:1+ on all light */
+  --color-fg-on-dark: #ffffff; /* 19.80:1 on ink */
+  --color-fg-muted-on-dark: rgb(156 163 175); /* 7.80:1 on ink */
+
+  --color-hairline: rgb(229 231 235); /* the kit's border grey */
+  --color-hairline-on-dark: rgb(255 255 255 / 0.12);
+
+  /* --- Forest accent -----------------------------------------------------
+   * Single accent (no indigo, no second accent family). Re-audited against
+   * white / gray-50 / gray-100 / ink after the move off the warm cream
+   * ground; see BUILD-CONTRACT.md for the full ratio table.
+   *   200  #c0e2c8  on-dark tint & border            14.05:1 on ink
+   *   300  #66aa79  ON-DARK accent text               7.17:1 on ink
+   *   400  #3d784f  light large text / icons          5.28 / 5.05 / 4.79
+   *   500  #2e6540  links, eyebrows, primary fill     6.84 / 6.54 / 6.21
+   *   600  #184829  hover/pressed, strong emphasis   10.50 / 10.05 / 9.54
+   *   700  #0d3119  deepest emphasis                 14.27 / 13.66 / 12.97
+   * 400 was CHANGED from L56% -> L52%: at 56% it measured 4.46:1 on white
+   * and 4.44:1 on ink, i.e. it failed AA body on both sides of the
+   * light/dark crossover and was unusable for text. Its on-dark role moved
+   * to the new 300 step. 500/600/700 are unchanged from the outgoing ramp. */
+  --color-forest-200: oklch(88% 0.05 152);
+  --color-forest-300: oklch(68% 0.1 152);
+  --color-forest-400: oklch(52% 0.09 152);
+  --color-forest-500: oklch(46% 0.085 152);
+  --color-forest-600: oklch(36% 0.075 152);
+  --color-forest-700: oklch(28% 0.06 152);
+  --color-forest: var(--color-forest-500);
+
+  /* --- Report — RESERVED -------------------------------------------------
+   * The single high-contrast signal meaning "Scout surfaced a report".
+   * Used EXCLUSIVELY by the TerminalDemo's report card. Never an ambient
+   * accent, never on buttons, links, badges, or borders. Review-enforced.
+   * Hue 25 vs. the forest accent's hue 152 — 127 degrees apart, so it can
+   * never read as part of the accent palette.
+   *   --color-report          #d81327   5.21 / 4.99 / 4.74 on light  PASS
+   *   --color-report-on-dark  #f05653   5.82:1 on ink                PASS
+   * The base value is UNCHANGED from the outgoing system. The on-dark
+   * sibling exists because the base measures 3.80:1 on rgb(10,10,10) —
+   * large/UI only, not enough for the report card's body-size mono text if
+   * a dark terminal frame is ever used. Same reservation covers both. */
+  --color-report: oklch(56% 0.22 25);
+  --color-report-on-dark: oklch(66% 0.19 25);
+}
+
+/* --------------------------------------------------------------------------
+ * Tone system — how a section band re-points the palette.
+ *
+ * SectionShell writes `data-tone` on the <section>. Everything inside then
+ * reads `bg-tone-surface` / `text-tone-fg` / `text-tone-accent` /
+ * `border-tone-border` / `shadow-tone-card` and lands correctly without any
+ * component threading a `tone` prop down. Registered through `@theme inline`
+ * so the var resolves at the use site, not at definition time.
+ * -------------------------------------------------------------------------- */
+
+:root {
+  --tone-bg: var(--color-canvas);
+  --tone-fg: var(--color-fg);
+  --tone-fg-muted: var(--color-fg-muted);
+  --tone-fg-subtle: var(--color-fg-subtle);
+  --tone-accent: var(--color-forest-500);
+  --tone-accent-strong: var(--color-forest-600);
+  --tone-border: var(--color-hairline);
+  --tone-surface: #ffffff;
+  --tone-surface-sunken: var(--color-canvas-tinted);
+  --tone-shadow-card: var(--shadow-card);
+  --tone-shadow-card-sm: var(--shadow-card-sm);
+  --tone-report: var(--color-report);
+  --glow-color: color-mix(in oklch, var(--color-forest-500) 14%, transparent);
+}
+
+[data-tone="tinted"] {
+  --tone-bg: var(--color-canvas-tinted);
+  --tone-surface: #ffffff;
+  --tone-surface-sunken: var(--color-canvas-sunken);
+}
+
+[data-tone="sunken"] {
+  --tone-bg: var(--color-canvas-sunken);
+  --tone-surface: #ffffff;
+  --tone-surface-sunken: var(--color-canvas-tinted);
+}
+
+[data-tone="dark"] {
+  --tone-bg: var(--color-ink);
+  --tone-fg: var(--color-fg-on-dark);
+  --tone-fg-muted: var(--color-fg-muted-on-dark);
+  --tone-fg-subtle: var(--color-fg-muted-on-dark);
+  --tone-accent: var(--color-forest-300);
+  --tone-accent-strong: var(--color-forest-200);
+  --tone-border: var(--color-hairline-on-dark);
+  --tone-surface: var(--color-ink-raised);
+  --tone-surface-sunken: var(--color-ink);
+  --tone-shadow-card: var(--shadow-card-dark);
+  --tone-shadow-card-sm: var(--shadow-card-sm-dark);
+  --tone-report: var(--color-report-on-dark);
+  --glow-color: color-mix(in oklch, var(--color-forest-300) 18%, transparent);
+}
+
+@theme inline {
+  --color-tone-bg: var(--tone-bg);
+  --color-tone-fg: var(--tone-fg);
+  --color-tone-fg-muted: var(--tone-fg-muted);
+  --color-tone-fg-subtle: var(--tone-fg-subtle);
+  --color-tone-accent: var(--tone-accent);
+  --color-tone-accent-strong: var(--tone-accent-strong);
+  --color-tone-border: var(--tone-border);
+  --color-tone-surface: var(--tone-surface);
+  --color-tone-surface-sunken: var(--tone-surface-sunken);
+  --color-tone-report: var(--tone-report);
+  --shadow-tone-card: var(--tone-shadow-card);
+  --shadow-tone-card-sm: var(--tone-shadow-card-sm);
+
+  /* shadcn variable mapping — keeps ui/button.tsx (and any future shadcn
+   * component) working against the new tokens. Light-only: no `.dark` block
+   * exists, by design. */
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --color-card: var(--card);
+  --color-card-foreground: var(--card-foreground);
+  --color-popover: var(--popover);
+  --color-popover-foreground: var(--popover-foreground);
+  --color-primary: var(--primary);
+  --color-primary-foreground: var(--primary-foreground);
+  --color-secondary: var(--secondary);
+  --color-secondary-foreground: var(--secondary-foreground);
+  --color-muted: var(--muted);
+  --color-muted-foreground: var(--muted-foreground);
+  --color-accent: var(--accent);
+  --color-accent-foreground: var(--accent-foreground);
+  --color-destructive: var(--destructive);
+  --color-border: var(--border);
+  --color-input: var(--input);
+  --color-ring: var(--ring);
+}
+
+:root {
+  --background: var(--color-canvas);
+  --foreground: var(--color-fg);
+  --card: #ffffff;
+  --card-foreground: var(--color-fg);
+  --popover: #ffffff;
+  --popover-foreground: var(--color-fg);
+  --primary: var(--color-forest-500);
+  --primary-foreground: #ffffff; /* 6.84:1 — AA body */
+  --secondary: var(--color-canvas-sunken);
+  --secondary-foreground: var(--color-fg);
+  --muted: var(--color-canvas-sunken);
+  --muted-foreground: var(--color-fg-muted);
+  --accent: var(--color-canvas-sunken);
+  --accent-foreground: var(--color-fg);
+  --destructive: oklch(50% 0.19 27);
+  --border: var(--color-hairline);
+  --input: rgb(209 213 219);
+  --ring: oklch(46% 0.085 152 / 45%);
+}
+
+/* --------------------------------------------------------------------------
+ * Layout utilities
+ * -------------------------------------------------------------------------- */
+
+/* Content column. Kit gutters are 40px -> 64px; the mobile step is 24px here
+ * (see BUILD-CONTRACT "Deliberate divergences") because 40px each side on a
+ * 390px viewport leaves too little room for the terminal frame's mono text. */
+@utility container-page {
+  margin-inline: auto;
+  width: 100%;
+  max-width: var(--container-page);
+  padding-inline: 24px;
+
+  @media (width >= 640px) {
+    padding-inline: 40px;
+  }
+  @media (width >= 1024px) {
+    padding-inline: 64px;
+  }
+}
+
+/* Sticky-header offset, so a hero can fill the viewport minus the nav.
+ * Kit header heights: 72 -> 112 -> 152px. */
+:root {
+  --page-header: 72px;
+}
+@media (width >= 640px) {
+  :root {
+    --page-header: 88px;
+  }
+}
+@media (width >= 1024px) {
+  :root {
+    --page-header: 112px;
+  }
+}
+
+/* --------------------------------------------------------------------------
+ * Interaction utilities
+ *
+ * Hover affordances are gated to real pointers so they never leave a stuck
+ * hover state on touch, per the kit's `(hover:hover) and (pointer:fine)` vs
+ * `(pointer:coarse)` split. This is part of the system, not optional polish.
+ * -------------------------------------------------------------------------- */
+
+/* Subtle lift on hover — fine pointers only. */
+@utility hover-lift {
+  transition:
+    transform 150ms ease,
+    box-shadow 150ms ease;
+
+  @media (hover: hover) and (pointer: fine) {
+    &:hover {
+      transform: translateY(-2px);
+      box-shadow: var(--shadow-card-lg);
+    }
+  }
+  @media (pointer: coarse) {
+    &:active {
+      transform: scale(0.99);
+    }
+  }
+}
+
+/* Focus ring — one recipe for every focusable custom control. */
+@utility focus-ring {
+  outline: none;
+
+  &:focus-visible {
+    outline: 2px solid var(--color-forest-500);
+    outline-offset: 2px;
+  }
+}
+[data-tone="dark"] .focus-ring:focus-visible {
+  outline-color: var(--color-forest-300);
+}
+
+/* --------------------------------------------------------------------------
+ * Base
+ * -------------------------------------------------------------------------- */
+
+@layer base {
+  * {
+    border-color: var(--color-border);
+  }
+
+  html {
+    font-family: var(--font-sans);
+    -webkit-text-size-adjust: 100%;
+    scroll-behavior: smooth;
+  }
+
+  body {
+    background-color: var(--color-canvas);
+    color: var(--color-fg);
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
+
+  /* Never used for prose: the mono webfont is terminal frames only. */
+  :where(code, kbd, samp, pre) {
+    font-family: var(--font-mono);
+  }
+}
+
+/* Reduced motion — the kit ships both `no-preference` and `reduce` branches;
+ * this is the `reduce` branch. Animation and transition are neutralised
+ * globally so no component has to remember to opt out. */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+
+  html {
+    scroll-behavior: auto;
+  }
+}
