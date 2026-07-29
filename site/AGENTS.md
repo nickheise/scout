@@ -3,11 +3,11 @@
 Next.js (App Router, static rendering) + Tailwind CSS v4 + shadcn/ui. Package
 manager is **pnpm**. Deployed to Vercel with Root Directory `site/`.
 
-Migrated from Astro on branch `site/next-migration`. The previous Astro build
-is preserved verbatim under `_astro-legacy/` — it is the source of truth for
-existing page copy and section content until the migration completes, and is
-excluded from TypeScript and from Next's route detection. Do not import from
-it, and do not run it.
+Migrated from Astro on branch `site/next-migration`. The migration is
+complete; the previous Astro build (`_astro-legacy/`, once preserved verbatim
+as the source of truth for existing page copy and section content) has been
+deleted now that every section has been ported. See `docs/BUILD-CONTRACT.md`
+for the design system that replaced it.
 
 ## Development
 
